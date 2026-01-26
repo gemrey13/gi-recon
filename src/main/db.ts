@@ -15,7 +15,6 @@ const db: Database = new DatabaseConstructor(dbPath);
 export { db };
 
 export function initDb() {
-  // 1. Processed files table
   db.exec(`
     CREATE TABLE IF NOT EXISTS processed_files (
       file_hash TEXT PRIMARY KEY,
@@ -24,8 +23,6 @@ export function initDb() {
       imported_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
   `);
-
-  // 2. POS Table with the missing UNIQUE constraint
   db.exec(`
     CREATE TABLE IF NOT EXISTS pos_transactions (
       id INTEGER PRIMARY KEY AUTOINCREMENT,

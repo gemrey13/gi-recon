@@ -16,7 +16,6 @@ export async function processPosFile(filePath: string) {
 
     const dataView = new DataView(fileBuffer.buffer, fileBuffer.byteOffset, fileBuffer.byteLength);
 
-    // FIX: Safely access the parsing function
     const parser = (parseDBF.default || parseDBF) as any;
     if (typeof parser !== "function") {
       throw new Error("DBF Parser initialization failed. parseDBF is not a function.");
@@ -32,7 +31,6 @@ export async function processPosFile(filePath: string) {
       return out;
     });
 
-    // ... rest of your database insert logic
     const insert = db.prepare(`
         INSERT INTO pos_transactions (cslipno, cusno, cusname, gross_amount, order_date, order_time)
         VALUES (?, ?, ?, ?, ?, ?)
@@ -41,7 +39,6 @@ export async function processPosFile(filePath: string) {
 
     const insertMany = db.transaction((data) => {
       for (const row of data) {
-        // Correct local date logic we fixed earlier
         let finalDate = row.ORDDATE;
         if (row.ORDDATE instanceof Date) {
           const year = row.ORDDATE.getFullYear();
@@ -53,7 +50,7 @@ export async function processPosFile(filePath: string) {
         insert.run(
           String(row.CSLIPNO || ""),
           String(row.CUSNO || ""),
-          String(row.CUSNAME || ""), // Map CUSNAME here
+          String(row.CUSNAME || ""), 
           Number(row.GRSCHRG || 0),
           String(finalDate || ""),
           String(row.ORDTIME || ""),

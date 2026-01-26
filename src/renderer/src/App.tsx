@@ -4,14 +4,12 @@ function App(): React.JSX.Element {
   const [posData, setPosData] = useState<any[]>([])
 
   const fetchLogs = async () => {
-    // Calling the function we exposed in preload
     const data = await (window as any).api.getPosData()
     setPosData(data)
   }
 
   useEffect(() => {
     fetchLogs()
-    // Optional: Refresh every 5 seconds to see automation in real-time
     const interval = setInterval(fetchLogs, 5000)
     return () => clearInterval(interval)
   }, [])
@@ -29,6 +27,7 @@ function App(): React.JSX.Element {
             <thead>
               <tr style={{ background: '#333' }}>
                 <th>Slip No</th>
+                <th>CUS Name</th>
                 <th>Amount</th>
                 <th>Date</th>
                 <th>Time</th>
@@ -38,6 +37,7 @@ function App(): React.JSX.Element {
               {posData.map((row) => (
                 <tr key={row.id}>
                   <td>{row.cslipno}</td>
+                  <td>{row.cusname}</td>
                   <td>{row.gross_amount}</td>
                   <td>{row.order_date}</td>
                   <td>{row.order_time}</td>
