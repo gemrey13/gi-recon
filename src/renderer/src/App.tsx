@@ -1,34 +1,53 @@
-import Versions from './components/Versions'
-import electronLogo from './assets/electron.svg'
+import { useEffect, useState } from 'react'
 
 function App(): React.JSX.Element {
-  const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
+  const [posData, setPosData] = useState<any[]>([])
+
+  const fetchLogs = async () => {
+    // Calling the function we exposed in preload
+    const data = await (window as any).api.getPosData()
+    setPosData(data)
+  }
+
+  useEffect(() => {
+    fetchLogs()
+    // Optional: Refresh every 5 seconds to see automation in real-time
+    const interval = setInterval(fetchLogs, 5000)
+    return () => clearInterval(interval)
+  }, [])
 
   return (
-    <>
-      <img alt="logo" className="logo" src={electronLogo} />
-      <div className="creator">Powered by electron-vite</div>
-      <div className="text">
-        Build an Electron app with <span className="react">React</span>
-        &nbsp;and <span className="ts">TypeScript</span>
+    <div className="container">
+      <h2>POS Automation Logs</h2>
+      <button onClick={fetchLogs}>Refresh Manual</button>
+      
+      <div style={{ marginTop: '20px', maxHeight: '400px', overflowY: 'auto' }}>
+        {posData.length === 0 ? (
+          <p>No data found. Drop a DBF file in POS_Imports!</p>
+        ) : (
+          <table border={1} style={{ width: '100%', textAlign: 'left', borderCollapse: 'collapse' }}>
+            <thead>
+              <tr style={{ background: '#333' }}>
+                <th>Slip No</th>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              {posData.map((row) => (
+                <tr key={row.id}>
+                  <td>{row.cslipno}</td>
+                  <td>{row.gross_amount}</td>
+                  <td>{row.order_date}</td>
+                  <td>{row.order_time}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
-      <p className="tip">
-        Please try pressing <code>F12</code> to open the devTool
-      </p>
-      <div className="actions">
-        <div className="action">
-          <a href="https://electron-vite.org/" target="_blank" rel="noreferrer">
-            Documentation
-          </a>
-        </div>
-        <div className="action">
-          <a target="_blank" rel="noreferrer" onClick={ipcHandle}>
-            Send IPC
-          </a>
-        </div>
-      </div>
-      <Versions></Versions>
-    </>
+    </div>
   )
 }
 
