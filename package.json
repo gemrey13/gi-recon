@@ -1,7 +1,7 @@
 {
   "name": "gi-recon",
   "version": "1.0.0",
-  "description": "An Electron application with React and TypeScript",
+  "description": "Desktop reconciliation tool for Giligans POS, Grab, and Foodpanda transactions.",
   "main": "./out/main/index.js",
   "author": "example.com",
   "homepage": "https://electron-vite.org",
