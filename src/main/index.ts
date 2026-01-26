@@ -2,6 +2,7 @@ import { app, shell, BrowserWindow, ipcMain } from "electron";
 import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
+import { initDb } from "./db";
 
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
@@ -41,6 +42,7 @@ app.whenReady().then(() => {
 
   ipcMain.on("ping", () => console.log("pong"));
 
+  initDb();
   createWindow();
 
   app.on("activate", function () {
