@@ -31,6 +31,7 @@ export function initDb() {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       cslipno TEXT,
       cusno TEXT,
+      cusname TEXT,
       gross_amount REAL,
       order_date TEXT,
       order_time TEXT,

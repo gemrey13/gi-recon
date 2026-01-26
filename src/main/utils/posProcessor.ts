@@ -34,29 +34,28 @@ export async function processPosFile(filePath: string) {
 
     // ... rest of your database insert logic
     const insert = db.prepare(`
-      INSERT INTO pos_transactions (cslipno, cusno, gross_amount, order_date, order_time)
-      VALUES (?, ?, ?, ?, ?)
-      ON CONFLICT(cslipno, order_date, gross_amount) DO NOTHING
-    `);
+        INSERT INTO pos_transactions (cslipno, cusno, cusname, gross_amount, order_date, order_time)
+        VALUES (?, ?, ?, ?, ?, ?)
+        ON CONFLICT(cslipno, order_date, gross_amount) DO NOTHING
+      `);
 
     const insertMany = db.transaction((data) => {
       for (const row of data) {
+        // Correct local date logic we fixed earlier
         let finalDate = row.ORDDATE;
-
         if (row.ORDDATE instanceof Date) {
-          // Direct extraction of local date parts to prevent timezone shifting
           const year = row.ORDDATE.getFullYear();
           const month = String(row.ORDDATE.getMonth() + 1).padStart(2, "0");
           const day = String(row.ORDDATE.getDate()).padStart(2, "0");
-
           finalDate = `${year}-${month}-${day}`;
         }
 
         insert.run(
           String(row.CSLIPNO || ""),
           String(row.CUSNO || ""),
+          String(row.CUSNAME || ""), // Map CUSNAME here
           Number(row.GRSCHRG || 0),
-          String(finalDate || ""), // Now correctly stays as 2025-11-14
+          String(finalDate || ""),
           String(row.ORDTIME || ""),
         );
       }
