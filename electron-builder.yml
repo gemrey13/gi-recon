@@ -1,5 +1,5 @@
-appId: com.electron.app
-productName: gi-recon
+appId: com.giligans.girecon
+productName: Gi-Recon
 directories:
   buildResources: build
 files:
@@ -9,35 +9,25 @@ files:
   - '!{.eslintcache,eslint.config.mjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}'
   - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
   - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
+  
+# Critical for SQLite: Native binaries cannot run from inside the ASAR file
 asarUnpack:
   - resources/**
+  - node_modules/better-sqlite3/**
+
 win:
   executableName: gi-recon
+  target:
+    - nsis # Standard Windows Installer
+  icon: resources/icon.ico # Make sure you have a .ico version for Windows
+
 nsis:
-  artifactName: ${name}-${version}-setup.${ext}
+  artifactName: ${productName}-Setup-${version}.${ext}
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
   createDesktopShortcut: always
-mac:
-  entitlementsInherit: build/entitlements.mac.plist
-  extendInfo:
-    - NSCameraUsageDescription: Application requests access to the device's camera.
-    - NSMicrophoneUsageDescription: Application requests access to the device's microphone.
-    - NSDocumentsFolderUsageDescription: Application requests access to the user's Documents folder.
-    - NSDownloadsFolderUsageDescription: Application requests access to the user's Downloads folder.
-  notarize: false
-dmg:
-  artifactName: ${name}-${version}.${ext}
-linux:
-  target:
-    - AppImage
-    - snap
-    - deb
-  maintainer: electronjs.org
-  category: Utility
-appImage:
-  artifactName: ${name}-${version}.${ext}
-npmRebuild: false
-publish:
-  provider: generic
-  url: https://example.com/auto-updates
+  oneClick: false # Recommended for business apps to give users install options
+  allowToChangeInstallationDirectory: true
+
+# Rebuilds the C++ SQLite module for the Windows environment during packaging
+npmRebuild: true
