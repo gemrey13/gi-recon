@@ -38,6 +38,17 @@ export function initDb() {
       UNIQUE(cslipno, order_date, gross_amount) -- THIS IS THE KEY PART
     );
   `);
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS foodpanda_transactions (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      order_code TEXT,
+      gross_amount REAL,
+      order_date TEXT,
+      partner_name TEXT,
+      recon_status TEXT DEFAULT 'unreconciled',
+      UNIQUE(order_code) -- FoodPanda Order Codes are unique
+    );
+  `);
   console.log('Gi-Recon Database initialized at:', dbPath);
 
 }
