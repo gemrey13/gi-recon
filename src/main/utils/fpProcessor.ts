@@ -13,7 +13,17 @@ export async function processFoodPandaFile(filePath: string) {
     const alreadyProcessed = db
       .prepare("SELECT 1 FROM processed_files WHERE file_hash = ?")
       .get(fileHash);
-    if (alreadyProcessed) return;
+
+    if (alreadyProcessed) {
+      console.log(`Duplicate detected. Deleting: ${path.basename(filePath)}`);
+      // Delete the file immediately
+      try {
+        fs.unlinkSync(filePath);
+      } catch (err) {
+        console.error("Failed to delete duplicate file:", err);
+      }
+      return; // Stop processing
+    }
 
     // 1. Force the library to read dates as strings in YYYY-MM-DD format
     const workbook = XLSX.read(fileBuffer, {
