@@ -3,32 +3,53 @@ import crypto from "crypto";
 import path from "path";
 import * as XLSX from "xlsx";
 import { db } from "../db";
+import { dialog, BrowserWindow } from "electron";
 
 export async function processGrabFile(filePath: string) {
   try {
     const fileBuffer = fs.readFileSync(filePath);
     const fileHash = crypto.createHash("md5").update(fileBuffer).digest("hex");
 
-    // 1. Duplicate Check & Auto-Delete
-    const alreadyProcessed = db.prepare("SELECT 1 FROM processed_files WHERE file_hash = ?").get(fileHash);
+    const alreadyProcessed = db
+      .prepare("SELECT 1 FROM processed_files WHERE file_hash = ?")
+      .get(fileHash);
+
     if (alreadyProcessed) {
       console.log(`Grab Duplicate: Deleting ${path.basename(filePath)}`);
       fs.unlinkSync(filePath);
       return;
     }
-
-    // 2. Load Workbook and Target "Transactions" Sheet
-    const workbook = XLSX.read(fileBuffer, { type: 'buffer', cellDates: true });
+    const workbook = XLSX.read(fileBuffer, { type: "buffer", cellDates: true });
     const targetSheetName = "Transactions";
-    
+
     if (!workbook.SheetNames.includes(targetSheetName)) {
-      throw new Error(`Sheet "${targetSheetName}" not found in Grab file.`);
+      const win = BrowserWindow.getAllWindows()[0];
+      dialog.showMessageBoxSync(win, {
+        type: "warning",
+        title: "Wrong File Format",
+        message: "Sheet 'Transactions' not found.",
+        detail: `The file "${path.basename(filePath)}" is missing the required Grab sheet. Did you put a FoodPanda or POS file in the Grab folder?`,
+        buttons: ["OK"],
+      });
+      return;
     }
 
     const worksheet = workbook.Sheets[targetSheetName];
     const rawData = XLSX.utils.sheet_to_json(worksheet) as any[];
 
-    // 3. Prepare Insert
+    if (rawData.length > 0 && !rawData[0]["Booking ID"]) {
+      const win = BrowserWindow.getAllWindows()[0];
+      dialog.showMessageBoxSync(win, {
+        type: "warning",
+        title: "Incorrect Column Headers",
+        message: "This does not look like a Grab transaction file.",
+        detail:
+          "Required column 'Booking ID' was not found. Please move this file to the correct import folder.",
+        buttons: ["OK"],
+      });
+      return;
+    }
+
     const insert = db.prepare(`
       INSERT INTO grab_transactions (store_name, updated_on, booking_id, amount, category)
       VALUES (?, ?, ?, ?, ?)
@@ -40,7 +61,6 @@ export async function processGrabFile(filePath: string) {
         const bookingId = row["Booking ID"];
         if (!bookingId) continue;
 
-        // Date Handling (Similar to FP logic to prevent timezone shifts)
         let finalDate = "";
         const rawDate = row["Updated On"];
         if (rawDate instanceof Date) {
@@ -57,16 +77,16 @@ export async function processGrabFile(filePath: string) {
           finalDate,
           String(bookingId).trim(),
           Number(row["Amount"] || 0),
-          String(row["Category"] || "")
+          String(row["Category"] || ""),
         );
       }
     });
 
     insertMany(rawData);
 
-    // 4. Log Hash and Move File
-    db.prepare("INSERT INTO processed_files (file_hash, file_type, file_name) VALUES (?, ?, ?)")
-      .run(fileHash, "GRAB", path.basename(filePath));
+    db.prepare(
+      "INSERT INTO processed_files (file_hash, file_type, file_name) VALUES (?, ?, ?)",
+    ).run(fileHash, "GRAB", path.basename(filePath));
 
     const successDir = path.join(path.dirname(filePath), "Processed");
     if (!fs.existsSync(successDir)) fs.mkdirSync(successDir, { recursive: true });
@@ -74,6 +94,16 @@ export async function processGrabFile(filePath: string) {
 
     console.log(`Successfully imported Grab: ${rawData.length} rows.`);
   } catch (error) {
+    const win = BrowserWindow.getAllWindows()[0];
+    dialog.showMessageBoxSync(win, {
+      type: "error",
+      title: "Grab Processor Error",
+      message: "An error occurred while processing the Grab file.",
+      detail: String(error),
+      buttons: ["OK"],
+    });
+
+    if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
     console.error("Error in Grab Processor:", error);
   }
 }
