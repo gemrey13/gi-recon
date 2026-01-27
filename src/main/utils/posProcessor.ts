@@ -1,7 +1,7 @@
 import fs from "fs";
 import crypto from "crypto";
 import path from "path";
-const parseDBF = require("parsedbf");
+import parseDBF from "parsedbf"
 import { db } from "../db";
 
 export async function processPosFile(filePath: string) {
