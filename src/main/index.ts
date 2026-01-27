@@ -9,28 +9,22 @@ import { processPosFile } from "./utils/posProcessor";
 import { processFoodPandaFile } from "./utils/fpProcessor";
 import { processGrabFile } from "./utils/grabProcessor";
 
-// --- Automation Setup ---
 function initAutomation(): void {
   const baseDir = join(app.getPath("documents"), "Gi-Recon");
 
-  // Folders for POS
   const posDir = join(baseDir, "POS_Imports");
   const posSuccessDir = join(posDir, "Processed");
 
-  // Folders for FoodPanda
   const fpDir = join(baseDir, "Panda_Imports");
   const fpSuccessDir = join(fpDir, "Processed");
 
-  // Folders for Grab 
   const grabDir = join(baseDir, "Grab_Imports");
   const grabSuccessDir = join(grabDir, "Processed");
 
-  // Ensure all folders exist
   [baseDir, posDir, posSuccessDir, fpDir, fpSuccessDir, grabDir, grabSuccessDir].forEach((dir) => {
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
   });
 
-  // 1. WATCHER FOR POS (.DBF)
   chokidar.watch(posDir, { depth: 0, awaitWriteFinish: true }).on("add", (filePath) => {
     if (filePath.toLowerCase().endsWith(".dbf")) {
       console.log(`Automation: Importing POS File: ${filePath}`);
@@ -38,7 +32,6 @@ function initAutomation(): void {
     }
   });
 
-  // 2. WATCHER FOR FOODPANDA (.XLSX / .XLS)
   chokidar.watch(fpDir, { depth: 0, awaitWriteFinish: true }).on("add", (filePath) => {
     const ext = filePath.toLowerCase();
     if (ext.endsWith(".xlsx") || ext.endsWith(".xls")) {
@@ -47,12 +40,11 @@ function initAutomation(): void {
     }
   });
 
-  // 3. WATCHER FOR GRAB (.XLSX / .XLS)
   chokidar.watch(grabDir, { depth: 0, awaitWriteFinish: true }).on("add", (filePath) => {
     const ext = filePath.toLowerCase();
     if (ext.endsWith(".xlsx") || ext.endsWith(".xls")) {
       console.log(`Automation: Importing Grab File: ${filePath}`);
-      processGrabFile(filePath); // This calls the sheet-specific logic we built
+      processGrabFile(filePath); 
     }
   });
 }
