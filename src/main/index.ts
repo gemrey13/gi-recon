@@ -7,6 +7,7 @@ import icon from "../../resources/icon.png?asset";
 import db, { initDb } from "./db";
 import { processPosFile } from "./utils/posProcessor";
 import { processFoodPandaFile } from "./utils/fpProcessor";
+import { processGrabFile } from "./utils/grabProcessor";
 
 // --- Automation Setup ---
 function initAutomation(): void {
@@ -20,12 +21,16 @@ function initAutomation(): void {
   const fpDir = join(baseDir, "Panda_Imports");
   const fpSuccessDir = join(fpDir, "Processed");
 
-  // Ensure folders exist
-  [baseDir, posDir, posSuccessDir, fpDir, fpSuccessDir].forEach((dir) => {
+  // Folders for Grab 
+  const grabDir = join(baseDir, "Grab_Imports");
+  const grabSuccessDir = join(grabDir, "Processed");
+
+  // Ensure all folders exist
+  [baseDir, posDir, posSuccessDir, fpDir, fpSuccessDir, grabDir, grabSuccessDir].forEach((dir) => {
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
   });
 
-  // Start watching for POS DBF files
+  // 1. WATCHER FOR POS (.DBF)
   chokidar.watch(posDir, { depth: 0, awaitWriteFinish: true }).on("add", (filePath) => {
     if (filePath.toLowerCase().endsWith(".dbf")) {
       console.log(`Automation: Importing POS File: ${filePath}`);
@@ -33,12 +38,21 @@ function initAutomation(): void {
     }
   });
 
-  // 2. WATCHER FOR FOODPANDA (.XLSX)
+  // 2. WATCHER FOR FOODPANDA (.XLSX / .XLS)
   chokidar.watch(fpDir, { depth: 0, awaitWriteFinish: true }).on("add", (filePath) => {
     const ext = filePath.toLowerCase();
     if (ext.endsWith(".xlsx") || ext.endsWith(".xls")) {
       console.log(`Automation: Importing FoodPanda File: ${filePath}`);
-      processFoodPandaFile(filePath); // We will define this next
+      processFoodPandaFile(filePath);
+    }
+  });
+
+  // 3. WATCHER FOR GRAB (.XLSX / .XLS)
+  chokidar.watch(grabDir, { depth: 0, awaitWriteFinish: true }).on("add", (filePath) => {
+    const ext = filePath.toLowerCase();
+    if (ext.endsWith(".xlsx") || ext.endsWith(".xls")) {
+      console.log(`Automation: Importing Grab File: ${filePath}`);
+      processGrabFile(filePath); // This calls the sheet-specific logic we built
     }
   });
 }

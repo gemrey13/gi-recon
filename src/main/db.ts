@@ -1,9 +1,9 @@
-import DatabaseConstructor, { Database } from 'better-sqlite3';
-import { app } from 'electron';
-import path from 'path';
-import fs from 'fs';
+import DatabaseConstructor, { Database } from "better-sqlite3";
+import { app } from "electron";
+import path from "path";
+import fs from "fs";
 
-const dbPath = path.join(app.getPath('userData'), 'gi-recon.db');
+const dbPath = path.join(app.getPath("userData"), "gi-recon.db");
 
 const dbDir = path.dirname(dbPath);
 if (!fs.existsSync(dbDir)) {
@@ -49,8 +49,19 @@ export function initDb() {
       UNIQUE(order_code) -- FoodPanda Order Codes are unique
     );
   `);
-  console.log('Gi-Recon Database initialized at:', dbPath);
-
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS grab_transactions (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      booking_id TEXT UNIQUE,
+      amount REAL,
+      updated_on TEXT,
+      store_name TEXT,
+      category TEXT,
+      recon_status TEXT DEFAULT 'unreconciled',
+      UNIQUE(booking_id) -- FoodPanda Order Codes are unique
+    );
+  `);
+  console.log("Gi-Recon Database initialized at:", dbPath);
 }
 
 export default db;
