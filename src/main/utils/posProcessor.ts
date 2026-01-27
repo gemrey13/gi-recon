@@ -1,7 +1,7 @@
 import fs from "fs";
 import crypto from "crypto";
 import path from "path";
-import parseDBF from "parsedbf"
+import parseDBF from "parsedbf";
 import { db } from "../db";
 
 export async function processPosFile(filePath: string) {
@@ -12,7 +12,16 @@ export async function processPosFile(filePath: string) {
     const alreadyProcessed = db
       .prepare("SELECT 1 FROM processed_files WHERE file_hash = ?")
       .get(fileHash);
-    if (alreadyProcessed) return;
+    if (alreadyProcessed) {
+      console.log(`Duplicate detected. Deleting: ${path.basename(filePath)}`);
+      // Delete the file immediately
+      try {
+        fs.unlinkSync(filePath);
+      } catch (err) {
+        console.error("Failed to delete duplicate file:", err);
+      }
+      return; // Stop processing
+    }
 
     const dataView = new DataView(fileBuffer.buffer, fileBuffer.byteOffset, fileBuffer.byteLength);
 
@@ -50,7 +59,7 @@ export async function processPosFile(filePath: string) {
         insert.run(
           String(row.CSLIPNO || ""),
           String(row.CUSNO || ""),
-          String(row.CUSNAME || ""), 
+          String(row.CUSNAME || ""),
           Number(row.GRSCHRG || 0),
           String(finalDate || ""),
           String(row.ORDTIME || ""),
