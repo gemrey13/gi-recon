@@ -32,6 +32,9 @@ export function initDb() {
       gross_amount REAL,
       order_date TEXT,
       order_time TEXT,
+      status TEXT DEFAULT NULL,       -- Only populated during Recon
+      review_notes TEXT DEFAULT NULL,  -- For internal team notes
+      partner_reply TEXT DEFAULT NULL, -- Official reply from FoodPanda/Grab
       UNIQUE(cslipno, order_date, gross_amount) -- THIS IS THE KEY PART
     );
   `);
