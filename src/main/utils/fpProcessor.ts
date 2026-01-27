@@ -3,8 +3,11 @@ import crypto from "crypto";
 import path from "path";
 import * as XLSX from "xlsx";
 import { db } from "../db";
+import { dialog, BrowserWindow } from "electron";
 
 export async function processFoodPandaFile(filePath: string) {
+  const win = BrowserWindow.getAllWindows()[0];
+
   try {
     const fileBuffer = fs.readFileSync(filePath);
     const fileHash = crypto.createHash("md5").update(fileBuffer).digest("hex");
@@ -14,13 +17,8 @@ export async function processFoodPandaFile(filePath: string) {
       .get(fileHash);
 
     if (alreadyProcessed) {
-      console.log(`Duplicate detected. Deleting: ${path.basename(filePath)}`);
-      // Delete the file immediately
-      try {
-        fs.unlinkSync(filePath);
-      } catch (err) {
-        console.error("Failed to delete duplicate file:", err);
-      }
+      console.log(`FoodPanda Duplicate: Deleting ${path.basename(filePath)}`);
+      if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
       return;
     }
 
@@ -33,8 +31,19 @@ export async function processFoodPandaFile(filePath: string) {
 
     const sheetName = workbook.SheetNames[0];
     const worksheet = workbook.Sheets[sheetName];
-
     const rawData: any[] = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
+
+    if (rawData.length > 0 && !rawData[0]["Order Code (F)"]) {
+      dialog.showMessageBoxSync(win, {
+        type: "warning",
+        title: "Incorrect File Location",
+        message: "This does not look like a FoodPanda file.",
+        detail: `The file "${path.basename(filePath)}" is missing 'Order Code (F)'. If this is a Grab or POS file, move it to the correct folder. The file will be deleted.`,
+        buttons: ["OK"],
+      });
+      if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+      return;
+    }
 
     const insert = db.prepare(`
       INSERT INTO foodpanda_transactions (order_code, gross_amount, order_date, partner_name)
@@ -80,6 +89,7 @@ export async function processFoodPandaFile(filePath: string) {
         }
       }
     });
+
     insertMany(rawData);
 
     db.prepare(
@@ -94,6 +104,15 @@ export async function processFoodPandaFile(filePath: string) {
 
     console.log(`Successfully automated PANDA import: ${rawData.length} rows.`);
   } catch (error) {
+    dialog.showMessageBoxSync(win, {
+      type: "error",
+      title: "FoodPanda Processor Error",
+      message: "An unexpected error occurred during processing.",
+      detail: String(error),
+      buttons: ["OK"],
+    });
+
+    if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
     console.error("Error in FoodPanda Processor:", error);
   }
 }
