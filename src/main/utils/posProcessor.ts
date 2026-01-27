@@ -20,7 +20,7 @@ export async function processPosFile(filePath: string) {
       } catch (err) {
         console.error("Failed to delete duplicate file:", err);
       }
-      return; // Stop processing
+      return;
     }
 
     const dataView = new DataView(fileBuffer.buffer, fileBuffer.byteOffset, fileBuffer.byteLength);
