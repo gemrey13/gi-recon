@@ -12,7 +12,6 @@ export async function processPosFile(filePath: string) {
     const fileBuffer = fs.readFileSync(filePath);
     const fileHash = crypto.createHash("md5").update(fileBuffer).digest("hex");
 
-    // 1. Duplicate Check & Auto-Delete
     const alreadyProcessed = db
       .prepare("SELECT 1 FROM processed_files WHERE file_hash = ?")
       .get(fileHash);
@@ -23,17 +22,15 @@ export async function processPosFile(filePath: string) {
       return;
     }
 
-    // 2. Parse DBF File
     const dataView = new DataView(fileBuffer.buffer, fileBuffer.byteOffset, fileBuffer.byteLength);
     const parser = (parseDBF.default || parseDBF) as any;
-    
+
     if (typeof parser !== "function") {
       throw new Error("DBF Parser initialization failed.");
     }
 
     const dbfRecords = parser(dataView);
 
-    // Normalize keys to uppercase and trim spaces
     const rows = dbfRecords.map((r: any) => {
       const out: any = {};
       Object.keys(r).forEach((key) => {
@@ -42,8 +39,6 @@ export async function processPosFile(filePath: string) {
       return out;
     });
 
-    // --- SMART HEADER CHECK ---
-    // Check for unique POS column: "CSLIPNO"
     if (rows.length > 0 && !rows[0].hasOwnProperty("CSLIPNO")) {
       dialog.showMessageBoxSync(win, {
         type: "warning",
@@ -56,7 +51,6 @@ export async function processPosFile(filePath: string) {
       return;
     }
 
-    // 3. Database Insert Setup
     const insert = db.prepare(`
         INSERT INTO pos_transactions (cslipno, cusno, cusname, gross_amount, order_date, order_time)
         VALUES (?, ?, ?, ?, ?, ?)
@@ -66,8 +60,7 @@ export async function processPosFile(filePath: string) {
     const insertMany = db.transaction((data) => {
       for (const row of data) {
         let finalDate = row.ORDDATE;
-        
-        // Date formatting for SQLite (YYYY-MM-DD)
+
         if (row.ORDDATE instanceof Date) {
           const year = row.ORDDATE.getFullYear();
           const month = String(row.ORDDATE.getMonth() + 1).padStart(2, "0");
@@ -90,7 +83,6 @@ export async function processPosFile(filePath: string) {
 
     insertMany(rows);
 
-    // 4. Log Hash and Move to Processed
     db.prepare(
       "INSERT INTO processed_files (file_hash, file_type, file_name) VALUES (?, ?, ?)",
     ).run(fileHash, "POS", path.basename(filePath));
@@ -102,7 +94,6 @@ export async function processPosFile(filePath: string) {
     fs.renameSync(filePath, destPath);
 
     console.log(`Successfully automated POS import: ${rows.length} rows.`);
-
   } catch (error) {
     dialog.showMessageBoxSync(win, {
       type: "error",
@@ -111,7 +102,7 @@ export async function processPosFile(filePath: string) {
       detail: String(error),
       buttons: ["OK"],
     });
-    // Cleanup bad file to stop watcher loops
+    
     if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
     console.error("Error in POS Processor:", error);
   }
