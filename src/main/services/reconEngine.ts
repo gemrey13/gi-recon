@@ -11,7 +11,7 @@ export async function runReconciliation(partner: "GRAB" | "PANDA") {
   const performRecon = db.transaction(() => {
     // 0. RESET
     db.prepare(`UPDATE pos_transactions SET status = NULL WHERE status = ?`).run(partner);
-    db.prepare(`UPDATE ${table} SET recon_status = 'unreconciled'`).run();
+    db.prepare(`UPDATE ${table} SET recon_status = 'unreconciled', linked_pos_id = NULL`).run();
 
     /**
      * PASS 1: Strict Match (ID + Date + Exact Amount)
@@ -20,22 +20,28 @@ export async function runReconciliation(partner: "GRAB" | "PANDA") {
     db.prepare(
       `
       UPDATE ${table}
-      SET recon_status = 'MATCHED'
-      WHERE id IN (
-        SELECT p.id FROM ${table} p
-        WHERE EXISTS (
-          SELECT 1 FROM pos_transactions pos
-          WHERE sanitize(pos.cusno) = sanitize('${prefix}' || substr(p.${partnerId}, -4))
-          AND pos.order_date = p.${partnerDate}
-          AND pos.gross_amount = p.${partnerAmt}
+      SET 
+        recon_status = 'MATCHED',
+        linked_pos_id = (
+          SELECT pos.id FROM pos_transactions pos
+          WHERE sanitize(pos.cusno) = sanitize('${prefix}' || substr(${table}.${partnerId}, -4))
+          AND pos.order_date = ${table}.${partnerDate}
+          AND pos.gross_amount = ${table}.${partnerAmt}
           AND pos.status IS NULL
+          LIMIT 1
         )
+      WHERE EXISTS (
+        SELECT 1 FROM pos_transactions pos
+        WHERE sanitize(pos.cusno) = sanitize('${prefix}' || substr(${table}.${partnerId}, -4))
+        AND pos.order_date = ${table}.${partnerDate}
+        AND pos.gross_amount = ${table}.${partnerAmt}
+        AND pos.status IS NULL
       )
     `,
     ).run();
 
-    // Lock POS records matched in Pass 1
-    markPosClaimed(table, partnerId, partnerDate, partner, true);
+    // Mark POS as claimed from Pass 1
+    markPosClaimed(table, partner);
 
     /**
      * PASS 2: Discrepancy Match (ID + Date, but Amount differs)
@@ -44,24 +50,29 @@ export async function runReconciliation(partner: "GRAB" | "PANDA") {
     db.prepare(
       `
       UPDATE ${table}
-      SET recon_status = 'FLAGGED'
-      WHERE recon_status = 'unreconciled'
-      AND id IN (
-        SELECT p.id FROM ${table} p
-        WHERE EXISTS (
-          SELECT 1 FROM pos_transactions pos
-          WHERE sanitize(pos.cusno) = sanitize('${prefix}' || substr(p.${partnerId}, -4))
-          AND pos.order_date = p.${partnerDate}
+      SET 
+        recon_status = 'FLAGGED',
+        linked_pos_id = (
+          SELECT pos.id FROM pos_transactions pos
+          WHERE sanitize(pos.cusno) = sanitize('${prefix}' || substr(${table}.${partnerId}, -4))
+          AND pos.order_date = ${table}.${partnerDate}
           AND pos.status IS NULL
+          LIMIT 1
         )
+      WHERE recon_status = 'unreconciled'
+      AND EXISTS (
+        SELECT 1 FROM pos_transactions pos
+        WHERE sanitize(pos.cusno) = sanitize('${prefix}' || substr(${table}.${partnerId}, -4))
+        AND pos.order_date = ${table}.${partnerDate}
+        AND pos.status IS NULL
       )
     `,
     ).run();
 
-    // Lock POS records matched in Pass 2
-    markPosClaimed(table, partnerId, partnerDate, partner, false);
+    // Mark POS as claimed from Pass 2
+    markPosClaimed(table, partner);
 
-    return { status: "success" };
+    return { status: true };
   });
 
   return performRecon();
@@ -71,30 +82,16 @@ export async function runReconciliation(partner: "GRAB" | "PANDA") {
  * HELPER: Marks POS records as 'CLAIMED'
  * @param exactAmount - If true, only marks POS where amount is identical
  */
-function markPosClaimed(
-  table: string,
-  partnerId: string,
-  partnerDate: string,
-  partner: string,
-  exactAmount: boolean,
-) {
-  const prefix = partner === "PANDA" ? "P-" : "G-";
-  const amountCondition = exactAmount
-    ? `AND pos.gross_amount = p.${partner === "PANDA" ? "gross_amount" : "amount"}`
-    : "";
-
+function markPosClaimed(table: string, partner: string) {
   db.prepare(
     `
     UPDATE pos_transactions
     SET status = ?
     WHERE id IN (
-      SELECT pos.id 
-      FROM pos_transactions pos
-      JOIN ${table} p ON sanitize(pos.cusno) = sanitize('${prefix}' || substr(p.${partnerId}, -4))
-      AND pos.order_date = p.${partnerDate}
-      ${amountCondition}
-      WHERE p.recon_status IN ('MATCHED', 'FLAGGED')
-      AND pos.status IS NULL
+      SELECT linked_pos_id 
+      FROM ${table} 
+      WHERE linked_pos_id IS NOT NULL 
+      AND recon_status IN ('MATCHED', 'FLAGGED')
     )
   `,
   ).run(partner);

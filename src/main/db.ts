@@ -23,6 +23,8 @@ export function initDb() {
       imported_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
   `);
+
+  // 2. POS Transactions
   db.exec(`
     CREATE TABLE IF NOT EXISTS pos_transactions (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -32,10 +34,12 @@ export function initDb() {
       gross_amount REAL,
       order_date TEXT,
       order_time TEXT,
-      status TEXT DEFAULT NULL,       -- Only populated during Recon
-      UNIQUE(cslipno, order_date, gross_amount) -- THIS IS THE KEY PART
+      status TEXT DEFAULT NULL,
+      UNIQUE(cslipno, order_date, gross_amount)
     );
   `);
+
+  // 3. FoodPanda
   db.exec(`
     CREATE TABLE IF NOT EXISTS foodpanda_transactions (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -43,11 +47,14 @@ export function initDb() {
       gross_amount REAL,
       order_date TEXT,
       partner_name TEXT,
-      recon_status TEXT DEFAULT 'unreconciled', /* Values: 'unreconciled', 'MATCHED', 'PENDING', 'FLAGGED', 'RESOLVED' */
-      partner_reply TEXT DEFAULT NULL,  -- ADD THIS HERE
-      internal_notes TEXT DEFAULT NULL  -- Useful for your team's comments
+      recon_status TEXT DEFAULT 'unreconciled',
+      partner_reply TEXT DEFAULT NULL,
+      internal_notes TEXT DEFAULT NULL,
+      linked_pos_id INTEGER DEFAULT NULL
     );
   `);
+
+  // 4. Grab
   db.exec(`
     CREATE TABLE IF NOT EXISTS grab_transactions (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -56,9 +63,10 @@ export function initDb() {
       updated_on TEXT,
       store_name TEXT,
       category TEXT,
-      recon_status TEXT DEFAULT 'unreconciled', /* Values: 'unreconciled', 'MATCHED', 'PENDING', 'FLAGGED', 'RESOLVED' */
-      partner_reply TEXT DEFAULT NULL,  -- ADD THIS HERE
-      internal_notes TEXT DEFAULT NULL  -- Useful for your team's comments
+      recon_status TEXT DEFAULT 'unreconciled',
+      partner_reply TEXT DEFAULT NULL,
+      internal_notes TEXT DEFAULT NULL,
+      linked_pos_id INTEGER DEFAULT NULL
     );
   `);
 

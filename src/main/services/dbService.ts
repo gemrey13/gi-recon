@@ -7,7 +7,6 @@ export const dbService = {
     const idCol = isPanda ? "order_code" : "booking_id";
     const amtCol = isPanda ? "gross_amount" : "amount";
     const dateCol = isPanda ? "order_date" : "updated_on";
-    const prefix = isPanda ? "P-" : "G-";
 
     let sql = `
       SELECT 
@@ -16,27 +15,26 @@ export const dbService = {
         p.${amtCol} as partner_amount,
         p.${dateCol} as partner_date,
         p.recon_status,
-        -- POS Data (Linked via Matcher)
+        p.internal_notes,
+        -- POS Data (Joined via the permanent linked_pos_id)
         pos.cusno as pos_cusno,
         pos.gross_amount as pos_amount,
-        pos.order_date as pos_date
+        pos.order_date as pos_date,
+        pos.cslipno as pos_slip
       FROM ${table} p
-      LEFT JOIN pos_transactions pos ON pos.id = (
-        SELECT id FROM pos_transactions 
-        WHERE sanitize(cusno) = sanitize('${prefix}' || substr(p.${idCol}, -4))
-        AND order_date = p.${dateCol}
-        LIMIT 1
-      )
+      LEFT JOIN pos_transactions pos ON p.linked_pos_id = pos.id
       WHERE 1=1
     `;
 
     const params: any[] = [];
+
+    // 1. Status Filter
     if (filters.status && filters.status !== "ALL") {
       sql += ` AND p.recon_status = ?`;
       params.push(filters.status);
     }
 
-    // 2. Date Range Filter (The Missing Part)
+    // 2. Date Range Filter (Using the standardized YYYY-MM-DD format)
     if (filters.startDate && filters.startDate !== "") {
       sql += ` AND p.${dateCol} >= ?`;
       params.push(filters.startDate);
@@ -45,6 +43,11 @@ export const dbService = {
     if (filters.endDate && filters.endDate !== "") {
       sql += ` AND p.${dateCol} <= ?`;
       params.push(filters.endDate);
+    }
+
+    // 3. Optional: Filter for Unlinked only (useful for finding missing entries)
+    if (filters.unlinkedOnly === true) {
+      sql += ` AND p.linked_pos_id IS NULL`;
     }
 
     sql += ` ORDER BY p.${dateCol} DESC`;
@@ -57,9 +60,9 @@ export const dbService = {
       .prepare(
         `
     SELECT 
-      COALESCE(SUM(CASE WHEN recon_status = 'MATCHED' THEN 1 ELSE 0 END), 0) as matched,
-      COALESCE(SUM(CASE WHEN recon_status = 'FLAGGED' THEN 1 ELSE 0 END), 0) as flagged,
-      COALESCE(SUM(CASE WHEN recon_status = 'unreconciled' THEN 1 ELSE 0 END), 0) as unreconciled
+      SUM(CASE WHEN recon_status = 'MATCHED' THEN 1 ELSE 0 END) as matched,
+      SUM(CASE WHEN recon_status = 'FLAGGED' THEN 1 ELSE 0 END) as flagged,
+      SUM(CASE WHEN recon_status = 'unreconciled' THEN 1 ELSE 0 END) as unreconciled
     FROM (
       SELECT recon_status FROM foodpanda_transactions
       UNION ALL
@@ -69,7 +72,6 @@ export const dbService = {
       )
       .get() as any;
 
-    // Final fallback to ensure an object with 0s is ALWAYS returned
     return {
       matched: stats?.matched ?? 0,
       flagged: stats?.flagged ?? 0,
