@@ -61,6 +61,11 @@ export function initDb() {
       internal_notes TEXT DEFAULT NULL  -- Useful for your team's comments
     );
   `);
+
+  db.function("sanitize", (str: string) => {
+    if (!str) return "";
+    return str.toUpperCase().replace(/[0O]/g, "0").replace(/[1I]/g, "1").trim();
+  });
   console.log("Gi-Recon Database initialized at:", dbPath);
 }
 

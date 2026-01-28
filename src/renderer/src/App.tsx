@@ -1,7 +1,7 @@
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import Overview from '@renderer/pages/Overview';
-import ReconView from '@renderer/pages/ReconView';
 import MainLayout from '@renderer/layouts/MainLayout';
+import ReconPage from '@renderer/pages/ReconPage';
 
 function App() {
   return (
@@ -9,8 +9,8 @@ function App() {
       <Routes>
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Overview />} />
-          <Route path="recon/panda" element={<ReconView partner="PANDA" />} />
-          <Route path="recon/grab" element={<ReconView partner="GRAB" />} />
+          <Route path="recon/panda" element={<ReconPage partner="PANDA" />} />
+          <Route path="recon/grab" element={<ReconPage partner="GRAB" />} />
         </Route>
       </Routes>
     </HashRouter>

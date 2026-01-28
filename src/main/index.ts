@@ -8,6 +8,8 @@ import db, { initDb } from "./db";
 import { processPosFile } from "./utils/posProcessor";
 import { processFoodPandaFile } from "./utils/fpProcessor";
 import { processGrabFile } from "./utils/grabProcessor";
+import { runReconciliation } from "./services/reconEngine";
+import { dbService } from "./services/dbService";
 
 function initAutomation(): void {
   const baseDir = join(app.getPath("documents"), "Gi-Recon");
@@ -93,6 +95,20 @@ app.whenReady().then(() => {
       console.error("Failed to fetch POS data:", error);
       return [];
     }
+  });
+
+  ipcMain.handle("run-recon", async (_, partner: "GRAB" | "PANDA") => {
+    return await runReconciliation(partner);
+  });
+
+  ipcMain.handle("get-partner-data", async (_event, partner, filters) => {
+    // Console log here to debug what is actually arriving
+    console.log("Fetching for:", partner, "with filters:", filters);
+    return dbService.getPartnerReconData(partner, filters);
+  });
+
+  ipcMain.handle("get-recon-summary", async () => {
+    return dbService.getGlobalSummary();
   });
 
   initDb();
