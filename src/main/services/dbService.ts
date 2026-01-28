@@ -36,7 +36,19 @@ export const dbService = {
       params.push(filters.status);
     }
 
+    // 2. Date Range Filter (The Missing Part)
+    if (filters.startDate && filters.startDate !== "") {
+      sql += ` AND p.${dateCol} >= ?`;
+      params.push(filters.startDate);
+    }
+
+    if (filters.endDate && filters.endDate !== "") {
+      sql += ` AND p.${dateCol} <= ?`;
+      params.push(filters.endDate);
+    }
+
     sql += ` ORDER BY p.${dateCol} DESC`;
+
     return db.prepare(sql).all(...params);
   },
 

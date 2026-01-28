@@ -61,15 +61,35 @@ export async function processGrabFile(filePath: string) {
         const bookingId = row["Booking ID"];
         if (!bookingId) continue;
 
+        // ... inside your loop ...
+        // ... inside your loop ...
         let finalDate = "";
         const rawDate = row["Updated On"];
-        if (rawDate instanceof Date) {
-          finalDate = `${rawDate.getFullYear()}-${String(rawDate.getMonth() + 1).padStart(2, "0")}-${String(rawDate.getDate()).padStart(2, "0")}`;
-        } else if (!isNaN(Number(rawDate)) && rawDate !== "") {
-          const d = new Date((Number(rawDate) - 25569) * 86400 * 1000);
-          finalDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-        } else {
-          finalDate = String(rawDate || "");
+
+        try {
+          let d: Date;
+
+          if (rawDate instanceof Date && !isNaN(rawDate.getTime())) {
+            d = rawDate;
+          } else if (typeof rawDate === "number") {
+            // Handle Excel serial numbers
+            d = new Date((rawDate - 25569) * 86400 * 1000);
+          } else {
+            // Attempt to parse string formats like "9 Nov 2025" or "2025/11/08"
+            d = new Date(String(rawDate || "").trim());
+          }
+
+          // Format explicitly to YYYY-MM-DD
+          if (!isNaN(d.getTime())) {
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, "0");
+            const day = String(d.getDate()).padStart(2, "0");
+            finalDate = `${year}-${month}-${day}`;
+          } else {
+            finalDate = ""; // Fallback for unparseable dates
+          }
+        } catch (e) {
+          finalDate = "";
         }
 
         insert.run(

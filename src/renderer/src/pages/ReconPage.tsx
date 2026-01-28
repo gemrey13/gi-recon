@@ -5,15 +5,25 @@ const ReconPage = ({ partner }: { partner: "GRAB" | "PANDA" }) => {
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
+  // --- FILTER STATES ---
+  const [statusFilter, setStatusFilter] = useState("ALL");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
   const api = (window as any).api;
 
   const refreshData = async () => {
     try {
-      // Ensure you pass an object as the second argument
-      const data = await api.fetchData(partner, { status: "ALL" });
+      // Pass actual states to the backend
+      const data = await api.fetchData(partner, {
+        status: statusFilter,
+        startDate: startDate,
+        endDate: endDate,
+      });
       setItems(data);
     } catch (err) {
       console.error("IPC Call Failed:", err);
+      toast.error("Failed to fetch data");
     }
   };
 
@@ -35,15 +45,25 @@ const ReconPage = ({ partner }: { partner: "GRAB" | "PANDA" }) => {
   };
 
   useEffect(() => {
+    // Logic: Only fetch if the date range is valid
+    if (startDate && endDate && startDate > endDate) {
+      toast.error("Start date cannot be after end date", { id: "date-error" });
+      return;
+    }
+
     refreshData();
-  }, [partner]);
+  }, [partner, statusFilter, startDate, endDate]);
 
   return (
     <div className="p-8 h-full flex flex-col bg-slate-50">
       <Toaster richColors />
 
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-black text-slate-900">{partner} RECON</h1>
+      {/* HEADER SECTION */}
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight">{partner} RECON</h1>
+          <p className="text-slate-500 text-sm">Compare POS records with partner data</p>
+        </div>
         <button
           onClick={onRunMatcher}
           disabled={loading}
@@ -52,60 +72,100 @@ const ReconPage = ({ partner }: { partner: "GRAB" | "PANDA" }) => {
         </button>
       </div>
 
-      <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex-1 relative">
+      {/* FILTER BAR */}
+      <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm mb-6 flex flex-wrap items-end gap-4">
+        <div className="flex flex-col gap-1">
+          <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Status</label>
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all">
+            <option value="ALL">All Statuses</option>
+            <option value="MATCHED">Matched</option>
+            <option value="FLAGGED">Flagged</option>
+            <option value="unreconciled">Unreconciled</option>
+          </select>
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">From Date</label>
+          <input
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
+          />
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">To Date</label>
+          <input
+            type="date"
+            value={endDate}
+            min={startDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
+          />
+        </div>
+
+        <button
+          onClick={() => {
+            setStatusFilter("ALL");
+            setStartDate("");
+            setEndDate("");
+          }}
+          className="text-slate-400 hover:text-indigo-600 text-xs font-bold px-2 py-3 transition-colors">
+          Reset Filters
+        </button>
+      </div>
+
+      <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex-1 flex flex-col relative">
         {items.length > 0 ? (
-          <table className="w-full text-left border-collapse">
-            <thead className="bg-slate-50 border-b border-slate-200 text-[10px] font-black uppercase text-slate-400">
-              <tr>
-                <th className="px-6 py-4">Status</th>
-                <th className="px-6 py-4">POS CusNo</th>
-                <th className="px-6 py-4">POS Amount</th>
-                <th className="px-6 py-4 text-indigo-500">Partner ID</th>
-                <th className="px-6 py-4 text-indigo-500">Partner Amount</th>
-                <th className="px-6 py-4">Date</th>
-                <th className="px-6 py-4"></th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {items.map((item, idx) => (
-                <tr key={idx} className="hover:bg-slate-50 transition-colors group">
-                  {/* Status Badge */}
-                  <td className="px-6 py-4">
-                    <StatusBadge status={item.recon_status} />
-                  </td>
-
-                  {/* POS Columns */}
-                  <td className="px-6 py-4 font-mono text-sm text-slate-600">
-                    {item.pos_cusno || <span className="text-slate-300 italic">Not Found</span>}
-                  </td>
-                  <td
-                    className={`px-6 py-4 font-bold ${!item.pos_amount ? "text-slate-300" : "text-slate-900"}`}>
-                    ₱{item.pos_amount?.toLocaleString() || "0.00"}
-                  </td>
-
-                  {/* Partner Columns */}
-                  <td className="px-6 py-4 font-mono text-sm text-indigo-600">
-                    ...{item.partner_id?.slice(-8)}
-                  </td>
-                  <td className="px-6 py-4 font-bold text-indigo-900">
-                    ₱{item.partner_amount?.toLocaleString() || "0.00"}
-                  </td>
-
-                  {/* Shared Date */}
-                  <td className="px-6 py-4 text-slate-500 text-sm whitespace-nowrap">
-                    {item.partner_date}
-                  </td>
-
-                  {/* Action */}
-                  <td className="px-6 py-4 text-right">
-                    <button className="text-indigo-600 font-bold text-xs uppercase hover:underline opacity-0 group-hover:opacity-100 transition-opacity">
-                      Review
-                    </button>
-                  </td>
+          <div className="overflow-auto flex-1">
+            <table className="w-full text-left border-collapse">
+              <thead className="sticky top-0 z-10 bg-slate-50 border-b border-slate-200 text-[10px] font-black uppercase text-slate-400">
+                <tr>
+                  <th className="px-6 py-4">Status</th>
+                  <th className="px-6 py-4">POS CusNo</th>
+                  <th className="px-6 py-4">POS Amount</th>
+                  <th className="px-6 py-4 text-indigo-500">Partner ID</th>
+                  <th className="px-6 py-4 text-indigo-500">Partner Amount</th>
+                  <th className="px-6 py-4">Date</th>
+                  <th className="px-6 py-4"></th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {items.map((item, idx) => (
+                  <tr key={idx} className="hover:bg-slate-50/80 transition-colors group">
+                    <td className="px-6 py-4">
+                      <StatusBadge status={item.recon_status} />
+                    </td>
+                    <td className="px-6 py-4 font-mono text-sm text-slate-600">
+                      {item.pos_cusno || <span className="text-slate-300 italic">Not Found</span>}
+                    </td>
+                    <td
+                      className={`px-6 py-4 font-bold ${!item.pos_amount ? "text-slate-300" : "text-slate-900"}`}>
+                      ₱{item.pos_amount?.toLocaleString() || "0.00"}
+                    </td>
+                    <td className="px-6 py-4 font-mono text-sm text-indigo-600">
+                      ...{item.partner_id?.slice(-8)}
+                    </td>
+                    <td className="px-6 py-4 font-bold text-indigo-900">
+                      ₱{item.partner_amount?.toLocaleString() || "0.00"}
+                    </td>
+                    <td className="px-6 py-4 text-slate-500 text-sm whitespace-nowrap">
+                      {item.partner_date}
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <button className="text-indigo-600 font-bold text-xs uppercase hover:underline opacity-0 group-hover:opacity-100 transition-opacity">
+                        Review
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         ) : (
           /* --- THE EMPTY STATE --- */
           <div className="flex flex-col items-center justify-center h-full py-20 px-6 text-center">
