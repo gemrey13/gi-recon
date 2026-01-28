@@ -8,8 +8,6 @@ import db, { initDb } from "./db";
 import { processPosFile } from "./utils/posProcessor";
 import { processFoodPandaFile } from "./utils/fpProcessor";
 import { processGrabFile } from "./utils/grabProcessor";
-import { runReconciliation } from "./services/reconEngine";
-import { dbService } from "./services/dbService";
 
 function initAutomation(): void {
   const baseDir = join(app.getPath("documents"), "Gi-Recon");
@@ -96,19 +94,6 @@ app.whenReady().then(() => {
       return [];
     }
   });
-
-  ipcMain.handle('get-recon-summary', async () => {
-    return dbService.getReconSummary();
-  });
-
-  ipcMain.handle('get-partner-data', async (_event, partner) => {
-    return dbService.getPartnerData(partner);
-  });
-
-  ipcMain.handle('run-reconciliation', async () => {
-    return runReconciliation(); // This calls your matching engine logic
-  });
-
 
   initDb();
   initAutomation();
