@@ -33,20 +33,19 @@ export function initDb() {
       order_date TEXT,
       order_time TEXT,
       status TEXT DEFAULT NULL,       -- Only populated during Recon
-      review_notes TEXT DEFAULT NULL,  -- For internal team notes
-      partner_reply TEXT DEFAULT NULL, -- Official reply from FoodPanda/Grab
       UNIQUE(cslipno, order_date, gross_amount) -- THIS IS THE KEY PART
     );
   `);
   db.exec(`
     CREATE TABLE IF NOT EXISTS foodpanda_transactions (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      order_code TEXT,
+      order_code TEXT UNIQUE,
       gross_amount REAL,
       order_date TEXT,
       partner_name TEXT,
-      recon_status TEXT DEFAULT 'unreconciled',
-      UNIQUE(order_code) -- FoodPanda Order Codes are unique
+      recon_status TEXT DEFAULT 'unreconciled', /* Values: 'unreconciled', 'MATCHED', 'PENDING', 'FLAGGED', 'RESOLVED' */
+      partner_reply TEXT DEFAULT NULL,  -- ADD THIS HERE
+      internal_notes TEXT DEFAULT NULL  -- Useful for your team's comments
     );
   `);
   db.exec(`
@@ -57,8 +56,9 @@ export function initDb() {
       updated_on TEXT,
       store_name TEXT,
       category TEXT,
-      recon_status TEXT DEFAULT 'unreconciled',
-      UNIQUE(booking_id) -- FoodPanda Order Codes are unique
+      recon_status TEXT DEFAULT 'unreconciled', /* Values: 'unreconciled', 'MATCHED', 'PENDING', 'FLAGGED', 'RESOLVED' */
+      partner_reply TEXT DEFAULT NULL,  -- ADD THIS HERE
+      internal_notes TEXT DEFAULT NULL  -- Useful for your team's comments
     );
   `);
   console.log("Gi-Recon Database initialized at:", dbPath);
