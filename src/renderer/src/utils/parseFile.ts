@@ -19,8 +19,7 @@ export async function parsePOSFile(file: File): Promise<ParsedRow[]> {
   const rows = dbfRecords
     .filter((r: any) => {
       // 1️⃣ CUSNAME check
-      const cusName =
-        typeof r.CUSNAME === "string" && r.CUSNAME.trim().toUpperCase() === "GRAB";
+      const cusName = typeof r.CUSNAME === "string" && r.CUSNAME.trim().toUpperCase() === "GRAB";
 
       // 2️⃣ ORDDATE check
       let orderDate: Date | null = null;
@@ -54,8 +53,6 @@ export async function parsePOSFile(file: File): Promise<ParsedRow[]> {
   return rows;
 }
 
-
-
 /* ---------------- GRAB (CSV) ---------------- */
 
 export async function parseGrabFile(file: File): Promise<ParsedRow[]> {
@@ -75,9 +72,7 @@ export async function parseGrabFile(file: File): Promise<ParsedRow[]> {
 
   if (!matrix.length) throw new Error("Grab CSV is empty.");
 
-  const headers = matrix[0].map((h) =>
-    String(h).trim().toLowerCase().replace(/ /g, "_")
-  );
+  const headers = matrix[0].map((h) => String(h).trim().toLowerCase().replace(/ /g, "_"));
 
   const dataRows = matrix.slice(1);
 
