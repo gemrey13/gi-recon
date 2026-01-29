@@ -13,7 +13,7 @@ export async function parsePOSFile(file: File): Promise<ParsedRow[]> {
 
   const dbfRecords = parseDBF(dataView);
 
-  const targetDate = new Date("2025-11-13"); // simulated
+  const targetDate = new Date("2025-11-14"); // simulated
   const normalizeDate = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
 
   const rows = dbfRecords
