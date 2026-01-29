@@ -1,4 +1,4 @@
-import NewReconModal from "@renderer/ui/modal/NewReconModal";
+import NewGrabReconModal from "@renderer/ui/modal/NewGrabReconModal";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -97,7 +97,7 @@ const GrabDashboard = () => {
         </div>
         <button
           onClick={() => setShowNewRecon(true)}
-          className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-indigo-200 transition-all flex items-center gap-2">
+          className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-indigo-200 transition-all flex items-center gap-2 cursor-pointer">
           <span>+</span> New Reconciliation
         </button>
       </div>
@@ -270,7 +270,7 @@ const GrabDashboard = () => {
         )}
       </div>
 
-      {showNewRecon && <NewReconModal onClose={() => setShowNewRecon(false)} />}
+      {showNewRecon && <NewGrabReconModal onClose={() => setShowNewRecon(false)} />}
     </div>
   );
 };

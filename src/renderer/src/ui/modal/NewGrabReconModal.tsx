@@ -5,7 +5,7 @@ interface Props {
   onClose: () => void;
 }
 
-const NewReconModal: React.FC<Props> = ({ onClose }) => {
+const NewGrabReconModal: React.FC<Props> = ({ onClose }) => {
   const [posFile, setPosFile] = useState<File | null>(null);
   const [grabFile, setGrabFile] = useState<File | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -109,4 +109,4 @@ const NewReconModal: React.FC<Props> = ({ onClose }) => {
   );
 };
 
-export default NewReconModal;
+export default NewGrabReconModal;
