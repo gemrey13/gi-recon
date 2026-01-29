@@ -57,6 +57,7 @@ function createWindow(): void {
     height: 720,
     show: false,
     autoHideMenuBar: true,
+    maximizable: true,
     ...(process.platform === "linux" ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, "../preload/index.js"),
@@ -65,6 +66,7 @@ function createWindow(): void {
   });
 
   mainWindow.on("ready-to-show", () => {
+    mainWindow!.maximize();
     mainWindow.show();
   });
 
