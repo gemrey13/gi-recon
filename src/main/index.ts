@@ -10,6 +10,8 @@ import { processFoodPandaFile } from "./utils/fpProcessor";
 import { processGrabFile } from "./utils/grabProcessor";
 import { runReconciliation } from "./services/reconEngine";
 import { dbService } from "./services/dbService";
+import { processPOSFile } from "./processors/posProcessor";
+import { processGrab } from "./processors/grabProcessor";
 
 function initAutomation(): void {
   const baseDir = join(app.getPath("documents"), "Gi-Recon");
@@ -87,6 +89,37 @@ app.whenReady().then(() => {
 
   app.on("browser-window-created", (_, window) => {
     optimizer.watchWindowShortcuts(window);
+  });
+
+  ipcMain.handle("recon:grab-pos", async (_event, { posPath, grabPath }) => {
+    try {
+      console.group("🧠 RECON ENGINE INPUT");
+      console.log("POS PATH:", posPath);
+      console.log("GRAB PATH:", grabPath);
+      console.groupEnd();
+
+      const posData = processPOSFile(posPath);
+      const grabData = processGrab(grabPath);
+
+      console.group("📊 RAW PARSED DATA");
+      console.log("POS DATA:", posData);
+      console.log("GRAB DATA:", grabData);
+      console.groupEnd();
+
+      return {
+        success: true,
+        data: {
+          posCount: posData.length,
+          grabCount: grabData.length,
+        },
+      };
+    } catch (err: any) {
+      console.error("❌ RECON ENGINE ERROR:", err);
+      return {
+        success: false,
+        error: err.message || "Unknown engine error",
+      };
+    }
   });
 
   ipcMain.handle("get-initial-pos", async () => {

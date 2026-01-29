@@ -1,38 +1,96 @@
+import { parseGrabFile, parsePOSFile } from "@renderer/utils/parseFile";
+import React, { useState } from "react";
 
-const NewReconModal = ({ onClose, onProcess }) => {
+interface Props {
+  onClose: () => void;
+  // onProcess is removed as requested
+}
+
+const NewReconModal: React.FC<Props> = ({ onClose }) => {
+  const [posFile, setPosFile] = useState<File | null>(null);
+  const [grabFile, setGrabFile] = useState<File | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const handleStart = async () => {
+    if (!posFile || !grabFile) {
+      alert("Select both files");
+      return;
+    }
+
+    setIsProcessing(true);
+
+    try {
+      const posData = await parsePOSFile(posFile);
+      const grabData = await parseGrabFile(grabFile);
+
+      console.group("📊 FRONTEND PARSED DATA");
+      console.log("POS DATA:", posData);
+      console.log("GRAB DATA:", grabData);
+      console.groupEnd();
+
+      // Next: reconciliation logic
+    } catch (err) {
+      console.error("Parsing failed:", err);
+      alert((err as Error).message);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
   return (
     <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div className="bg-white w-full max-w-lg rounded-3xl shadow-2xl p-8 animate-in fade-in zoom-in duration-200">
-        <h3 className="text-2xl font-black text-slate-800 mb-2 tracking-tight">New Reconciliation</h3>
-        <p className="text-slate-500 text-sm mb-8 font-medium">
-          The engine will automatically group by branch and date.
+        <h3 className="text-2xl font-black text-slate-800 mb-2 tracking-tight">
+          New Reconciliation
+        </h3>
+        <p className="text-slate-500 text-xs mb-8">
+          Select local files to begin the automated audit.
         </p>
 
         <div className="grid grid-cols-2 gap-6 mb-8">
-          <label className="border-2 border-dashed border-slate-200 rounded-2xl p-8 flex flex-col items-center justify-center hover:border-indigo-400 hover:bg-indigo-50/50 transition-all cursor-pointer group">
-            <span className="text-3xl mb-3 group-hover:scale-110 transition-transform">📄</span>
+          {/* POS Input */}
+          <label className="border-2 border-dashed border-slate-200 rounded-2xl p-8 flex flex-col items-center justify-center hover:border-indigo-400 hover:bg-indigo-50 transition-all cursor-pointer">
+            <span className="text-3xl mb-3">{posFile ? "✅" : "📄"}</span>
             <p className="text-xs font-bold text-slate-600">POS Data (DBF)</p>
-            <p className="text-[10px] text-slate-400 mt-1">Select File</p>
-            <input type="file" className="hidden" />
+            <p className="text-[10px] text-slate-400 mt-1 truncate w-full text-center">
+              {posFile ? posFile.name : "Select File"}
+            </p>
+            <input
+              type="file"
+              className="hidden"
+              accept=".dbf"
+              onChange={(e) => setPosFile(e.target.files?.[0] || null)}
+            />
           </label>
 
-          <label className="border-2 border-dashed border-slate-200 rounded-2xl p-8 flex flex-col items-center justify-center hover:border-indigo-400 hover:bg-indigo-50/50 transition-all cursor-pointer group">
-            <span className="text-3xl mb-3 group-hover:scale-110 transition-transform">📊</span>
+          {/* Grab Input */}
+          <label className="border-2 border-dashed border-slate-200 rounded-2xl p-8 flex flex-col items-center justify-center hover:border-indigo-400 hover:bg-indigo-50 transition-all cursor-pointer">
+            <span className="text-3xl mb-3">{grabFile ? "✅" : "📊"}</span>
             <p className="text-xs font-bold text-slate-600">Grab (XLSX)</p>
-            <p className="text-[10px] text-slate-400 mt-1">Select File</p>
-            <input type="file" className="hidden" />
+            <p className="text-[10px] text-slate-400 mt-1 truncate w-full text-center">
+              {grabFile ? grabFile.name : "Select File"}
+            </p>
+            <input
+              type="file"
+              className="hidden"
+              accept=".csv"
+              onChange={(e) => setGrabFile(e.target.files?.[0] || null)}
+            />
           </label>
         </div>
 
         <div className="flex gap-4">
-          <button onClick={onClose} className="flex-1 py-3 font-bold text-slate-400 uppercase text-[10px] tracking-widest">
+          <button
+            onClick={onClose}
+            disabled={isProcessing}
+            className="flex-1 py-3 font-bold text-slate-400 uppercase text-[10px] tracking-widest disabled:opacity-50">
             Cancel
           </button>
           <button
-            onClick={onProcess}
-            className="flex-2 bg-slate-900 text-white py-4 rounded-2xl font-black tracking-widest hover:bg-black transition-all uppercase text-xs"
-          >
-            Start Engine
+            onClick={handleStart}
+            disabled={isProcessing}
+            className="flex-2 bg-slate-900 text-white py-4 rounded-2xl font-black tracking-widest hover:bg-black transition-all uppercase text-xs disabled:bg-slate-400">
+            {isProcessing ? "Processing..." : "Start Engine"}
           </button>
         </div>
       </div>
