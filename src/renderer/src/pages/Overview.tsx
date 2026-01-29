@@ -5,12 +5,10 @@ const Overview = () => {
   const [summary, setSummary] = useState({ matched: 0, flagged: 0, unreconciled: 0 });
   const navigate = useNavigate();
 
-  const api = (window as any).api;
-
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const stats = await api.getReconSummary();
+        const stats = null
         // If stats is somehow null, don't set it to state
         if (stats) setSummary(stats);
       } catch (err) {
