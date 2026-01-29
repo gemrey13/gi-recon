@@ -16,7 +16,7 @@ const NewReconModal: React.FC<Props> = ({ onClose }) => {
 
   const handleStart = async () => {
     if (!posFile || !grabFile) {
-      alert("Select both files");
+      alert("Select both files.");
       return;
     }
 
@@ -62,7 +62,7 @@ const NewReconModal: React.FC<Props> = ({ onClose }) => {
           {/* POS Input */}
           <label className="border-2 border-dashed border-slate-200 rounded-2xl p-8 flex flex-col items-center justify-center hover:border-indigo-400 hover:bg-indigo-50 transition-all cursor-pointer">
             <span className="text-3xl mb-3">{posFile ? "✅" : "📄"}</span>
-            <p className="text-xs font-bold text-slate-600">POS Data (DBF)</p>
+            <p className="text-xs font-bold text-slate-600">POS (DBF)</p>
             <p className="text-[10px] text-slate-400 mt-1 truncate w-full text-center">
               {posFile ? posFile.name : "Select File"}
             </p>
