@@ -9,13 +9,17 @@ const GrabDashboard = () => {
   // --- FILTER STATES ---
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedBranch, setSelectedBranch] = useState("All");
-  const [dateFilter, setDateFilter] = useState(""); // YYYY-MM-DD format
+  
+  // DATE RANGE STATES
+  const [startDate, setStartDate] = useState(""); // YYYY-MM-DD
+  const [endDate, setEndDate] = useState("");     // YYYY-MM-DD
 
   // Mock Database Data
   const sessions = [
     { id: 101, date: "2026-01-29", displayDate: "Jan 29, 2026", branch: "Lucena", total: 45000, issues: 2, status: "Pending" },
     { id: 102, date: "2026-01-28", displayDate: "Jan 28, 2026", branch: "Lucena", total: 42100, issues: 0, status: "Completed" },
     { id: 103, date: "2026-01-29", displayDate: "Jan 29, 2026", branch: "Tayabas", total: 12500, issues: 5, status: "Pending" },
+    { id: 104, date: "2026-01-20", displayDate: "Jan 20, 2026", branch: "Pagbilao", total: 18000, issues: 0, status: "Completed" },
   ];
 
   // --- FILTER LOGIC ---
@@ -26,16 +30,27 @@ const GrabDashboard = () => {
     // 2. Filter Branch
     const matchesBranch = selectedBranch === "All" || session.branch === selectedBranch;
 
-    // 3. Filter Date (Only if a date is selected)
-    const matchesDate = dateFilter === "" || session.date === dateFilter;
+    // 3. Filter Date Range
+    // If startDate is set, session date must be >= startDate
+    // If endDate is set, session date must be <= endDate
+    const matchesStartDate = startDate ? session.date >= startDate : true;
+    const matchesEndDate = endDate ? session.date <= endDate : true;
 
-    return matchesSearch && matchesBranch && matchesDate;
+    return matchesSearch && matchesBranch && matchesStartDate && matchesEndDate;
   });
 
-  // --- HANDLER FOR "TODAY" SHORTCUT ---
+  // --- SHORTCUT HANDLERS ---
   const handleSetToday = () => {
-    const today = new Date().toISOString().split('T')[0]; // Returns "2026-01-29"
-    setDateFilter(today);
+    const today = new Date().toISOString().split('T')[0];
+    setStartDate(today);
+    setEndDate(today);
+  };
+
+  const handleClearFilters = () => {
+    setSearchQuery("");
+    setSelectedBranch("All");
+    setStartDate("");
+    setEndDate("");
   };
 
   const handleStartRecon = () => {
@@ -59,12 +74,12 @@ const GrabDashboard = () => {
         </button>
       </div>
 
-      {/* --- NEW FILTER TOOLBAR --- */}
+      {/* --- FILTER TOOLBAR --- */}
       <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm mb-8 flex flex-wrap items-end gap-4">
         
         {/* Search ID */}
-        <div className="flex-1 min-w-50">
-          <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1 mb-1 block">Search Session ID</label>
+        <div className="flex-1 min-w-37.5">
+          <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1 mb-1 block">Search ID</label>
           <div className="relative">
             <span className="absolute left-3 top-2.5 text-slate-400">🔍</span>
             <input 
@@ -78,7 +93,7 @@ const GrabDashboard = () => {
         </div>
 
         {/* Branch Select */}
-        <div className="w-48">
+        <div className="w-40">
           <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1 mb-1 block">Branch</label>
           <select 
             value={selectedBranch}
@@ -92,53 +107,71 @@ const GrabDashboard = () => {
           </select>
         </div>
 
-        {/* Date Picker */}
-        <div className="w-48">
-          <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1 mb-1 block">Date</label>
+        {/* Start Date */}
+        <div className="w-40">
+          <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1 mb-1 block">From</label>
           <input 
             type="date" 
-            value={dateFilter}
-            onChange={(e) => setDateFilter(e.target.value)}
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
             className="w-full bg-slate-50 border-none rounded-xl py-2 px-3 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-indigo-500"
           />
         </div>
 
-        {/* Today Shortcut Button */}
-        <button 
-          onClick={handleSetToday}
-          className="bg-indigo-50 hover:bg-indigo-100 text-indigo-600 px-4 py-2.5 rounded-xl text-sm font-bold transition-colors mb-px"
-        >
-          Today
-        </button>
+        {/* End Date */}
+        <div className="w-40">
+          <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1 mb-1 block">To</label>
+          <input 
+            type="date" 
+            value={endDate}
+            min={startDate} // Prevent selecting an end date before start date
+            onChange={(e) => setEndDate(e.target.value)}
+            className="w-full bg-slate-50 border-none rounded-xl py-2 px-3 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-indigo-500"
+          />
+        </div>
 
-        {/* Clear Filters (Optional) */}
-        {(searchQuery || selectedBranch !== "All" || dateFilter) && (
+        {/* Shortcuts & Actions */}
+        <div className="flex gap-2">
           <button 
-            onClick={() => { setSearchQuery(""); setSelectedBranch("All"); setDateFilter(""); }}
-            className="text-slate-400 hover:text-slate-600 px-2 py-2.5 text-xs font-bold transition-colors mb-px"
+            onClick={handleSetToday}
+            className="bg-indigo-50 hover:bg-indigo-100 text-indigo-600 px-4 py-2.5 rounded-xl text-sm font-bold transition-colors"
           >
-            Clear Filters
+            Today
           </button>
-        )}
+
+          {(searchQuery || selectedBranch !== "All" || startDate || endDate) && (
+            <button 
+              onClick={handleClearFilters}
+              className="text-slate-400 hover:text-slate-600 px-3 py-2.5 text-xs font-bold transition-colors"
+            >
+              Clear
+            </button>
+          )}
+        </div>
       </div>
 
-      {/* QUICK STATS ROW */}
+      {/* QUICK STATS ROW (Dynamic based on filtered results could be cool here) */}
       <div className="grid grid-cols-3 gap-6 mb-8">
         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Action Required</p>
-          <p className="text-3xl font-black text-slate-800 mt-1">7 <span className="text-red-500 text-sm font-bold">Issues</span></p>
+          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Sessions Shown</p>
+          <p className="text-3xl font-black text-slate-800 mt-1">{filteredSessions.length}</p>
         </div>
         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">This Month</p>
-          <p className="text-3xl font-black text-slate-800 mt-1">₱ 845,200</p>
+          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">This Period</p>
+          <p className="text-3xl font-black text-slate-800 mt-1">
+             {/* Calculate Total for displayed sessions */}
+             ₱ {filteredSessions.reduce((acc, curr) => acc + curr.total, 0).toLocaleString()}
+          </p>
         </div>
         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Sync Status</p>
-          <p className="text-3xl font-black text-green-600 mt-1">Healthy</p>
+          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Issues</p>
+          <p className="text-3xl font-black text-red-500 mt-1">
+            {filteredSessions.reduce((acc, curr) => acc + curr.issues, 0)}
+          </p>
         </div>
       </div>
 
-      {/* SESSIONS GRID (Filtered) */}
+      {/* SESSIONS GRID */}
       <div className="grid grid-cols-1 gap-4">
         {filteredSessions.length > 0 ? (
           filteredSessions.map((session) => (
@@ -186,15 +219,14 @@ const GrabDashboard = () => {
             </div>
           ))
         ) : (
-          /* EMPTY STATE WHEN FILTER RETURNS NOTHING */
-          <div className="text-center py-12 text-slate-400">
-            <p className="text-4xl mb-2">🔍</p>
-            <p className="font-bold">No sessions found matching your filters.</p>
+          <div className="text-center py-12 text-slate-400 bg-white rounded-2xl border border-slate-200 border-dashed">
+            <p className="text-4xl mb-2">📅</p>
+            <p className="font-bold">No sessions found in this date range.</p>
             <button 
-              onClick={() => { setSearchQuery(""); setSelectedBranch("All"); setDateFilter(""); }}
+              onClick={handleClearFilters}
               className="text-indigo-600 font-bold text-sm mt-2 hover:underline"
             >
-              Clear all filters
+              Clear filters
             </button>
           </div>
         )}
