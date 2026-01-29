@@ -7,13 +7,15 @@ const GrabSessionDetail = () => {
   const navigate = useNavigate();
   
   const [showReview, setShowReview] = useState(false);
-  const [activeItem, setActiveItem] = useState(null);
+  const [activeItem, setActiveItem] = useState<any>(null);
 
   // In a real app, use useEffect to fetch data based on sessionId
   const [transactions, setTransactions] = useState([
     { id: 1, suffix: "AFAV", grab: 550, pos: 550, status: "MATCHED", notes: "" },
     { id: 2, suffix: "B8C2", grab: 120, pos: 110, status: "FLAGGED", notes: "Short payment" },
   ]);
+
+  setTransactions;
 
   return (
     <div className="flex flex-col h-full bg-slate-50">
