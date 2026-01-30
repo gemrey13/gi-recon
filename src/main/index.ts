@@ -56,30 +56,46 @@ app.whenReady().then(() => {
     let createdOn = grabRows[0].created_on;
     if (!createdOn) throw new Error("Created On column missing in Grab file");
 
-    const sessionId = createSession(db, {
-      partner,
-      branch_name: branchName,
-      start_date: createdOn,
-      end_date: createdOn,
+    // Start a transaction
+    const tx = db.transaction(() => {
+      // Create session first
+      const sessionId = createSession(db, {
+        partner,
+        branch_name: branchName,
+        start_date: createdOn,
+        end_date: createdOn,
+      });
+
+      // Insert POS & Grab transactions
+      const posErrors = insertPOSTransactions(db, sessionId, posRows);
+      const grabErrors = insertGrabTransactions(db, sessionId, grabRows);
+
+      // If any insert failed, throw to rollback session creation
+      if (posErrors || grabErrors) {
+        throw { posErrors, grabErrors };
+      }
+
+      return sessionId;
     });
 
-    const posErrors = insertPOSTransactions(db, sessionId, posRows);
-    const grabErrors = insertGrabTransactions(db, sessionId, grabRows);
+    try {
+      const sessionId = tx();
+      // Continue reconciliation only if inserts succeeded
+      const pos = db.prepare(`SELECT * FROM pos_transactions WHERE session_id = ?`).all(sessionId);
+      const grab = db
+        .prepare(`SELECT * FROM grab_transactions WHERE session_id = ?`)
+        .all(sessionId);
 
-    if (posErrors || grabErrors) {
-      return { sessionId, errors: { posErrors, grabErrors } };
+      const results = reconcilePOSvsGrab(pos, grab);
+
+      applyMatches(db, results);
+      updateSessionSummary(db, sessionId);
+
+      return { sessionId };
+    } catch (err) {
+      // Return error info instead of throwing
+      return { errors: err };
     }
-
-    const pos = db.prepare(`SELECT * FROM pos_transactions WHERE session_id = ?`).all(sessionId);
-
-    const grab = db.prepare(`SELECT * FROM grab_transactions WHERE session_id = ?`).all(sessionId);
-
-    const results = reconcilePOSvsGrab(pos, grab);
-
-    applyMatches(db, results);
-    updateSessionSummary(db, sessionId);
-
-    return sessionId;
   });
 
   initDb();
