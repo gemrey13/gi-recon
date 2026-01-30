@@ -125,7 +125,7 @@ export function initDb() {
       linked_transaction_id TEXT,
       partner_transaction_id_1 TEXT, partner_transaction_id_2 TEXT,
       long_order_id TEXT, 
-      short_order_id TEXT, -- The 4-digit Suffix used for matching
+      short_order_id TEXT,
       booking_id TEXT,
       
       -- Channel & Payment
