@@ -3,9 +3,53 @@ import parseDBF from "parsedbf";
 
 export type ParsedRow = Record<string, unknown>;
 
-/* ---------------- POS (DBF) ---------------- */
+// ---------------- Helper ----------------
+function formatDateMMDDYYYY(date: Date): string {
+  const mm = String(date.getMonth() + 1).padStart(2, "0");
+  const dd = String(date.getDate()).padStart(2, "0");
+  const yyyy = date.getFullYear();
+  return `${mm}/${dd}/${yyyy}`;
+}
 
-export async function parsePOSFile(file: File): Promise<ParsedRow[]> {
+function parseDBFDate(date: any): string | null {
+  if (!date) return null;
+
+  // If it's already a Date object
+  if (date instanceof Date && !isNaN(date.getTime())) {
+    return formatDateMMDDYYYY(date);
+  }
+
+  // If it's a string like "11/14/2025" or "2025-11-14"
+  if (typeof date === "string") {
+    const parts = date.match(/\d+/g); // extract numbers
+    if (!parts || parts.length < 3) return null;
+
+    let mm = parts[0],
+      dd = parts[1],
+      yyyy = parts[2];
+
+    // Handle possible YYYY-MM-DD
+    if (yyyy.length === 4 && mm.length > 2) {
+      [yyyy, mm, dd] = [mm, dd, yyyy];
+    }
+
+    return `${mm.padStart(2, "0")}/${dd.padStart(2, "0")}/${yyyy}`;
+  }
+
+  // If numeric YYYYMMDD
+  if (typeof date === "number") {
+    const s = date.toString();
+    const yyyy = s.slice(0, 4);
+    const mm = s.slice(4, 6);
+    const dd = s.slice(6, 8);
+    return `${mm}/${dd}/${yyyy}`;
+  }
+
+  return null;
+}
+
+// ---------------- POS (DBF) ----------------
+export async function parsePOSFile(file: File, targetDate?: Date): Promise<ParsedRow[]> {
   if (!file) throw new Error("POS file missing.");
 
   const arrayBuffer = await file.arrayBuffer();
@@ -13,54 +57,37 @@ export async function parsePOSFile(file: File): Promise<ParsedRow[]> {
 
   const dbfRecords = parseDBF(dataView);
 
-  const targetDate = new Date("2025-11-14"); // simulated
-  const normalizeDate = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  const target = targetDate ? new Date(targetDate) : new Date();
+  target.setHours(0, 0, 0, 0);
 
   const rows = dbfRecords
-    .filter((r: any) => {
-      // 1️⃣ CUSNAME check
-      const cusName = typeof r.CUSNAME === "string" && r.CUSNAME.trim().toUpperCase() === "GRAB";
-
-      // 2️⃣ ORDDATE check
-      let orderDate: Date | null = null;
-
-      if (r.ORDDATE instanceof Date) {
-        orderDate = r.ORDDATE;
-      } else if (typeof r.ORDDATE === "string") {
-        const parsed = new Date(r.ORDDATE);
-        if (!isNaN(parsed.getTime())) orderDate = parsed;
-      }
-
-      if (!orderDate) return false;
-
-      const isDateMatch =
-        normalizeDate(orderDate).getTime() === normalizeDate(targetDate).getTime();
-
-      return cusName && isDateMatch;
-    })
     .map((r: any) => {
       const out: ParsedRow = {};
+
       Object.keys(r).forEach((key) => {
-        const cleanKey = key.trim().toUpperCase();
-        const val = r[key];
-        out[cleanKey] = typeof val === "string" ? val.trim() : val;
+        let val = r[key];
+        if (key.toUpperCase() === "ORDDATE") {
+          val = parseDBFDate(val);
+        } else if (typeof val === "string") val = val.trim();
+
+        out[key.trim().toUpperCase()] = val;
       });
+
       return out;
+    })
+    .filter((r) => {
+      return r.CUSNAME === "GRAB" && r.ORDDATE === "11/14/2025"; // match target date
     });
 
   if (!rows.length) throw new Error("No valid POS rows found.");
-
   return rows;
 }
 
-/* ---------------- GRAB (CSV) ---------------- */
-
+// ---------------- GRAB (CSV) ----------------
 export async function parseGrabFile(file: File): Promise<ParsedRow[]> {
   if (!file) throw new Error("Grab file missing.");
 
   const text = await file.text();
-
-  // XLSX can read CSV from string
   const workbook = XLSX.read(text, { type: "string" });
   const sheet = workbook.Sheets[workbook.SheetNames[0]];
 
@@ -73,14 +100,23 @@ export async function parseGrabFile(file: File): Promise<ParsedRow[]> {
   if (!matrix.length) throw new Error("Grab CSV is empty.");
 
   const headers = matrix[0].map((h) => String(h).trim().toLowerCase().replace(/ /g, "_"));
-
   const dataRows = matrix.slice(1);
 
   const rows = dataRows
     .map((r) => {
       const out: ParsedRow = {};
       headers.forEach((h, i) => {
-        if (h) out[h] = r[i];
+        let val = r[i];
+
+        // Normalize created_on to MM/DD/YYYY
+        if (h === "created_on" && val != null) {
+          const dateVal = String(val);
+          const d = new Date(dateVal);
+          if (!isNaN(d.getTime())) val = formatDateMMDDYYYY(d);
+          else val = null;
+        }
+
+        out[h] = val;
       });
       return out;
     })
