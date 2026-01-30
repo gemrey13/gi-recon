@@ -6,6 +6,7 @@ import db, { initDb } from "./db";
 import { applyMatches, createSession, updateSessionSummary } from "./db/sessions";
 import { insertGrabTransactions, insertPOSTransactions } from "./db/insert";
 import { reconcilePOSvsGrab } from "./db/match";
+import { getBranchNameFromGrab } from "./db/branch";
 
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
@@ -46,11 +47,13 @@ app.whenReady().then(() => {
   });
 
   ipcMain.handle("recon:start", async (_, payload) => {
-    const { partner, branch, startDate, endDate, posRows, grabRows } = payload;
+    const { partner, startDate, endDate, posRows, grabRows } = payload;
+
+    const branchName = getBranchNameFromGrab(grabRows);
 
     const sessionId = createSession(db, {
       partner,
-      branch_name: branch,
+      branch_name: branchName,
       start_date: startDate,
       end_date: endDate,
     });
