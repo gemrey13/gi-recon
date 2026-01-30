@@ -2,7 +2,7 @@ type MatchResult = {
   posId: number;
   grabId: number;
   variance: number;
-  status: "matched" | "discrepancy";
+  status: "matched" | "discrepancy" | "id_mismatch";
 };
 
 function normalizeDate(dateStr: string) {
@@ -15,15 +15,12 @@ function extractPosIdFromBooking(bookingId: string) {
   return `G-${suffix}`;
 }
 
-export function reconcilePOSvsGrab(
-  posRows: any[],
-  grabRows: any[]
-): MatchResult[] {
+export function reconcilePOSvsGrab(posRows: any[], grabRows: any[]): MatchResult[] {
   const matches: MatchResult[] = [];
 
   const usedGrab = new Set<number>();
 
-  // PASS 1: strict
+  // PASS 1: Strict match (ID + Date + Amount)
   for (const pos of posRows) {
     for (const grab of grabRows) {
       if (usedGrab.has(grab.id)) continue;
@@ -33,11 +30,9 @@ export function reconcilePOSvsGrab(
 
       if (posId !== grabId) continue;
 
-      const sameDate =
-        normalizeDate(pos.orddate) === normalizeDate(grab.created_on);
+      const sameDate = normalizeDate(pos.orddate) === normalizeDate(grab.created_on);
 
-      const sameAmount =
-        Number(pos.grschrg) === Number(grab.amount);
+      const sameAmount = Number(pos.grschrg) === Number(grab.amount);
 
       if (sameDate && sameAmount) {
         matches.push({
@@ -52,7 +47,7 @@ export function reconcilePOSvsGrab(
     }
   }
 
-  // PASS 2: discrepancy
+  // PASS 2: Discrepancy (ID + Date, Amount differs)
   for (const pos of posRows) {
     if (matches.find((m) => m.posId === pos.id)) continue;
 
@@ -64,12 +59,10 @@ export function reconcilePOSvsGrab(
 
       if (posId !== grabId) continue;
 
-      const sameDate =
-        normalizeDate(pos.orddate) === normalizeDate(grab.created_on);
+      const sameDate = normalizeDate(pos.orddate) === normalizeDate(grab.created_on);
 
       if (sameDate) {
-        const variance =
-          Number(pos.grschrg) - Number(grab.amount);
+        const variance = Number(pos.grschrg) - Number(grab.amount);
 
         matches.push({
           posId: pos.id,
@@ -78,6 +71,25 @@ export function reconcilePOSvsGrab(
           status: "discrepancy",
         });
 
+        usedGrab.add(grab.id);
+        break;
+      }
+    }
+  }
+
+  // PASS 3: Soft match (Date + Amount, different ID)
+  for (const pos of posRows) {
+    if (matches.find((m) => m.posId === pos.id)) continue;
+
+    for (const grab of grabRows) {
+      if (usedGrab.has(grab.id)) continue;
+
+      const sameDate = normalizeDate(pos.orddate) === normalizeDate(grab.created_on);
+      const sameAmount = Number(pos.grschrg) === Number(grab.amount);
+
+      if (sameDate && sameAmount) {
+        const variance = 0; // fully matches amount
+        matches.push({ posId: pos.id, grabId: grab.id, variance, status: "id_mismatch" });
         usedGrab.add(grab.id);
         break;
       }
