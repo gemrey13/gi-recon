@@ -9,6 +9,11 @@ function normalizeDate(dateStr: string) {
   return new Date(dateStr).toLocaleDateString("en-US");
 }
 
+function sanitizeId(str: string) {
+  if (!str) return "";
+  return str.toUpperCase().replace(/[0O]/g, "0").replace(/[1I]/g, "1").trim();
+}
+
 function extractPosIdFromBooking(bookingId: string) {
   // A-8K3WT9HWX8E3AV → G-E3AV
   const suffix = bookingId.slice(-4);
@@ -25,8 +30,8 @@ export function reconcilePOSvsGrab(posRows: any[], grabRows: any[]): MatchResult
     for (const grab of grabRows) {
       if (usedGrab.has(grab.id)) continue;
 
-      const posId = pos.cusno;
-      const grabId = extractPosIdFromBooking(grab.booking_id);
+      const posId = sanitizeId(pos.cusno);
+      const grabId = sanitizeId(extractPosIdFromBooking(grab.booking_id));
 
       if (posId !== grabId) continue;
 
@@ -54,8 +59,8 @@ export function reconcilePOSvsGrab(posRows: any[], grabRows: any[]): MatchResult
     for (const grab of grabRows) {
       if (usedGrab.has(grab.id)) continue;
 
-      const posId = pos.cusno;
-      const grabId = extractPosIdFromBooking(grab.booking_id);
+      const posId = sanitizeId(pos.cusno);
+      const grabId = sanitizeId(extractPosIdFromBooking(grab.booking_id));
 
       if (posId !== grabId) continue;
 
