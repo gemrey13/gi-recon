@@ -7,6 +7,7 @@ import { applyMatches, createSession, updateSessionSummary } from "./db/sessions
 import { insertGrabTransactions, insertPOSTransactions } from "./db/insert";
 import { reconcilePOSvsGrab } from "./db/match";
 import { getBranchNameFromGrab } from "./db/branch";
+import path from 'path';
 
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
@@ -15,6 +16,7 @@ function createWindow(): void {
     show: false,
     autoHideMenuBar: true,
     maximizable: true,
+    icon: path.join(__dirname, '../../resources/ico.ico'),
     ...(process.platform === "linux" ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, "../preload/index.js"),
