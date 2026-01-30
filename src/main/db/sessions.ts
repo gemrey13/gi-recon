@@ -1,4 +1,5 @@
 import { Database } from "better-sqlite3";
+import { convertToMDY } from "./utils";
 
 export function createSession(
   db: Database,
@@ -99,6 +100,12 @@ export interface SessionRow {
 export function fetchSessions(db: Database, filters: FetchSessionFilters = {}): SessionRow[] {
   const { searchQuery, startDate, endDate } = filters;
 
+  let startDateFilter = startDate;
+  let endDateFilter = endDate;
+
+  if (startDateFilter) startDateFilter = convertToMDY(startDateFilter);
+  if (endDateFilter) endDateFilter = convertToMDY(endDateFilter);
+
   let sql = `SELECT *
              FROM sessions
              WHERE 1=1`;
@@ -111,14 +118,15 @@ export function fetchSessions(db: Database, filters: FetchSessionFilters = {}): 
     params.push(q, q);
   }
 
-  if (startDate) {
-    sql += ` AND start_date >= ?`;
-    params.push(startDate);
-  }
-
-  if (endDate) {
-    sql += ` AND start_date <= ?`;
-    params.push(endDate);
+  // Date range filter
+  if (startDate || endDate) {
+    sql += ` AND (
+      strftime('%Y-%m-%d', substr(start_date,7,4) || '-' || substr(start_date,1,2) || '-' || substr(start_date,4,2))
+      BETWEEN ? AND ?
+    )`;
+    const from = startDate || "1900-01-01";
+    const to = endDate || "2100-12-31";
+    params.push(from, to);
   }
 
   sql += ` ORDER BY start_date DESC, id DESC`;

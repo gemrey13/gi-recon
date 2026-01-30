@@ -10,8 +10,8 @@ const GrabDashboard = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
 
-  const [startDate, setStartDate] = useState(""); // YYYY-MM-DD
-  const [endDate, setEndDate] = useState(""); // YYYY-MM-DD
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   const filteredSessions = sessions.filter((session) => {
     const query = searchQuery.toLowerCase().trim();
