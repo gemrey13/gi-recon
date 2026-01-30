@@ -7,7 +7,7 @@ export function createSession(
     branch_name: string;
     start_date: string;
     end_date: string;
-  }
+  },
 ): number {
   const stmt = db.prepare(`
     INSERT INTO sessions (
@@ -19,17 +19,10 @@ export function createSession(
     VALUES (?, ?, ?, ?)
   `);
 
-  const result = stmt.run(
-    data.partner,
-    data.branch_name,
-    data.start_date,
-    data.end_date
-  );
+  const result = stmt.run(data.partner, data.branch_name, data.start_date, data.end_date);
 
   return Number(result.lastInsertRowid);
 }
-
-
 
 export function applyMatches(db: Database, matches: any[]) {
   const updatePOS = db.prepare(`
@@ -54,10 +47,7 @@ export function applyMatches(db: Database, matches: any[]) {
   tx();
 }
 
-export function updateSessionSummary(
-  db: Database,
-  sessionId: number
-) {
+export function updateSessionSummary(db: Database, sessionId: number) {
   db.exec(`
     UPDATE sessions
     SET
@@ -75,7 +65,7 @@ export function updateSessionSummary(
         SELECT COUNT(*)
         FROM grab_transactions
         WHERE session_id = ${sessionId}
-          AND recon_status = 'discrepancy'
+          AND recon_status IN ('discrepancy', 'id_mismatch', 'unreconciled')
       ),
       status = 'Completed'
     WHERE id = ${sessionId}
