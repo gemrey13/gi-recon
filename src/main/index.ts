@@ -47,15 +47,18 @@ app.whenReady().then(() => {
   });
 
   ipcMain.handle("recon:start", async (_, payload) => {
-    const { partner, startDate, endDate, posRows, grabRows } = payload;
+    const { partner, posRows, grabRows } = payload;
 
     const branchName = getBranchNameFromGrab(grabRows);
+
+    let createdOn = grabRows[0].created_on;
+    if (!createdOn) throw new Error("Created On column missing in Grab file");
 
     const sessionId = createSession(db, {
       partner,
       branch_name: branchName,
-      start_date: startDate,
-      end_date: endDate,
+      start_date: createdOn,
+      end_date: createdOn,
     });
 
     insertPOSTransactions(db, sessionId, posRows);

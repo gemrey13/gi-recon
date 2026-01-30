@@ -39,8 +39,6 @@ const NewGrabReconModal: React.FC<Props> = ({ onClose }) => {
       // Next: reconciliation logic
       const sessionId = await api.startRecon({
         partner: "GRAB",
-        startDate: "2025-11-13",
-        endDate: "2025-11-13",
         posRows: posData,
         grabRows: grabData,
       });
