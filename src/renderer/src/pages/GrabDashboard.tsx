@@ -9,20 +9,20 @@ const GrabDashboard = () => {
   const [sessions, setSessions] = useState<any[]>([]);
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedBranch, setSelectedBranch] = useState("All");
 
   const [startDate, setStartDate] = useState(""); // YYYY-MM-DD
   const [endDate, setEndDate] = useState(""); // YYYY-MM-DD
 
   const filteredSessions = sessions.filter((session) => {
-    const matchesSearch = session.id.toString().includes(searchQuery);
+    const query = searchQuery.toLowerCase().trim();
 
-    const matchesBranch = selectedBranch === "All" || session.branch === selectedBranch;
+    if (!query) return true;
 
-    const matchesStartDate = startDate ? session.date >= startDate : true;
-    const matchesEndDate = endDate ? session.date <= endDate : true;
+    // Match either session ID or branch name
+    const matchesId = session.id.toString().includes(query);
+    const matchesBranch = session.branch.toLowerCase().includes(query);
 
-    return matchesSearch && matchesBranch && matchesStartDate && matchesEndDate;
+    return matchesId || matchesBranch;
   });
 
   const handleSetToday = () => {
@@ -33,7 +33,6 @@ const GrabDashboard = () => {
 
   const handleClearFilters = () => {
     setSearchQuery("");
-    setSelectedBranch("All");
     setStartDate("");
     setEndDate("");
   };
@@ -43,7 +42,6 @@ const GrabDashboard = () => {
 
     const result = await api.fetchSession({
       searchQuery,
-      branch: selectedBranch,
       startDate,
       endDate,
     });
@@ -59,7 +57,7 @@ const GrabDashboard = () => {
   // Re-fetch whenever filters change
   useEffect(() => {
     fetchSessions();
-  }, [searchQuery, selectedBranch, startDate, endDate]);
+  }, [searchQuery, startDate, endDate]);
 
   return (
     <div className="p-8 max-w-7xl mx-auto">
@@ -97,21 +95,7 @@ const GrabDashboard = () => {
           </div>
         </div>
 
-        {/* Branch Select */}
-        <div className="w-40">
-          <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1 mb-1 block">
-            Branch
-          </label>
-          <select
-            value={selectedBranch}
-            onChange={(e) => setSelectedBranch(e.target.value)}
-            className="w-full bg-slate-50 border-none rounded-xl py-2 px-3 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-indigo-500">
-            <option value="All">All Branches</option>
-            <option value="Lucena">Lucena</option>
-            <option value="Tayabas">Tayabas</option>
-            <option value="Pagbilao">Pagbilao</option>
-          </select>
-        </div>
+        
 
         {/* Start Date */}
         <div className="w-40">
@@ -148,7 +132,7 @@ const GrabDashboard = () => {
             Today
           </button>
 
-          {(searchQuery || selectedBranch !== "All" || startDate || endDate) && (
+          {(searchQuery || startDate || endDate) && (
             <button
               onClick={handleClearFilters}
               className="text-slate-400 hover:text-slate-600 px-3 py-2.5 text-xs font-bold transition-colors">
@@ -209,12 +193,11 @@ const GrabDashboard = () => {
               </div>
 
               <div className="flex items-center gap-8">
-
                 <div className="text-right">
                   <p className="text-[10px] font-bold text-slate-400 uppercase">Total POS Amt</p>
                   <p className="font-bold text-slate-900">₱{session.total_pos.toLocaleString()}</p>
                 </div>
-                 <div className="text-right">
+                <div className="text-right">
                   <p className="text-[10px] font-bold text-slate-400 uppercase">Total GRAB Amt</p>
                   <p className="font-bold text-slate-900">₱{session.total_grab.toLocaleString()}</p>
                 </div>
