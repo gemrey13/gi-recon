@@ -7,7 +7,7 @@ import { applyMatches, createSession, updateSessionSummary } from "./db/sessions
 import { insertGrabTransactions, insertPOSTransactions } from "./db/insert";
 import { reconcilePOSvsGrab } from "./db/match";
 import { getBranchNameFromGrab } from "./db/branch";
-import path from 'path';
+import path from "path";
 
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
@@ -16,7 +16,7 @@ function createWindow(): void {
     show: false,
     autoHideMenuBar: true,
     maximizable: true,
-    icon: path.join(__dirname, '../../resources/ico.ico'),
+    icon: path.join(__dirname, "../../resources/ico.ico"),
     ...(process.platform === "linux" ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, "../preload/index.js"),
@@ -63,8 +63,12 @@ app.whenReady().then(() => {
       end_date: createdOn,
     });
 
-    insertPOSTransactions(db, sessionId, posRows);
-    insertGrabTransactions(db, sessionId, grabRows);
+    const posErrors = insertPOSTransactions(db, sessionId, posRows);
+    const grabErrors = insertGrabTransactions(db, sessionId, grabRows);
+
+    if (posErrors || grabErrors) {
+      return { sessionId, errors: { posErrors, grabErrors } };
+    }
 
     const pos = db.prepare(`SELECT * FROM pos_transactions WHERE session_id = ?`).all(sessionId);
 

@@ -1,5 +1,6 @@
 import { parseGrabFile, parsePOSFile } from "@renderer/utils/parseFile";
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 
 interface Props {
   onClose: () => void;
@@ -27,26 +28,33 @@ const NewGrabReconModal: React.FC<Props> = ({ onClose }) => {
       const targetDate = grabData[0].created_on as string;
       const posData = await parsePOSFile(posFile, targetDate);
 
-
-      console.group("📊 FRONTEND PARSED DATA");
-      console.log("Reconciliation Date:", formattedReconDate);
-      console.log("POS DATA:", posData);
-      console.log("GRAB DATA:", grabData);
-      console.groupEnd();
-
       const api = (window as any).api;
 
-      // Next: reconciliation logic
-      const sessionId = await api.startRecon({
+      const result = await api.startRecon({
         partner: "GRAB",
         posRows: posData,
         grabRows: grabData,
       });
 
-      console.log("✅ Recon session created:", sessionId);
+      if (result.errors) {
+        const { posErrors, grabErrors } = result.errors;
+
+        if (posErrors?.length) {
+          toast.error(`POS insert failed: ${posErrors.length} record(s)`);
+          console.error(posErrors);
+        }
+
+        if (grabErrors?.length) {
+          toast.error(`Grab insert failed: ${grabErrors.length} record(s)`);
+          console.error(grabErrors);
+        }
+      } else {
+        toast.success("Reconciliation completed successfully!");
+        console.log("✅ Recon session created:", result.sessionId);
+      }
     } catch (err) {
-      console.error("Parsing failed:", err);
-      alert((err as Error).message);
+      console.error("Parsing or reconciliation failed:", err);
+      toast.error((err as Error).message || "Unknown error occurred");
     } finally {
       setIsProcessing(false);
     }

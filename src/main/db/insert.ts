@@ -46,6 +46,8 @@ export function insertPOSTransactions(db: Database, sessionId: number, rows: any
     VALUES (${valuesSql})
   `);
 
+  const errors: any[] = [];
+
   const tx = db.transaction(() => {
     for (const row of rows) {
       const record: any = { session_id: sessionId };
@@ -63,13 +65,16 @@ export function insertPOSTransactions(db: Database, sessionId: number, rows: any
         console.error("❌ INSERT FAILED");
         console.error("TABLE:", table);
         console.error("RECORD:", record);
-        throw e;
+        errors.push({ record, error: e });
       }
     }
   });
 
   tx();
+
+  return errors.length ? errors : null;
 }
+
 export function insertGrabTransactions(db: Database, sessionId: number, rows: any[]) {
   const stmt = db.prepare(`
     INSERT INTO grab_transactions (
@@ -128,6 +133,8 @@ export function insertGrabTransactions(db: Database, sessionId: number, rows: an
       @customer_refunded_item, @appeal_link, @appeal_status, @package_voucher_used
     )
   `);
+
+  const errors: any[] = [];
 
   const tx = db.transaction(() => {
     for (const row of rows) {
@@ -215,10 +222,12 @@ export function insertGrabTransactions(db: Database, sessionId: number, rows: an
       } catch (e) {
         console.error("❌ INSERT FAILED:", e);
         console.error(record);
-        throw e;
+        errors.push({ record, error: e });
       }
     }
   });
 
   tx();
+
+  return errors.length ? errors : null;
 }
