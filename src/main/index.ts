@@ -1,8 +1,11 @@
-import { app, shell, BrowserWindow } from "electron";
+import { app, shell, BrowserWindow, ipcMain } from "electron";
 import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
-import { initDb } from "./db";
+import db, { initDb } from "./db";
+import { applyMatches, createSession, updateSessionSummary } from "./db/sessions";
+import { insertGrabTransactions, insertPOSTransactions } from "./db/insert";
+import { reconcilePOSvsGrab } from "./db/match";
 
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
@@ -40,6 +43,31 @@ app.whenReady().then(() => {
 
   app.on("browser-window-created", (_, window) => {
     optimizer.watchWindowShortcuts(window);
+  });
+
+  ipcMain.handle("recon:start", async (_, payload) => {
+    const { partner, branch, startDate, endDate, posRows, grabRows } = payload;
+
+    const sessionId = createSession(db, {
+      partner,
+      branch_name: branch,
+      start_date: startDate,
+      end_date: endDate,
+    });
+
+    insertPOSTransactions(db, sessionId, posRows);
+    insertGrabTransactions(db, sessionId, grabRows);
+
+    const pos = db.prepare(`SELECT * FROM pos_transactions WHERE session_id = ?`).all(sessionId);
+
+    const grab = db.prepare(`SELECT * FROM grab_transactions WHERE session_id = ?`).all(sessionId);
+
+    const results = reconcilePOSvsGrab(pos, grab);
+
+    applyMatches(db, results);
+    updateSessionSummary(db, sessionId);
+
+    return sessionId;
   });
 
   initDb();

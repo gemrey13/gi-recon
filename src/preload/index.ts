@@ -1,7 +1,10 @@
-import { contextBridge } from "electron";
+import { contextBridge, ipcRenderer } from "electron";
 import { electronAPI } from "@electron-toolkit/preload";
 
-const api = {};
+const api = {
+  startRecon: (payload: any) =>
+    ipcRenderer.invoke("recon:start", payload),
+};
 
 if (process.contextIsolated) {
   try {

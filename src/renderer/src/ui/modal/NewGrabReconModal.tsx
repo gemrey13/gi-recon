@@ -32,7 +32,19 @@ const NewGrabReconModal: React.FC<Props> = ({ onClose }) => {
       console.log("GRAB DATA:", grabData);
       console.groupEnd();
 
+      const api = (window as any).api;
+
       // Next: reconciliation logic
+      const sessionId = await api.startRecon({
+        partner: "GRAB",
+        branch: "PANDA",
+        startDate: "2025-11-13",
+        endDate: "2025-11-13",
+        posRows: posData,
+        grabRows: grabData,
+      });
+
+      console.log("✅ Recon session created:", sessionId);
     } catch (err) {
       console.error("Parsing failed:", err);
       alert((err as Error).message);
