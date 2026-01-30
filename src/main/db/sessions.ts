@@ -61,6 +61,11 @@ export function updateSessionSummary(db: Database, sessionId: number) {
         FROM grab_transactions
         WHERE session_id = ${sessionId}
       ),
+      total_net_payout = (
+        SELECT SUM(total)
+        FROM grab_transactions
+        WHERE session_id = ${sessionId}
+      ),
       issue_count = (
         SELECT COUNT(*)
         FROM grab_transactions

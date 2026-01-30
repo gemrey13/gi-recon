@@ -25,6 +25,7 @@ export function initDb() {
       end_date TEXT,
       total_partner_amt REAL DEFAULT 0,
       total_pos_amt REAL DEFAULT 0,
+      total_net_payout REAL DEFAULT 0,
       issue_count INTEGER DEFAULT 0,
       status TEXT DEFAULT 'Pending',
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
