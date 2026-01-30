@@ -49,16 +49,13 @@ function parseDBFDate(date: any): string | null {
 }
 
 // ---------------- POS (DBF) ----------------
-export async function parsePOSFile(file: File, targetDate?: Date): Promise<ParsedRow[]> {
+export async function parsePOSFile(file: File, targetDate: string): Promise<ParsedRow[]> {
   if (!file) throw new Error("POS file missing.");
+  if (!targetDate) throw new Error("Target date is required.");
 
   const arrayBuffer = await file.arrayBuffer();
   const dataView = new DataView(arrayBuffer);
-
   const dbfRecords = parseDBF(dataView);
-
-  const target = targetDate ? new Date(targetDate) : new Date();
-  target.setHours(0, 0, 0, 0);
 
   const rows = dbfRecords
     .map((r: any) => {
@@ -76,7 +73,7 @@ export async function parsePOSFile(file: File, targetDate?: Date): Promise<Parse
       return out;
     })
     .filter((r) => {
-      return r.CUSNAME === "GRAB" && r.ORDDATE === "11/14/2025"; // match target date
+      return r.CUSNAME === "GRAB" && r.ORDDATE === targetDate; // match target date
     });
 
   if (!rows.length) throw new Error("No valid POS rows found.");

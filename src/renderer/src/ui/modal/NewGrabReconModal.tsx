@@ -23,8 +23,10 @@ const NewGrabReconModal: React.FC<Props> = ({ onClose }) => {
     setIsProcessing(true);
 
     try {
-      const posData = await parsePOSFile(posFile);
       const grabData = await parseGrabFile(grabFile);
+      const targetDate = grabData[0].created_on as string;
+      const posData = await parsePOSFile(posFile, targetDate);
+
 
       console.group("📊 FRONTEND PARSED DATA");
       console.log("Reconciliation Date:", formattedReconDate);
