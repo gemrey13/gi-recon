@@ -81,21 +81,19 @@ const GrabDashboard = () => {
         {/* Search ID */}
         <div className="flex-1 min-w-37.5">
           <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1 mb-1 block">
-            Search ID
+            Search ID or Branch
           </label>
           <div className="relative">
             <span className="absolute left-3 top-2.5 text-slate-400">🔍</span>
             <input
               type="text"
-              placeholder="e.g. 101"
+              placeholder="e.g. 101, Southwoods Mall"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full bg-slate-50 border-none rounded-xl py-2 pl-9 pr-4 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-indigo-500"
             />
           </div>
         </div>
-
-        
 
         {/* Start Date */}
         <div className="w-40">
@@ -183,7 +181,7 @@ const GrabDashboard = () => {
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <h3 className="font-bold text-lg text-slate-800">{session.branch} Branch</h3>
+                    <h3 className="font-bold text-lg text-slate-800">{session.branch}</h3>
                     <span className="bg-slate-100 text-slate-500 text-[10px] px-2 py-0.5 rounded font-mono">
                       #{session.id}
                     </span>
