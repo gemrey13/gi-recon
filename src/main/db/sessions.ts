@@ -76,3 +76,80 @@ export function updateSessionSummary(db: Database, sessionId: number) {
     WHERE id = ${sessionId}
   `);
 }
+
+
+export interface FetchSessionFilters {
+  searchQuery?: string;
+  branch?: string; // branch_name
+  startDate?: string; // YYYY-MM-DD
+  endDate?: string; // YYYY-MM-DD
+}
+
+export interface SessionRow {
+  id: number;
+  branch: string;
+  date: string;
+  displayDate: string;
+  total: number;
+  issues: number;
+  status: string;
+}
+
+/**
+ * Fetch sessions from the database with optional filtering
+ */
+export function fetchSessions(db: Database, filters: FetchSessionFilters = {}): SessionRow[] {
+  const { searchQuery, branch, startDate, endDate } = filters;
+
+  let sql = `SELECT *
+             FROM sessions
+             WHERE 1=1`;
+  const params: any[] = [];
+
+  // Filter by session ID
+  if (searchQuery) {
+    sql += ` AND id LIKE ?`;
+    params.push(`%${searchQuery}%`);
+  }
+
+  // Filter by branch
+  if (branch && branch !== "All") {
+    sql += ` AND branch_name = ?`;
+    params.push(branch);
+  }
+
+  // Filter by start date
+  if (startDate) {
+    sql += ` AND start_date >= ?`;
+    params.push(startDate);
+  }
+
+  // Filter by end date
+  if (endDate) {
+    sql += ` AND start_date <= ?`;
+    params.push(endDate);
+  }
+
+  // Order newest first
+  sql += ` ORDER BY start_date DESC, id DESC`;
+
+  const rows = db.prepare(sql).all(...params);
+
+  return rows.map((row: any) => ({
+    id: row.id,
+    branch: row.branch_name,
+    date: row.start_date,
+    displayDate: row.start_date
+      ? new Date(row.start_date).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        })
+      : "",
+    total: row.total_net_payout || 0, // Use total_net_payout as total
+    total_pos: row.total_pos_amt || 0,
+    total_grab: row.total_partner_amt || 0,
+    issues: row.issue_count || 0,
+    status: row.status || "Pending",
+  }));
+}

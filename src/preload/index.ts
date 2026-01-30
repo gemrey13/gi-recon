@@ -2,8 +2,8 @@ import { contextBridge, ipcRenderer } from "electron";
 import { electronAPI } from "@electron-toolkit/preload";
 
 const api = {
-  startRecon: (payload: any) =>
-    ipcRenderer.invoke("recon:start", payload),
+  startRecon: (payload: any) => ipcRenderer.invoke("recon:start", payload),
+  fetchSession: (filters: any) => ipcRenderer.invoke("session:fetch", filters),
 };
 
 if (process.contextIsolated) {

@@ -1,77 +1,30 @@
 import NewGrabReconModal from "@renderer/ui/modal/NewGrabReconModal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 const GrabDashboard = () => {
   const navigate = useNavigate();
   const [showNewRecon, setShowNewRecon] = useState(false);
+  const [sessions, setSessions] = useState<any[]>([]);
 
-  // --- FILTER STATES ---
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedBranch, setSelectedBranch] = useState("All");
 
-  // DATE RANGE STATES
   const [startDate, setStartDate] = useState(""); // YYYY-MM-DD
   const [endDate, setEndDate] = useState(""); // YYYY-MM-DD
 
-  // Mock Database Data
-  const sessions = [
-    {
-      id: 101,
-      date: "2026-01-29",
-      displayDate: "Jan 29, 2026",
-      branch: "Lucena",
-      total: 45000,
-      issues: 2,
-      status: "Pending",
-    },
-    {
-      id: 102,
-      date: "2026-01-28",
-      displayDate: "Jan 28, 2026",
-      branch: "Lucena",
-      total: 42100,
-      issues: 0,
-      status: "Completed",
-    },
-    {
-      id: 103,
-      date: "2026-01-29",
-      displayDate: "Jan 29, 2026",
-      branch: "Tayabas",
-      total: 12500,
-      issues: 5,
-      status: "Pending",
-    },
-    {
-      id: 104,
-      date: "2026-01-20",
-      displayDate: "Jan 20, 2026",
-      branch: "Pagbilao",
-      total: 18000,
-      issues: 0,
-      status: "Completed",
-    },
-  ];
-
-  // --- FILTER LOGIC ---
   const filteredSessions = sessions.filter((session) => {
-    // 1. Search ID (Convert ID to string to match)
     const matchesSearch = session.id.toString().includes(searchQuery);
 
-    // 2. Filter Branch
     const matchesBranch = selectedBranch === "All" || session.branch === selectedBranch;
 
-    // 3. Filter Date Range
-    // If startDate is set, session date must be >= startDate
-    // If endDate is set, session date must be <= endDate
     const matchesStartDate = startDate ? session.date >= startDate : true;
     const matchesEndDate = endDate ? session.date <= endDate : true;
 
     return matchesSearch && matchesBranch && matchesStartDate && matchesEndDate;
   });
 
-  // --- SHORTCUT HANDLERS ---
   const handleSetToday = () => {
     const today = new Date().toISOString().split("T")[0];
     setStartDate(today);
@@ -84,6 +37,29 @@ const GrabDashboard = () => {
     setStartDate("");
     setEndDate("");
   };
+
+  const fetchSessions = async () => {
+    const api = (window as any).api;
+
+    const result = await api.fetchSession({
+      searchQuery,
+      branch: selectedBranch,
+      startDate,
+      endDate,
+    });
+
+    if (result.error) {
+      toast.error(result.error);
+      setSessions([]);
+    } else {
+      setSessions(result);
+    }
+  };
+
+  // Re-fetch whenever filters change
+  useEffect(() => {
+    fetchSessions();
+  }, [searchQuery, selectedBranch, startDate, endDate]);
 
   return (
     <div className="p-8 max-w-7xl mx-auto">
@@ -233,8 +209,18 @@ const GrabDashboard = () => {
               </div>
 
               <div className="flex items-center gap-8">
+
                 <div className="text-right">
-                  <p className="text-[10px] font-bold text-slate-400 uppercase">Total Sales</p>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase">Total POS Amt</p>
+                  <p className="font-bold text-slate-900">₱{session.total_pos.toLocaleString()}</p>
+                </div>
+                 <div className="text-right">
+                  <p className="text-[10px] font-bold text-slate-400 uppercase">Total GRAB Amt</p>
+                  <p className="font-bold text-slate-900">₱{session.total_grab.toLocaleString()}</p>
+                </div>
+
+                <div className="text-right">
+                  <p className="text-[10px] font-bold text-slate-400 uppercase">Total Payout</p>
                   <p className="font-bold text-slate-900">₱{session.total.toLocaleString()}</p>
                 </div>
 

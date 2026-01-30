@@ -3,7 +3,7 @@ import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
 import db, { initDb } from "./db";
-import { applyMatches, createSession, updateSessionSummary } from "./db/sessions";
+import { applyMatches, createSession, fetchSessions, updateSessionSummary } from "./db/sessions";
 import { insertGrabTransactions, insertPOSTransactions } from "./db/insert";
 import { reconcilePOSvsGrab } from "./db/match";
 import { getBranchNameFromGrab } from "./db/branch";
@@ -95,6 +95,16 @@ app.whenReady().then(() => {
     } catch (err) {
       // Return error info instead of throwing
       return { errors: err };
+    }
+  });
+
+  ipcMain.handle("session:fetch", (_, filters) => {
+    try {
+      const sessions = fetchSessions(db, filters);
+      return sessions;
+    } catch (err) {
+      console.error("Failed to fetch sessions:", err);
+      return { error: (err as Error).message };
     }
   });
 
