@@ -69,6 +69,7 @@ const GrabSessionDetail = () => {
       btn: "text-slate-400 border-slate-200 hover:border-indigo-600 hover:text-indigo-600",
     },
   };
+
   const totalVariance = rows.reduce((sum, r) => sum + (r.variance || 0), 0);
 
   return (
@@ -231,7 +232,9 @@ const GrabSessionDetail = () => {
                                     <span className="font-bold">₱{r.grschrg.toLocaleString()}</span>
                                   </div>
                                   <div className="flex justify-between">
-                                    <span className="text-slate-500 font-medium">Discount (POS)</span>
+                                    <span className="text-slate-500 font-medium">
+                                      Discount (POS)
+                                    </span>
                                     <span className="font-bold text-rose-500">
                                       - ₱{r.promo_amt.toLocaleString()}
                                     </span>
@@ -264,13 +267,17 @@ const GrabSessionDetail = () => {
                                 ) : (
                                   <div className="space-y-3 text-sm">
                                     <div className="flex justify-between border-b border-slate-50 pb-2">
-                                      <span className="text-slate-500 font-medium">Order Reference</span>
+                                      <span className="text-slate-500 font-medium">
+                                        Order Reference
+                                      </span>
                                       <span className="font-bold font-mono text-xs">
                                         {r.booking_id}
                                       </span>
                                     </div>
                                     <div className="flex justify-between border-b border-slate-50 pb-2">
-                                      <span className="text-slate-500 font-medium">Gross Amount</span>
+                                      <span className="text-slate-500 font-medium">
+                                        Gross Amount
+                                      </span>
                                       <span className="font-bold">
                                         ₱{r.amount?.toLocaleString()}
                                       </span>
@@ -288,8 +295,7 @@ const GrabSessionDetail = () => {
                                         Grab Net Sales
                                       </span>
                                       <span className="text-lg font-black text-emerald-700">
-                                        ₱
-                                        {r.net_sales?.toLocaleString()}
+                                        ₱{r.net_sales?.toLocaleString()}
                                       </span>
                                     </div>
                                   </div>
