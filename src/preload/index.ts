@@ -4,6 +4,7 @@ import { electronAPI } from "@electron-toolkit/preload";
 const api = {
   startRecon: (payload: any) => ipcRenderer.invoke("recon:start", payload),
   fetchSession: (filters: any) => ipcRenderer.invoke("session:fetch", filters),
+  fetchTransactions: (sessionId: number) => ipcRenderer.invoke("transactions:fetch", sessionId),
 };
 
 if (process.contextIsolated) {

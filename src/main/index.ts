@@ -8,6 +8,7 @@ import { insertGrabTransactions, insertPOSTransactions } from "./db/insert";
 import { reconcilePOSvsGrab } from "./db/match";
 import { getBranchNameFromGrab } from "./db/branch";
 import path from "path";
+import { fetchSessionTransactions } from "./db/queries/fetchSessionTransactions";
 
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
@@ -46,6 +47,10 @@ app.whenReady().then(() => {
 
   app.on("browser-window-created", (_, window) => {
     optimizer.watchWindowShortcuts(window);
+  });
+
+  ipcMain.handle("transactions:fetch", (_, sessionId: number) => {
+    return fetchSessionTransactions(db, sessionId);
   });
 
   ipcMain.handle("recon:start", async (_, payload) => {
