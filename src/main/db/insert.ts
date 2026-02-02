@@ -220,8 +220,6 @@ export function insertGrabTransactions(db: Database, sessionId: number, rows: an
       try {
         stmt.run(record);
       } catch (e) {
-        console.error("❌ INSERT FAILED:", e);
-        console.error(record);
         errors.push({ record, error: e });
       }
     }

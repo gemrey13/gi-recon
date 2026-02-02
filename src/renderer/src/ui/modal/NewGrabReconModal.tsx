@@ -51,8 +51,21 @@ const NewGrabReconModal: React.FC<Props> = ({ onClose }) => {
   };
 
   const handleErrors = (errors: any) => {
-    if (errors.posErrors?.length) toast.error(`POS: ${errors.posErrors.length} failures`);
-    if (errors.grabErrors?.length) toast.error(`Grab: ${errors.grabErrors.length} failures`);
+    const { posErrors, grabErrors } = errors;
+    if (grabErrors?.some((e: any) => e.error?.code === "SQLITE_CONSTRAINT_UNIQUE")) {
+      toast.error("Duplicate Data: These Grab transactions already exist in the database.", {
+        duration: 6000,
+        icon: "🚫",
+      });
+      return;
+    }
+
+    if (grabErrors?.length) {
+      toast.error(`Grab: ${grabErrors.length} records failed to insert.`);
+    }
+    if (posErrors?.length) {
+      toast.error(`POS: ${posErrors.length} records failed. Date might already be reconciled.`);
+    }
   };
 
   return (
