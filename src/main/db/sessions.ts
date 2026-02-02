@@ -96,7 +96,7 @@ export interface SessionRow {
 
 /**
  * Fetch sessions from the database with optional filtering
- */
+*/
 export function fetchSessions(db: Database, filters: FetchSessionFilters = {}): SessionRow[] {
   const { searchQuery, startDate, endDate } = filters;
 
