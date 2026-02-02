@@ -16,6 +16,7 @@ export function fetchSessionTransactions(db: Database, sessionId: number) {
       g.id AS grab_id,
       g.booking_id,
       g.created_on,
+      g.store_name,
       g.amount,
       g.discount_merchant_funded,
       g.net_sales,

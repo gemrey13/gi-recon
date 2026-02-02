@@ -14,6 +14,7 @@ type TransactionRow = {
   amount: number | null;
   discount_merchant_funded: number | null;
   net_sales: number | null;
+  store_name: string | null;
   balance: number;
   variance: number;
   pos_status: string;
@@ -86,7 +87,7 @@ const GrabSessionDetail = () => {
           <div>
             <h2 className="text-xl font-black tracking-tight">Session #{sessionId}</h2>
             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-              GrabFood Reconciliation
+              {rows[0]?.store_name || "GrabFood Reconciliation"}
             </p>
           </div>
         </div>
@@ -145,7 +146,7 @@ const GrabSessionDetail = () => {
                           <div className="flex flex-col">
                             <span className="font-mono font-bold text-slate-900">{r.cusno}</span>
                             <span className="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">
-                              POS Ref
+                              POS Ref {r.orddate}
                             </span>
                           </div>
                         </td>
@@ -236,7 +237,7 @@ const GrabSessionDetail = () => {
                                       Discount (POS)
                                     </span>
                                     <span className="font-bold text-rose-500">
-                                      - ₱{r.promo_amt.toLocaleString()}
+                                      ₱-{r.promo_amt.toLocaleString()}
                                     </span>
                                   </div>
                                   <div className="pt-3 border-t border-slate-100 flex justify-between items-end">
