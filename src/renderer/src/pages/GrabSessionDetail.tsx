@@ -121,7 +121,7 @@ const GrabSessionDetail = () => {
         <ReviewModal
           item={activeItem}
           onClose={() => setShowReview(false)}
-          onSave={(s, n) => console.log(s, n)}
+          onSave={(s: any, n: any) => console.log(s, n)}
         />
       )}
     </div>
