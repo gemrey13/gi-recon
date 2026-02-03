@@ -1,14 +1,16 @@
 import { Database } from "better-sqlite3";
 import { convertToMDY } from "./utils";
 
+type TCreateSessionData = {
+  partner: string;
+  branch_name: string;
+  start_date: string;
+  end_date: string;
+};
+
 export function createSession(
   db: Database,
-  data: {
-    partner: string;
-    branch_name: string;
-    start_date: string;
-    end_date: string;
-  },
+  data: TCreateSessionData,
 ): number {
   const stmt = db.prepare(`
     INSERT INTO sessions (
@@ -96,7 +98,7 @@ export interface SessionRow {
 
 /**
  * Fetch sessions from the database with optional filtering
-*/
+ */
 export function fetchSessions(db: Database, filters: FetchSessionFilters = {}): SessionRow[] {
   const { searchQuery, startDate, endDate } = filters;
 
