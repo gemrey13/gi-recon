@@ -37,12 +37,12 @@ export function initDb() {
     CREATE TABLE IF NOT EXISTS pos_transactions (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       session_id INTEGER NOT NULL,
-      
+
       -- Primary Identifiers
       cslipno TEXT, -- The main slip/receipt number
       orddate TEXT,
       ordtime TEXT,
-      
+
       -- Customer Details
       cusno TEXT,
       cusname TEXT,
@@ -52,7 +52,7 @@ export function initDb() {
       cusfax TEXT,
       cuscont TEXT,
       age TEXT,
-      
+
       -- Financial Breakdown
       chargpct REAL DEFAULT 0,
       grschrg REAL DEFAULT 0,     -- Gross Charge
@@ -75,7 +75,7 @@ export function initDb() {
       tsigned REAL DEFAULT 0,
       vat_xmpt REAL DEFAULT 0,
       ntax_sal REAL DEFAULT 0,
-      
+
       -- Specific Discount Tracking
       dis_prom REAL DEFAULT 0,
       dis_udisc REAL DEFAULT 0,
@@ -91,7 +91,7 @@ export function initDb() {
       dis_k REAL DEFAULT 0,
       dis_l REAL DEFAULT 0,
       dis_vx REAL DEFAULT 0,
-      
+
       -- Payment & Misc
       terms TEXT,
       cardno TEXT,
@@ -104,7 +104,7 @@ export function initDb() {
       -- Matching State
       recon_status TEXT DEFAULT 'unreconciled',
       linked_grab_id INTEGER DEFAULT NULL,
-      
+
       FOREIGN KEY (session_id) REFERENCES sessions (id) ON DELETE CASCADE
     );
   `);
@@ -114,7 +114,7 @@ export function initDb() {
     CREATE TABLE IF NOT EXISTS grab_transactions (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       session_id INTEGER NOT NULL,
-      
+
       -- Identity & Reference
       merchant_name TEXT, 
       merchant_id TEXT,
@@ -142,14 +142,14 @@ export function initDb() {
       terminal_id TEXT, 
       channel TEXT, 
       offer_type TEXT,
-      
+
       -- Commissions & Points
       grab_fee_percent REAL, 
       points_multiplier REAL, 
       points_issued REAL,
       settlement_id TEXT, 
       transfer_date TEXT,
-      
+
       -- Financial Breakdown
       amount REAL, 
       tax_on_order_value REAL,
@@ -181,7 +181,7 @@ export function initDb() {
       order_commission_percent REAL,
       tax_on_grab_food_commission_adjustments_ads REAL, 
       tax_on_total REAL,
-      
+
       -- Cancellation & Incidents
       cancellation_reason TEXT, 
       cancelled_by TEXT,
