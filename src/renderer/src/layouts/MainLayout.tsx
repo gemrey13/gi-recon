@@ -1,15 +1,19 @@
-import { NavLink, Outlet } from 'react-router-dom';
+import { NavLink, Outlet } from "react-router-dom";
 
 const MainLayout = () => {
   return (
     <div className="flex h-screen bg-slate-50 text-slate-900 overflow-hidden font-sans">
       {/* SIDEBAR */}
       <aside className="w-64 bg-slate-900 text-white flex flex-col p-4 shadow-xl">
-        <h1 className="text-xl font-black mb-10 px-2 tracking-tight">Gi-Recon <span className="text-indigo-400">PRO</span></h1>
-        
+        <h1 className="text-xl font-black mb-10 px-2 tracking-tight">
+          Gi-Recon <span className="text-indigo-400">PRO</span>
+        </h1>
+
         <nav className="space-y-2 flex-1">
           <NavItem to="/" label="Overview" icon="📊" />
-          <div className="pt-4 pb-2 px-2 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Reconciliation</div>
+          <div className="pt-4 pb-2 px-2 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+            Reconciliation
+          </div>
           <NavItem to="/recon/panda" label="FoodPanda" icon="🐼" />
           <NavItem to="/recon/grab" label="GrabFood" icon="🚗" />
         </nav>
@@ -29,14 +33,15 @@ const MainLayout = () => {
 };
 
 const NavItem = ({ to, label, icon }: any) => (
-  <NavLink 
-    to={to} 
-    className={({ isActive }) => 
+  <NavLink
+    to={to}
+    className={({ isActive }) =>
       `flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium ${
-        isActive ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+        isActive
+          ? "bg-indigo-600 text-white shadow-lg"
+          : "text-slate-400 hover:bg-slate-800 hover:text-white"
       }`
-    }
-  >
+    }>
     <span>{icon}</span> {label}
   </NavLink>
 );
