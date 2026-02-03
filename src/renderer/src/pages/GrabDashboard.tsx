@@ -17,6 +17,7 @@ const GrabDashboard = () => {
     const query = searchQuery.toLowerCase().trim();
 
     if (!query) return true;
+    
 
     // Match either session ID or branch name
     const matchesId = session.id.toString().includes(query);
