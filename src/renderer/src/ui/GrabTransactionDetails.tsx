@@ -1,6 +1,6 @@
 import { TransactionRow } from "@renderer/constant/grabConstant";
 
-const TransactionDetails = ({ r }: { r: TransactionRow }) => (
+const GrabTransactionDetails = ({ r }: { r: TransactionRow }) => (
   <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative">
     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-slate-200 hidden md:block">
       <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -93,4 +93,4 @@ const DataRow = ({ label, value, valueClass = "font-bold text-slate-700" }: any)
   </div>
 );
 
-export default TransactionDetails;
+export default GrabTransactionDetails;

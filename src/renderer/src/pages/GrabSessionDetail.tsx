@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import ReviewModal from "@renderer/ui/modal/ReviewModel";
 import { STATUS_MAP, TransactionRow } from "@renderer/constant/grabConstant";
 import SessionHeader from "@renderer/ui/SessionHeader";
-import TransactionDetails from "@renderer/ui/GrabTransactionDetails";
+import GrabTransactionDetails from "@renderer/ui/GrabTransactionDetails";
 
 const GrabSessionDetail = () => {
   const { sessionId } = useParams();
@@ -105,7 +105,7 @@ const GrabSessionDetail = () => {
                         <td
                           colSpan={5}
                           className="bg-slate-50/50 px-8 py-10 border-y border-slate-100">
-                          <TransactionDetails r={r} />
+                          <GrabTransactionDetails r={r} />
                         </td>
                       </tr>
                     )}
