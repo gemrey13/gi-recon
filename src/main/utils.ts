@@ -13,11 +13,7 @@ export type ParsedRow = {
 
 // ------------------ Parse DBF ------------------
 export async function parsePOSDbfFile(dbfPath: string, branchCode: string): Promise<ParsedRow[]> {
-  if (!fs.existsSync(dbfPath)) {
-    throw new Error("CHARGES.dbf not found");
-  }
-
-  console.log("Parsing DBF:", dbfPath);
+  if (!fs.existsSync(dbfPath)) throw new Error("CHARGES.dbf not found");
 
   const buffer = await fs.promises.readFile(dbfPath);
   const arrayBuffer = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
@@ -25,28 +21,54 @@ export async function parsePOSDbfFile(dbfPath: string, branchCode: string): Prom
 
   const parseFn = (parseDBF as any).default || parseDBF;
   const parsed = parseFn(dataView);
-
-  // Handle differences between versions
   const records = Array.isArray(parsed) ? parsed : parsed.records;
-  if (!records) throw new Error("No records found in DBF");
+  if (!records) return [];
 
-  const rows = records
-    .map((r: any) => {
-      const out: ParsedRow = { BRANCHCODE: branchCode };
-      Object.keys(r).forEach((key) => {
-        let val = r[key];
-        if (typeof val === "string") val = val.trim();
-        out[key.trim().toUpperCase()] = val;
-      });
-      return out;
-    })
-    .filter((r) => {
-      const cus = r.CUSNAME?.toUpperCase();
-      return cus === "GRAB" || cus === "PANDA";
-    });
+  // PH timezone now
+  const now = new Date();
+  const phOffset = 8 * 60; // +8:00 in minutes
+  const phToday = new Date(now.getTime() + (phOffset - now.getTimezoneOffset()) * 60000);
+  const currentYear = phToday.getFullYear();
+
+  const rows: ParsedRow[] = [];
+
+  for (const r of records) {
+    const cus = (r.CUSNAME ?? "").toUpperCase();
+    if (cus !== "GRAB" && cus !== "PANDA") continue; // skip others
+
+    let orderDateStr = r.ORDDATE;
+    let dt: Date | null = null;
+
+    if (orderDateStr instanceof Date) dt = orderDateStr;
+    else if (typeof orderDateStr === "string" && /^\d{8}$/.test(orderDateStr)) {
+      // parse YYYYMMDD
+      dt = new Date(`${orderDateStr.slice(0, 4)}-${orderDateStr.slice(4, 6)}-${orderDateStr.slice(6, 8)}`);
+    }
+    if (!dt) continue;
+
+    // Only include current year
+    if (dt.getFullYear() !== currentYear) continue;
+
+    // Format MM/DD/YYYY
+    const mm = String(dt.getMonth() + 1).padStart(2, "0");
+    const dd = String(dt.getDate()).padStart(2, "0");
+    const yyyy = dt.getFullYear();
+
+    const out: ParsedRow = { BRANCHCODE: branchCode };
+
+    for (const key of Object.keys(r)) {
+      let val = r[key];
+      if (key.toUpperCase() === "ORDDATE") val = `${mm}/${dd}/${yyyy}`;
+      else if (typeof val === "string") val = val.trim();
+      out[key.trim().toUpperCase()] = val;
+    }
+
+    rows.push(out);
+  }
 
   return rows;
 }
+
 
 
 // ------------------ Find ZIP Files ------------------
@@ -88,7 +110,7 @@ export async function extractZip(zipPath: string, outputDir: string): Promise<vo
 // ------------------ Process a single branch ------------------
 export async function processBranch(branchCode: string, branchPath: string): Promise<ParsedRow[]> {
   const zipFiles = findZipFiles(branchPath);
-  
+
   const allRows: ParsedRow[][] = await Promise.all(
     zipFiles.map(async (zip) => {
       const tempDir = path.join(os.tmpdir(), "gi-recon", branchCode, path.basename(zip, ".ZIP"));
