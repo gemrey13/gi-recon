@@ -42,7 +42,9 @@ export async function parsePOSDbfFile(dbfPath: string, branchCode: string): Prom
     if (orderDateStr instanceof Date) dt = orderDateStr;
     else if (typeof orderDateStr === "string" && /^\d{8}$/.test(orderDateStr)) {
       // parse YYYYMMDD
-      dt = new Date(`${orderDateStr.slice(0, 4)}-${orderDateStr.slice(4, 6)}-${orderDateStr.slice(6, 8)}`);
+      dt = new Date(
+        `${orderDateStr.slice(0, 4)}-${orderDateStr.slice(4, 6)}-${orderDateStr.slice(6, 8)}`,
+      );
     }
     if (!dt) continue;
 
@@ -68,8 +70,6 @@ export async function parsePOSDbfFile(dbfPath: string, branchCode: string): Prom
 
   return rows;
 }
-
-
 
 // ------------------ Find ZIP Files ------------------
 export function findZipFiles(dir: string, result: string[] = []) {
@@ -132,12 +132,11 @@ export async function processBranch(branchCode: string, branchPath: string): Pro
           console.warn(`Failed to delete temp dir: ${tempDir}`, rmErr);
         }
       }
-    })
+    }),
   );
 
   return allRows.flat();
 }
-
 
 // ------------------ Read all branches ------------------
 export async function readAllBranchesPOS(): Promise<ParsedRow[]> {
@@ -150,14 +149,13 @@ export async function readAllBranchesPOS(): Promise<ParsedRow[]> {
     branches.map(async (branch) => {
       const branchPath = path.join(root, branch);
       return processBranch(branch, branchPath);
-    })
+    }),
   );
 
   const result = allRows.flat();
   console.log(`Total POS rows parsed: ${result.length}`);
   return result;
 }
-
 
 // ------------------ Write CSV to Documents ------------------
 // Writes POS rows to CSV in the Documents folder
@@ -170,10 +168,10 @@ export function writeCSVToDocuments(rows: ParsedRow[], fileName = "pos_output.cs
   // Prepare CSV lines
   const csvLines = [
     headers.join(","), // header
-    ...rows.map(r =>
+    ...rows.map((r) =>
       headers
-        .map(h => `"${String(r[h] ?? "").replace(/"/g, '""')}"`) // quote values, escape quotes
-        .join(",")
+        .map((h) => `"${String(r[h] ?? "").replace(/"/g, '""')}"`) // quote values, escape quotes
+        .join(","),
     ),
   ];
 
