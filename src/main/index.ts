@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, ipcMain } from "electron";
+import { app, shell, BrowserWindow, ipcMain, dialog } from "electron";
 import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
@@ -9,6 +9,7 @@ import { reconcilePOSvsGrab } from "./db/match";
 import { getBranchNameFromGrab } from "./db/branch";
 import path from "path";
 import { fetchSessionTransactions } from "./db/queries/fetchSessionTransactions";
+import { getAllBranches, getPosDataPath, isValidPosDataPath, setPosDataPath } from "./config";
 
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
@@ -47,6 +48,36 @@ app.whenReady().then(() => {
 
   app.on("browser-window-created", (_, window) => {
     optimizer.watchWindowShortcuts(window);
+  });
+
+  ipcMain.handle("get-pos-path", () => {
+    return getPosDataPath();
+  });
+
+  ipcMain.handle("select-pos-path", async () => {
+    const result = await dialog.showOpenDialog({
+      properties: ["openDirectory"],
+    });
+
+    if (result.canceled) return null;
+
+    const dir = result.filePaths[0];
+
+    if (!isValidPosDataPath(dir)) {
+      throw new Error("Invalid POS data folder");
+    }
+
+    setPosDataPath(dir);
+    return dir;
+  });
+
+  ipcMain.handle("get-branches", () => {
+    return getAllBranches();
+  });
+
+  ipcMain.handle("open-pos-path", () => {
+    const dir = getPosDataPath();
+    if (dir) shell.openPath(dir);
   });
 
   ipcMain.handle("transactions:fetch", (_, sessionId: number) => {
