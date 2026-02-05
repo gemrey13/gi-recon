@@ -23,6 +23,16 @@ const MainLayout = () => {
     (window as any).api.openPosPath();
   };
 
+  const handleReadPOSBranches = async () => {
+    try {
+      await (window as any).api.readPOSBranches();
+ 
+    } catch (error) {
+      console.error(error);
+      alert("Failed to read POS branches");
+    }
+  };
+
   return (
     <div className="flex h-screen bg-slate-50 text-slate-900 overflow-hidden font-sans">
       {/* SIDEBAR */}
@@ -68,6 +78,12 @@ const MainLayout = () => {
         <div className="p-4 bg-slate-800 rounded-xl text-xs">
           <p className="opacity-60">Last Sync</p>
           <p className="font-bold">Today, 10:45 AM</p>
+             <button
+            onClick={handleReadPOSBranches}
+            className="w-full bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg py-1 text-xs font-semibold"
+          >
+            Sync POS Branches
+          </button>
         </div>
       </aside>
 

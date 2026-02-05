@@ -10,6 +10,7 @@ import { getBranchNameFromGrab } from "./db/branch";
 import path from "path";
 import { fetchSessionTransactions } from "./db/queries/fetchSessionTransactions";
 import { getAllBranches, getPosDataPath, isValidPosDataPath, setPosDataPath } from "./config";
+import { readAllBranchesPOS, writeCSVToDocuments } from "./utils";
 
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
@@ -48,6 +49,14 @@ app.whenReady().then(() => {
 
   app.on("browser-window-created", (_, window) => {
     optimizer.watchWindowShortcuts(window);
+  });
+
+  ipcMain.handle("read-pos-charges", async () => {
+    const allRows = await readAllBranchesPOS();
+
+    // Step 2: Write the output to CSV in Documents folder
+    writeCSVToDocuments(allRows, "all_pos_branches.csv");
+    return allRows
   });
 
   ipcMain.handle("get-pos-path", () => {

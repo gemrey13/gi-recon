@@ -6,10 +6,12 @@ const api = {
   fetchSession: (filters: any) => ipcRenderer.invoke("session:fetch", filters),
   fetchTransactions: (sessionId: number) => ipcRenderer.invoke("transactions:fetch", sessionId),
 
-    getPosPath: () => ipcRenderer.invoke('get-pos-path'),
-  selectPosPath: () => ipcRenderer.invoke('select-pos-path'),
-  openPosPath: () => ipcRenderer.invoke('open-pos-path'),
-  getBranches: () => ipcRenderer.invoke('get-branches')
+  getPosPath: () => ipcRenderer.invoke("get-pos-path"),
+  selectPosPath: () => ipcRenderer.invoke("select-pos-path"),
+  openPosPath: () => ipcRenderer.invoke("open-pos-path"),
+  getBranches: () => ipcRenderer.invoke("get-branches"),
+
+  readPOSBranches: () => ipcRenderer.invoke("read-pos-charges"),
 };
 
 if (process.contextIsolated) {
