@@ -26,6 +26,7 @@
     "autoprefixer": "^10.4.23",
     "better-sqlite3": "^12.6.2",
     "chokidar": "^5.0.0",
+    "csv-writer": "^1.6.0",
     "electron-updater": "^6.3.9",
     "node-7z": "^3.0.0",
     "parsedbf": "^2.0.0",

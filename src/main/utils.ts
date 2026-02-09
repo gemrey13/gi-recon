@@ -159,29 +159,22 @@ export async function readAllBranchesPOS(): Promise<ParsedRow[]> {
 
 // ------------------ Write CSV to Documents ------------------
 // Writes POS rows to CSV in the Documents folder
-export function writeCSVToDocuments(rows: ParsedRow[], fileName = "pos_output.csv") {
+import { createObjectCsvWriter } from "csv-writer";
+
+export async function writeCSVToDocuments(rows: ParsedRow[], fileName = "pos_output.csv") {
   if (!rows.length) return;
 
-  // Get all headers from first row
-  const headers = Object.keys(rows[0]);
-
-  // Prepare CSV lines
-  const csvLines = [
-    headers.join(","), // header
-    ...rows.map((r) =>
-      headers
-        .map((h) => `"${String(r[h] ?? "").replace(/"/g, '""')}"`) // quote values, escape quotes
-        .join(","),
-    ),
-  ];
-
-  // Documents folder path
   const documentsDir = path.join(os.homedir(), "Documents");
-  if (!fs.existsSync(documentsDir)) fs.mkdirSync(documentsDir);
-
   const filePath = path.join(documentsDir, fileName);
-  fs.writeFileSync(filePath, csvLines.join("\n"), "utf8");
 
+  const headers = Object.keys(rows[0]).map((h) => ({ id: h, title: h }));
+
+  const csvWriter = createObjectCsvWriter({
+    path: filePath,
+    header: headers,
+  });
+
+  await csvWriter.writeRecords(rows);
   console.log(`CSV written to ${filePath}`);
   return filePath;
 }
