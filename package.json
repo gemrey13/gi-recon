@@ -23,6 +23,7 @@
     "@electron-toolkit/utils": "^4.0.0",
     "@tailwindcss/vite": "^4.1.18",
     "7zip-bin": "^5.2.0",
+    "adm-zip": "^0.5.16",
     "autoprefixer": "^10.4.23",
     "better-sqlite3": "^12.6.2",
     "chokidar": "^5.0.0",

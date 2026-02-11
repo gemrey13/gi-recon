@@ -36,8 +36,8 @@ export function initDb() {
   db.exec(`
     CREATE TABLE IF NOT EXISTS pos_transactions (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      session_id INTEGER NOT NULL,
-
+      branch TEXT
+      
       -- Primary Identifiers
       cslipno TEXT, -- The main slip/receipt number
       orddate TEXT,
@@ -101,11 +101,6 @@ export function initDb() {
       filler1 TEXT,
       filler2 TEXT,
 
-      -- Matching State
-      recon_status TEXT DEFAULT 'unreconciled',
-      linked_grab_id INTEGER DEFAULT NULL,
-
-      FOREIGN KEY (session_id) REFERENCES sessions (id) ON DELETE CASCADE
     );
   `);
 
