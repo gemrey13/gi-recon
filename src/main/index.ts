@@ -1,16 +1,9 @@
-import { app, shell, BrowserWindow, ipcMain, dialog } from "electron";
+import { app, shell, BrowserWindow } from "electron";
 import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
-import db, { initDb } from "./db";
-import { applyMatches, createSession, fetchSessions, updateSessionSummary } from "./db/sessions";
-import { insertGrabTransactions, insertPOSTransactions } from "./db/insert";
-import { reconcilePOSvsGrab } from "./db/match";
-import { getBranchNameFromGrab } from "./db/branch";
+import { initDb } from "./db";
 import path from "path";
-import { fetchSessionTransactions } from "./db/queries/fetchSessionTransactions";
-import { getAllBranches, getPosDataPath, isValidPosDataPath, setPosDataPath } from "./config";
-import { readAllBranchesPOS, writeCSVToDocuments } from "./utils";
 
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
@@ -49,108 +42,6 @@ app.whenReady().then(() => {
 
   app.on("browser-window-created", (_, window) => {
     optimizer.watchWindowShortcuts(window);
-  });
-
-  ipcMain.handle("read-pos-charges", async () => {
-    const allRows = await readAllBranchesPOS();
-
-    // Step 2: Write the output to CSV in Documents folder
-    writeCSVToDocuments(allRows, "all_pos_branches.csv");
-    return allRows
-  });
-
-  ipcMain.handle("get-pos-path", () => {
-    return getPosDataPath();
-  });
-
-  ipcMain.handle("select-pos-path", async () => {
-    const result = await dialog.showOpenDialog({
-      properties: ["openDirectory"],
-    });
-
-    if (result.canceled) return null;
-
-    const dir = result.filePaths[0];
-
-    if (!isValidPosDataPath(dir)) {
-      throw new Error("Invalid POS data folder");
-    }
-
-    setPosDataPath(dir);
-    return dir;
-  });
-
-  ipcMain.handle("get-branches", () => {
-    return getAllBranches();
-  });
-
-  ipcMain.handle("open-pos-path", () => {
-    const dir = getPosDataPath();
-    if (dir) shell.openPath(dir);
-  });
-
-  ipcMain.handle("transactions:fetch", (_, sessionId: number) => {
-    return fetchSessionTransactions(db, sessionId);
-  });
-
-  ipcMain.handle("recon:start", async (_, payload) => {
-    const { partner, posRows, grabRows } = payload;
-
-    const branchName = getBranchNameFromGrab(grabRows);
-
-    let createdOn = grabRows[0].created_on;
-    if (!createdOn) throw new Error("Created On column missing in Grab file");
-
-    // Start a transaction
-    const tx = db.transaction(() => {
-      // Create session first
-      const sessionId = createSession(db, {
-        partner,
-        branch_name: branchName,
-        start_date: createdOn,
-        end_date: createdOn,
-      });
-
-      // Insert POS & Grab transactions
-      const posErrors = insertPOSTransactions(db, sessionId, posRows);
-      const grabErrors = insertGrabTransactions(db, sessionId, grabRows);
-
-      // If any insert failed, throw to rollback session creation
-      if (posErrors || grabErrors) {
-        throw { posErrors, grabErrors };
-      }
-
-      return sessionId;
-    });
-
-    try {
-      const sessionId = tx();
-      // Continue reconciliation only if inserts succeeded
-      const pos = db.prepare(`SELECT * FROM pos_transactions WHERE session_id = ?`).all(sessionId);
-      const grab = db
-        .prepare(`SELECT * FROM grab_transactions WHERE session_id = ?`)
-        .all(sessionId);
-
-      const results = reconcilePOSvsGrab(pos, grab);
-
-      applyMatches(db, results);
-      updateSessionSummary(db, sessionId);
-
-      return { sessionId };
-    } catch (err) {
-      // Return error info instead of throwing
-      return { errors: err };
-    }
-  });
-
-  ipcMain.handle("session:fetch", (_, filters) => {
-    try {
-      const sessions = fetchSessions(db, filters);
-      return sessions;
-    } catch (err) {
-      console.error("Failed to fetch sessions:", err);
-      return { error: (err as Error).message };
-    }
   });
 
   initDb();
