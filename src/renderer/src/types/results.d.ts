@@ -7,6 +7,7 @@ export type FilterState = {
 export type ReconcileGroup = {
   branch: string;
   date: string;
+  status: MatchStatus;
   items: MatchItem[];
 };
 
