@@ -166,7 +166,7 @@ const GrabDashboard = () => {
       <div className="grid grid-cols-3 gap-6 mb-8">
         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
           <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-            Record Shown
+            Group Shown
           </p>
           <p className="text-3xl font-black text-slate-800 mt-1">{groupCount}</p>
         </div>
