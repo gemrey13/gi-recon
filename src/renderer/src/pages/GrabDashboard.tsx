@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 
 
 const GrabDashboard = () => {
-  const [showNewRecon, setShowNewRecon] = useState(false);
+  const [showAddGrab, setShowAddGrab] = useState(false);
   const [branches, setBranches] = useState<string[]>([]);
   const [filters, setFilters] = useState<FilterState>({});
   const [results, setResults] = useState<ReconcileResponse>([]);
@@ -60,13 +60,13 @@ const GrabDashboard = () => {
         <div>
           <h1 className="text-3xl font-black text-slate-900 tracking-tight">GrabFood Overview</h1>
           <p className="text-slate-500 font-medium mt-1">
-            Select a session to view transactions or start a new audit.
+            Select a record to view transactions or add a new grab record.
           </p>
         </div>
         <button
-          onClick={() => setShowNewRecon(true)}
+          onClick={() => setShowAddGrab(true)}
           className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-indigo-200 transition-all flex items-center gap-2 cursor-pointer">
-          <span>+</span> New Reconciliation
+          <span>+</span> Add Grab Record
         </button>
       </div>
 
@@ -146,12 +146,12 @@ const GrabDashboard = () => {
       </div>
 
       {/* QUICK STATS ROW (Dynamic based on filtered results could be cool here) */}
-      {/* <div className="grid grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-3 gap-6 mb-8">
         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
           <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-            Sessions Shown
+            Record Shown
           </p>
-          <p className="text-3xl font-black text-slate-800 mt-1">{filteredSessions.length}</p>
+          <p className="text-3xl font-black text-slate-800 mt-1">{6}</p>
         </div>
         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
           <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
@@ -159,7 +159,7 @@ const GrabDashboard = () => {
           </p>
           <p className="text-3xl font-black text-slate-800 mt-1">
             ₱ 
-            {filteredSessions.reduce((acc, curr) => acc + curr.total, 0).toLocaleString()}
+            {5}
           </p>
         </div>
         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
@@ -167,10 +167,10 @@ const GrabDashboard = () => {
             Total Issues
           </p>
           <p className="text-3xl font-black text-red-500 mt-1">
-            {filteredSessions.reduce((acc, curr) => acc + curr.issues, 0)}
+            {6}
           </p>
         </div>
-      </div> */}
+      </div>
 
       {/* SESSIONS GRID */}
       <div className="grid grid-cols-1 gap-4">
@@ -239,7 +239,7 @@ const GrabDashboard = () => {
         )}
       </div>
 
-      {showNewRecon && <ImportGrabModal onClose={() => setShowNewRecon(false)} />}
+      {showAddGrab && <ImportGrabModal onClose={() => setShowAddGrab(false)} />}
     </div>
   );
 };
