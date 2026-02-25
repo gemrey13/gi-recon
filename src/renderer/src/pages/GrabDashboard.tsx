@@ -188,37 +188,34 @@ const GrabDashboard = () => {
                   <div className="flex items-center gap-2">
                     <h3 className="font-bold text-lg text-slate-800">{row.branch}</h3>
                     <span className="bg-slate-100 text-slate-500 text-[10px] px-2 py-0.5 rounded font-mono">
-                      {/* #{row.id} */} something
+                      #{row.status}
                     </span>
                   </div>
                   <p className="text-slate-500 text-sm font-medium">{row.date}</p>
                 </div>
               </div>
 
-              {/* <div className="flex items-center gap-8">
+              <div className="flex items-center gap-8">
                 <div className="text-right">
-                  <p className="text-[10px] font-bold text-slate-400 uppercase">Total POS Amt</p>
-                  <p className="font-bold text-slate-900">₱{session.total_pos.toLocaleString()}</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-[10px] font-bold text-slate-400 uppercase">Total GRAB Amt</p>
-                  <p className="font-bold text-slate-900">₱{session.total_grab.toLocaleString()}</p>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase">Issues</p>
+                  <p className="font-bold text-slate-900">{row.issueCount}</p>
                 </div>
 
+
                 <div className="text-right">
-                  <p className="text-[10px] font-bold text-slate-400 uppercase">Total Payout</p>
-                  <p className="font-bold text-slate-900">₱{session.total.toLocaleString()}</p>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase">Match Rate</p>
+                  <p className="font-bold text-slate-900">{row.matchRate}%</p>
                 </div>
 
                 <div className="text-right">
                   <p className="text-[10px] font-bold text-slate-400 uppercase">Status</p>
-                  {session.issues > 0 ? (
+                  {row.issueCount > 0 ? (
                     <span className="inline-flex items-center gap-1 text-red-600 font-bold text-sm bg-red-50 px-3 py-1 rounded-full">
-                      {session.issues} Flagged
+                      ⚠️{row.issueCount} Flagged
                     </span>
                   ) : (
                     <span className="text-green-600 font-bold text-sm bg-green-50 px-3 py-1 rounded-full">
-                      Matched
+                      ✅ Matched 
                     </span>
                   )}
                 </div>
@@ -226,7 +223,7 @@ const GrabDashboard = () => {
                 <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-indigo-600 group-hover:text-white transition-all">
                   ➝
                 </div>
-              </div> */}
+              </div>
             </div>
           ))
         ) : (

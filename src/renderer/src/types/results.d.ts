@@ -8,7 +8,11 @@ export type ReconcileGroup = {
   branch: string;
   date: string;
   status: MatchStatus;
-  items: MatchItem[];
+  issueCount: number;
+  matchRate: number;
+  totalCount: number;
+  exactCount: number;
+  items: MatchResult[];
 };
 
 export type MatchItem = {

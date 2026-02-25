@@ -78,6 +78,7 @@ export function groupResultsByBranchAndDate(results: MatchResult[]): GroupedReco
 
   for (const r of results) {
     const branch = r.grab?.store_name ?? r.pos?.branch_name ?? "Unknown Branch";
+
     const date = r.grab?.created_on ?? r.pos?.orddate ?? "Unknown Date";
 
     const key = `${branch}|${date}`;
@@ -89,23 +90,34 @@ export function groupResultsByBranchAndDate(results: MatchResult[]): GroupedReco
     map.get(key)!.items.push(r);
   }
 
-  // 👉 compute group status
   return Array.from(map.values()).map((group) => {
-    const statuses = group.items.map((i) => i.status);
+    const totalCount = group.items.length;
 
+    const exactCount = group.items.filter((i) => i.status === "exact_match").length;
+
+    const issueCount = totalCount - exactCount;
+
+    // 🔹 match rate (0–100)
+    const matchRate = totalCount === 0 ? 0 : Number(((exactCount / totalCount) * 100).toFixed(2));
+
+    // 🔹 group status priority
     let status: MatchStatus = "exact_match";
 
-    if (statuses.includes("discrepancy")) {
+    if (group.items.some((i) => i.status === "discrepancy")) {
       status = "discrepancy";
-    } else if (statuses.includes("unmatched")) {
+    } else if (group.items.some((i) => i.status === "unmatched")) {
       status = "unmatched";
-    } else if (statuses.includes("tolerance_match")) {
+    } else if (group.items.some((i) => i.status === "tolerance_match")) {
       status = "tolerance_match";
     }
 
     return {
       ...group,
       status,
+      issueCount,
+      matchRate,
+      totalCount,
+      exactCount,
     };
   });
 }
