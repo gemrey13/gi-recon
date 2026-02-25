@@ -3,7 +3,6 @@ import ImportGrabModal from "@renderer/ui/modal/ImportGrabModal";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
-
 const GrabDashboard = () => {
   const [showAddGrab, setShowAddGrab] = useState(false);
   const [branches, setBranches] = useState<string[]>([]);
@@ -42,7 +41,10 @@ const GrabDashboard = () => {
   const runToday = async () => {
     setLoading(true);
     try {
-      const data: ReconcileResponse = await window.api.reconGrabPos({ preset: "today", branch: filters.branch });
+      const data: ReconcileResponse = await window.api.reconGrabPos({
+        preset: "today",
+        branch: filters.branch,
+      });
       setResults(data);
     } finally {
       setLoading(false);
@@ -52,6 +54,20 @@ const GrabDashboard = () => {
   const handleClearFilters = () => {
     setFilters({});
   };
+
+  const groupCount = results.length
+
+  const totalIssues = results.reduce((sum, group) => sum + group.issueCount, 0);
+
+  // 🔹 total amount (choose POS or GRAB source)
+  const totalAmount = results.reduce((sum, group) => {
+    const groupTotal = group.items.reduce((s, item) => {
+      const amount = item.pos?.totchrg ?? item.grab?.amount ?? 0;
+      return s + amount;
+    }, 0);
+
+    return sum + groupTotal;
+  }, 0);
 
   return (
     <div className="p-8 max-w-7xl mx-auto">
@@ -82,9 +98,7 @@ const GrabDashboard = () => {
             Search Branch
           </label>
           <div className="relative">
-            <span className="absolute left-3 top-1.5 text-slate-400">
-              🔍
-            </span>
+            <span className="absolute left-3 top-1.5 text-slate-400">🔍</span>
             <select
               value={filters.branch ?? ""}
               onChange={(e) => updateFilter("branch", e.target.value)}
@@ -151,24 +165,19 @@ const GrabDashboard = () => {
           <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
             Record Shown
           </p>
-          <p className="text-3xl font-black text-slate-800 mt-1">{6}</p>
+          <p className="text-3xl font-black text-slate-800 mt-1">{groupCount}</p>
         </div>
         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
           <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
             This Period
           </p>
-          <p className="text-3xl font-black text-slate-800 mt-1">
-            ₱ 
-            {5}
-          </p>
+          <p className="text-3xl font-black text-slate-800 mt-1">₱{totalAmount.toLocaleString()}</p>
         </div>
         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
           <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
             Total Issues
           </p>
-          <p className="text-3xl font-black text-red-500 mt-1">
-            {6}
-          </p>
+          <p className="text-3xl font-black text-red-500 mt-1">{totalIssues}</p>
         </div>
       </div>
 
@@ -201,7 +210,6 @@ const GrabDashboard = () => {
                   <p className="font-bold text-slate-900">{row.issueCount}</p>
                 </div>
 
-
                 <div className="text-right">
                   <p className="text-[10px] font-bold text-slate-400 uppercase">Match Rate</p>
                   <p className="font-bold text-slate-900">{row.matchRate}%</p>
@@ -215,7 +223,7 @@ const GrabDashboard = () => {
                     </span>
                   ) : (
                     <span className="text-green-600 font-bold text-sm bg-green-50 px-3 py-1 rounded-full">
-                      ✅ Matched 
+                      ✅ Matched
                     </span>
                   )}
                 </div>
