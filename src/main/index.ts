@@ -2,8 +2,9 @@ import { app, shell, BrowserWindow } from "electron";
 import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
-import { initDb } from "./db";
 import path from "path";
+import { initDatabase } from "./db";
+import { registerAllIpc } from "./ipc";
 
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
@@ -12,6 +13,7 @@ function createWindow(): void {
     show: false,
     autoHideMenuBar: true,
     maximizable: true,
+    // frame: false,
     icon: path.join(__dirname, "../../resources/ico.ico"),
     ...(process.platform === "linux" ? { icon } : {}),
     webPreferences: {
@@ -37,14 +39,18 @@ function createWindow(): void {
   }
 }
 
+let db: any;
+
 app.whenReady().then(() => {
+  db = initDatabase();
+
   electronApp.setAppUserModelId("com.giligans.girecon");
 
   app.on("browser-window-created", (_, window) => {
     optimizer.watchWindowShortcuts(window);
   });
 
-  initDb();
+  registerAllIpc();
   createWindow();
 
   app.on("activate", function () {
@@ -53,6 +59,15 @@ app.whenReady().then(() => {
 });
 
 app.on("window-all-closed", () => {
+  if (db) {
+    try {
+      db.close();
+      console.log("[Main] Database closed.");
+    } catch (err) {
+      console.error("[Main] Failed to close database:", err);
+    }
+  }
+
   if (process.platform !== "darwin") {
     app.quit();
   }

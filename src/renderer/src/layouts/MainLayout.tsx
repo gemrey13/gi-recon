@@ -1,37 +1,10 @@
-import { useEffect, useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
 
 const MainLayout = () => {
-  const [posPath, setPosPath] = useState<string | null>(null);
-
-  useEffect(() => {
-    (window as any).api.getPosPath().then(setPosPath);
-  }, []);
-
-  const changePosPath = async () => {
-    try {
-      const newPath = await (window as any).api.selectPosPath();
-      if (newPath) {
-        setPosPath(newPath);
-      }
-    } catch {
-      alert("Invalid POS data folder selected");
-    }
-  };
-
-  const openPosPath = () => {
-    (window as any).api.openPosPath();
-  };
-
-  const handleReadPOSBranches = async () => {
-    try {
-      await (window as any).api.readPOSBranches();
- 
-    } catch (error) {
-      console.error(error);
-      alert("Failed to read POS branches");
-    }
-  };
+  let posPath;
+  const handleReadPOSBranches = () => {};
+  const openPosPath = () => {};
+  const changePosPath = () => {};
 
   return (
     <div className="flex h-screen bg-slate-50 text-slate-900 overflow-hidden font-sans">
@@ -78,10 +51,9 @@ const MainLayout = () => {
         <div className="p-4 bg-slate-800 rounded-xl text-xs">
           <p className="opacity-60">Last Sync</p>
           <p className="font-bold">Today, 10:45 AM</p>
-             <button
+          <button
             onClick={handleReadPOSBranches}
-            className="w-full bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg py-1 text-xs font-semibold"
-          >
+            className="w-full bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg py-1 text-xs font-semibold">
             Sync POS Branches
           </button>
         </div>

@@ -1,7 +1,14 @@
-import { contextBridge } from "electron";
+import { contextBridge, ipcRenderer } from "electron";
 import { electronAPI } from "@electron-toolkit/preload";
 
-const api = {};
+const api = {
+  startImportGrab: () => ipcRenderer.invoke("start-import-grab"),
+  importGrabManual: () => ipcRenderer.invoke("grab:importManual"),
+  importPOSZip: () => ipcRenderer.invoke("POS:importZip"),
+
+  reconGrabPos: (filters?: any) => ipcRenderer.invoke("recon:grab-pos", filters),
+  getGrabBranches: () => ipcRenderer.invoke("get-grab-branches"),
+};
 
 if (process.contextIsolated) {
   try {
