@@ -55,7 +55,7 @@ const GrabDashboard = () => {
     setFilters({});
   };
 
-  const groupCount = results.length
+  const groupCount = results.length;
 
   const totalIssues = results.reduce((sum, group) => sum + group.issueCount, 0);
 
@@ -85,10 +85,6 @@ const GrabDashboard = () => {
           <span>+</span> Add Grab Record
         </button>
       </div>
-
-      <button onClick={handleRunRecon} disabled={loading}>
-        {loading ? "Running…" : "Run"}
-      </button>
 
       {/* --- FILTER TOOLBAR --- */}
       <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm mb-8 flex flex-wrap items-end gap-4">
@@ -157,6 +153,13 @@ const GrabDashboard = () => {
             </button>
           )}
         </div>
+
+        <button
+          onClick={handleRunRecon}
+          disabled={loading}
+          className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+          {loading ? "Running…" : "Run"}
+        </button>
       </div>
 
       {/* QUICK STATS ROW (Dynamic based on filtered results could be cool here) */}
