@@ -1,29 +1,15 @@
+import { FilterState, ReconcileResponse } from "@renderer/types/results";
 import ImportGrabModal from "@renderer/ui/modal/ImportGrabModal";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
 
-type FilterState = {
-  branch?: string;
-  fromDate?: string;
-  toDate?: string;
-};
-
-type MatchResult = {
-  pos?: any;
-  grab?: any;
-  variance: number;
-  status: string;
-};
 
 const GrabDashboard = () => {
-  const navigate = useNavigate();
   const [showNewRecon, setShowNewRecon] = useState(false);
   const [branches, setBranches] = useState<string[]>([]);
   const [filters, setFilters] = useState<FilterState>({});
-  const [results, setResults] = useState<MatchResult[]>([]);
+  const [results, setResults] = useState<ReconcileResponse>([]);
   const [loading, setLoading] = useState(false);
-  const [rows, setRows] = useState<any[]>([]);
 
   // 🔹 Load branch options
   useEffect(() => {
@@ -39,29 +25,15 @@ const GrabDashboard = () => {
     setLoading(true);
 
     try {
-      const results = await window.api.reconGrabPos(filters);
+      const results: ReconcileResponse = await window.api.reconGrabPos(filters);
 
       if (!results || results.length === 0) {
         toast.error("No reconciliation results found.");
-        setRows([]);
+        setResults([]);
         return;
       }
       console.log(results);
-
-      const mapped = results.map((r: any) => ({
-        pos_amount: r.pos?.grschrg ?? "",
-        pos_cusno: r.pos?.cusno ?? "",
-        pos_branch_name: r.pos?.branch_name ?? "",
-        pos_date: r.pos ? new Date(r.pos.orddate).toLocaleDateString("en-US") : "",
-        grab_amount: r.grab?.amount ?? "",
-        grab_booking_id: r.grab?.booking_id ?? "",
-        grab_store_name: r.grab?.store_name ?? "",
-        grab_date: r.grab ? new Date(r.grab.created_on).toLocaleDateString("en-US") : "",
-        variance: r.variance,
-        status: r.status,
-      }));
-
-      setRows(mapped);
+      setResults(results);
     } finally {
       setLoading(false);
     }
@@ -70,7 +42,7 @@ const GrabDashboard = () => {
   const runToday = async () => {
     setLoading(true);
     try {
-      const data = await window.api.reconGrabPos({ preset: "today", branch: filters.branch });
+      const data: ReconcileResponse = await window.api.reconGrabPos({ preset: "today", branch: filters.branch });
       setResults(data);
     } finally {
       setLoading(false);
@@ -97,6 +69,7 @@ const GrabDashboard = () => {
           <span>+</span> New Reconciliation
         </button>
       </div>
+
       <button onClick={handleRunRecon} disabled={loading}>
         {loading ? "Running…" : "Run"}
       </button>
@@ -200,12 +173,12 @@ const GrabDashboard = () => {
       </div> */}
 
       {/* SESSIONS GRID */}
-      {/* <div className="grid grid-cols-1 gap-4">
-        {filteredSessions.length > 0 ? (
-          filteredSessions.map((session) => (
+      <div className="grid grid-cols-1 gap-4">
+        {results.length > 0 ? (
+          results.map((row) => (
             <div
-              key={session.id}
-              onClick={() => navigate(`/recon/grab/${session.id}`)}
+              key={`${row.branch}-${row.date}`}
+              // onClick={() => navigate(`/recon/grab/${session.id}`)}
               className="group bg-white p-6 rounded-2xl border border-slate-200 hover:border-indigo-600 hover:shadow-md cursor-pointer transition-all flex justify-between items-center">
               <div className="flex items-center gap-6">
                 <div className="bg-slate-100 p-4 rounded-xl group-hover:bg-indigo-50 transition-colors">
@@ -213,16 +186,16 @@ const GrabDashboard = () => {
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <h3 className="font-bold text-lg text-slate-800">{session.branch}</h3>
+                    <h3 className="font-bold text-lg text-slate-800">{row.branch}</h3>
                     <span className="bg-slate-100 text-slate-500 text-[10px] px-2 py-0.5 rounded font-mono">
-                      #{session.id}
+                      {/* #{row.id} */} something
                     </span>
                   </div>
-                  <p className="text-slate-500 text-sm font-medium">{session.displayDate}</p>
+                  <p className="text-slate-500 text-sm font-medium">{row.date}</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-8">
+              {/* <div className="flex items-center gap-8">
                 <div className="text-right">
                   <p className="text-[10px] font-bold text-slate-400 uppercase">Total POS Amt</p>
                   <p className="font-bold text-slate-900">₱{session.total_pos.toLocaleString()}</p>
@@ -253,13 +226,13 @@ const GrabDashboard = () => {
                 <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-indigo-600 group-hover:text-white transition-all">
                   ➝
                 </div>
-              </div>
+              </div> */}
             </div>
           ))
         ) : (
           <div className="text-center py-12 text-slate-400 bg-white rounded-2xl border border-slate-200 border-dashed">
             <p className="text-4xl mb-2">📅</p>
-            <p className="font-bold">No sessions found in this date range.</p>
+            <p className="font-bold">No records found in this date range.</p>
             <button
               onClick={handleClearFilters}
               className="text-indigo-600 font-bold text-sm mt-2 hover:underline">
@@ -267,7 +240,7 @@ const GrabDashboard = () => {
             </button>
           </div>
         )}
-      </div> */}
+      </div>
 
       {showNewRecon && <ImportGrabModal onClose={() => setShowNewRecon(false)} />}
     </div>
