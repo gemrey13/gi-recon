@@ -15,9 +15,14 @@ const ImportGrabModal: React.FC<Props> = ({ onClose }) => {
 
     try {
       const result = await window.api.importGrabManual();
-      setStatus(`Done ✅ Inserted: ${result.totalInserted} | ${result.message}`);
-      toast(`Done ✅ Inserted: ${result.totalInserted} | ${result.message}`);
-      onClose();
+
+      if (result.totalInserted === 0) {
+        toast.error(`${result.message}`);
+      } else {
+        toast.success(`Done Inserted: ${result.totalInserted} | ${result.message}`);
+        onClose();
+      }
+      setStatus(`Action Done ✅`);
     } catch (err: any) {
       setStatus(`Error ❌ ${err.message}`);
     } finally {

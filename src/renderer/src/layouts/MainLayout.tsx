@@ -13,11 +13,15 @@ const MainLayout = () => {
 
     try {
       const result = await window.api.importPOSZip();
-      setStatus(`Done ✅`);
-      toast(`Done ✅ Inserted: ${result.totalInserted} | ${result.message}`);
+      if (result.totalInserted === 0) {
+        toast.error(`${result.message}`);
+      } else {
+        toast.success(`Done ✅ Inserted: ${result.totalInserted} | ${result.message}`);
+      }
+      setStatus(`Action Done ✅`);
     } catch (err: any) {
       setStatus(`Error ❌ ${err.message}`);
-      toast(`Error ❌ ${err.message}`);
+      toast.error(`Error ❌ ${err.message}`);
     } finally {
       setLoading(false);
     }
