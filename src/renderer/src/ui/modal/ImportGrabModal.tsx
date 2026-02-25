@@ -26,10 +26,13 @@ const ImportGrabModal: React.FC<Props> = ({ onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white w-full max-w-lg rounded-3xl shadow-2xl p-8 animate-in fade-in zoom-in duration-200">
+      <div
+        className="bg-white w-full max-w-lg rounded-3xl shadow-2xl p-8
+                      flex flex-col items-center
+                      animate-in fade-in zoom-in duration-200">
         <Header status={status} />
 
-        <div className="grid grid-cols-2 gap-6 mb-8">
+        <div className="flex justify-center mb-8 w-full">
           <FilePicker
             label="Grab (CSV)"
             icon={"📊"}
@@ -38,11 +41,11 @@ const ImportGrabModal: React.FC<Props> = ({ onClose }) => {
           />
         </div>
 
-        <div className="flex gap-4">
+        <div className="flex gap-4 w-full">
           <button
             onClick={onClose}
             disabled={loading}
-            className="flex-1 py-3 font-bold text-slate-400 uppercase text-[10px] tracking-widest hover:text-slate-600 transition-colors">
+            className="flex-1 py-3 cursor-pointer font-bold text-slate-400 uppercase text-[10px] tracking-widest hover:text-slate-600 transition-colors">
             Cancel
           </button>
         </div>
@@ -51,10 +54,10 @@ const ImportGrabModal: React.FC<Props> = ({ onClose }) => {
   );
 };
 
-// --- Sub-components to clean up JSX ---
+// --- Sub-components ---
 
 const Header = ({ status }: any) => (
-  <div className="mb-6">
+  <div className="mb-6 text-center w-full">
     <h3 className="text-2xl font-black text-slate-800 mb-1 tracking-tight">Import Grab Data</h3>
     <p className="text-slate-500 text-xs">
       Status: <span className="font-bold">{status ?? "idle"}</span>
@@ -66,15 +69,17 @@ const Header = ({ status }: any) => (
 );
 
 const FilePicker = ({ label, icon, onClick, loading }: any) => (
-  <label className="border-2 border-dashed border-slate-200 rounded-2xl p-8 flex flex-col items-center justify-center hover:border-indigo-400 hover:bg-indigo-50 transition-all cursor-pointer group">
+  <div
+    onClick={!loading ? onClick : undefined}
+    className="border-2 border-dashed border-slate-200 rounded-2xl p-8
+               flex flex-col items-center justify-center
+               hover:border-indigo-400 hover:bg-indigo-50
+               transition-all cursor-pointer group w-full max-w-xs">
     <span className="text-3xl mb-3 group-hover:scale-110 transition-transform">{icon}</span>
-    <p className="text-xs font-bold text-slate-600">{label}</p>
-    <p className="text-[10px] text-slate-400 mt-1 truncate w-full text-center">Select File</p>
 
-    <button onClick={onClick} disabled={loading} className="hidden">
-      Import GRAB File
-    </button>
-  </label>
+    <p className="text-xs font-bold text-slate-600">{label}</p>
+    <p className="text-[10px] text-slate-400 mt-1 text-center">Select File</p>
+  </div>
 );
 
 export default ImportGrabModal;
