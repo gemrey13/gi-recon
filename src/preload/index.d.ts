@@ -4,6 +4,10 @@ declare global {
   interface Window {
     electron: ElectronAPI;
     api: {
+      minimize: () => Promise<any>
+      maximize: () => Promise<any>
+      close: () => Promise<any>
+
       startImportGrab: () => Promise<any>;
       importGrabManual: () => Promise<any>;
       importPOSZip: () => Promise<any>;

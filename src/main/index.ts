@@ -13,7 +13,7 @@ function createWindow(): void {
     show: false,
     autoHideMenuBar: true,
     maximizable: true,
-    // frame: false,
+    frame: false,
     icon: path.join(__dirname, "../../resources/ico.ico"),
     ...(process.platform === "linux" ? { icon } : {}),
     webPreferences: {
