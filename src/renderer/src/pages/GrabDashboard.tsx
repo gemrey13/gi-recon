@@ -2,6 +2,7 @@ import { FilterState, ReconcileResponse } from "@renderer/types/results";
 import ImportGrabModal from "@renderer/ui/modal/ImportGrabModal";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { Link } from "react-router-dom";
 
 const GrabDashboard = () => {
   const [showAddGrab, setShowAddGrab] = useState(false);
@@ -158,7 +159,7 @@ const GrabDashboard = () => {
           onClick={handleRunRecon}
           disabled={loading}
           className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
-          {loading ? "Running…" : "Run"}
+          {loading ? "Running…" : "Start"}
         </button>
       </div>
 
@@ -188,7 +189,9 @@ const GrabDashboard = () => {
       <div className="grid grid-cols-1 gap-4">
         {results.length > 0 ? (
           results.map((row) => (
-            <div
+            <Link
+              to={"record"}
+              state={row}
               key={`${row.branch}-${row.date}`}
               // onClick={() => navigate(`/recon/grab/${session.id}`)}
               className="group bg-white p-6 rounded-2xl border border-slate-200 hover:border-indigo-600 hover:shadow-md cursor-pointer transition-all flex justify-between items-center">
@@ -235,7 +238,7 @@ const GrabDashboard = () => {
                   ➝
                 </div>
               </div>
-            </div>
+            </Link>
           ))
         ) : (
           <div className="text-center py-12 text-slate-400 bg-white rounded-2xl border border-slate-200 border-dashed">

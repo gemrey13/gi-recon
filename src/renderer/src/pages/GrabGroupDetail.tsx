@@ -1,35 +1,37 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import ReviewModal from "@renderer/ui/modal/ReviewModel";
-// import { STATUS_MAP, TransactionRow } from "@renderer/constant/grabConstant";
 import SessionHeader from "@renderer/ui/SessionHeader";
 import GrabTransactionDetails from "@renderer/ui/GrabTransactionDetails";
+import { MatchItem, ReconcileGroup } from "@renderer/types/results";
 
-const GrabSessionDetail = () => {
-  const { sessionId } = useParams();
+const GrabGroupDetail = () => {
+  const location = useLocation();
   const navigate = useNavigate();
-  // const [rows, setRows] = useState<TransactionRow[]>([]);
+
+  const group = location.state as ReconcileGroup;
+
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [showReview, setShowReview] = useState(false);
-  // const [activeItem, setActiveItem] = useState<TransactionRow | null>(null);
+  const [activeItem, setActiveItem] = useState<MatchItem | null>(null);
 
   useEffect(() => {
-    if (!sessionId) return;
-    (async () => {
-      const data = await (window as any).api.fetchTransactions(Number(sessionId));
-      setRows(data);
-    })();
-  }, [sessionId]);
+    if (!group) {
+      // Redirect if no data
+      navigate("/recon/grab");
+    }
+  }, [group, navigate]);
 
   const handleGenerateReport = () => {
-    console.log("Generating CSV/PDF for Session:", sessionId);
+    console.log("Generating CSV/PDF for Session:", group?.branch, group?.date);
   };
+
+  const rows = group?.items || [];
 
   return (
     <div className="flex flex-col h-full bg-slate-50 font-sans text-slate-900 selection:bg-indigo-100">
       <SessionHeader
-        sessionId={sessionId}
-        storeName={rows[0]?.store_name || "GrabFood Reconciliation"}
+        storeName={group?.branch || "GrabFood Reconciliation"}
         onBack={() => navigate("/recon/grab")}
         onGenerate={handleGenerateReport}
       />
@@ -50,39 +52,43 @@ const GrabSessionDetail = () => {
             </thead>
             <tbody className="divide-y divide-slate-100">
               {rows.map((r) => {
-                const isOpen = expandedId === r.pos_id;
-                const statusKey = (
-                  r.grab_status || "discrepancy"
-                ).toLowerCase() as keyof typeof STATUS_MAP;
+                const isOpen = expandedId === (r.pos?.id ?? r.grab?.id);
+                const statusKey = (r.status || "discrepancy").toLowerCase() as
+                  | "exact_match"
+                  | "tolerance_match"
+                  | "discrepancy"
+                  | "unmatched";
                 const style = STATUS_MAP[statusKey];
 
                 return (
-                  <React.Fragment key={r.pos_id}>
+                  <React.Fragment key={r.pos?.id ?? r.grab?.id}>
                     <tr
-                      onClick={() => setExpandedId(isOpen ? null : r.pos_id)}
+                      onClick={() => setExpandedId(isOpen ? null : (r.pos?.id ?? r.grab?.id))}
                       className={`group cursor-pointer transition-all border-l-4 ${isOpen ? "bg-slate-100" : style.rowHighlight}`}>
                       <td className="px-6 py-5">
                         <div className="flex flex-col">
                           <span className="font-mono font-black text-slate-900 leading-none">
-                            {r.cusno}
+                            {r.pos?.cusno ?? r.grab?.short_order_id ?? "—"}
                           </span>
                           <span className="text-[10px] text-slate-400 font-bold uppercase tracking-tighter mt-1">
-                            {r.orddate}
+                            {r.pos?.orddate ?? r.grab?.created_on ?? "—"}
                           </span>
                         </div>
                       </td>
                       <td className="px-6 py-5 text-right font-bold text-slate-700">
-                        ₱{r.amount?.toLocaleString() ?? "0.00"}
+                        ₱{r.grab?.amount?.toLocaleString() ?? "0.00"}
                       </td>
                       <td className="px-6 py-5 text-right font-bold text-slate-700">
-                        ₱{r.grschrg.toLocaleString()}
+                        ₱{r.pos?.grschrg?.toLocaleString() ?? "0.00"}
                       </td>
                       <td className="px-6 py-5">
                         <div className="flex justify-center">
                           <span
                             className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-black ring-1 ring-inset shadow-sm ${style.bg} ${style.text} ${style.ring}`}>
                             <span
-                              className={`h-2 w-2 rounded-full ${style.dot} ${statusKey !== "matched" ? "animate-pulse" : ""}`}
+                              className={`h-2 w-2 rounded-full ${style.dot} ${
+                                statusKey !== "exact_match" ? "animate-pulse" : ""
+                              }`}
                             />
                             {style.label}
                           </span>
@@ -95,8 +101,12 @@ const GrabSessionDetail = () => {
                             setActiveItem(r);
                             setShowReview(true);
                           }}
-                          className={`text-[10px] font-black px-4 py-2 rounded-xl transition-all uppercase tracking-widest border ${statusKey === "matched" ? style.btn : `${style.btn} shadow-md active:scale-95`}`}>
-                          {statusKey === "matched" ? "Review" : "Resolve"}
+                          className={`text-[10px] font-black px-4 py-2 rounded-xl transition-all uppercase tracking-widest border ${
+                            statusKey === "exact_match"
+                              ? style.btn
+                              : `${style.btn} shadow-md active:scale-95`
+                          }`}>
+                          {statusKey === "exact_match" ? "Review" : "Resolve"}
                         </button>
                       </td>
                     </tr>
@@ -128,4 +138,43 @@ const GrabSessionDetail = () => {
   );
 };
 
-export default GrabSessionDetail;
+export default GrabGroupDetail;
+
+const STATUS_MAP: Record<string, any> = {
+  exact_match: {
+    bg: "bg-green-50",
+    text: "text-green-600",
+    ring: "ring-green-500/20",
+    dot: "bg-green-500",
+    rowHighlight: "border-l-4 border-green-500",
+    btn: "border-green-500 text-green-500 hover:bg-green-100",
+    label: "Exact Match",
+  },
+  tolerance_match: {
+    bg: "bg-yellow-50",
+    text: "text-yellow-600",
+    ring: "ring-yellow-500/20",
+    dot: "bg-yellow-500",
+    rowHighlight: "border-l-4 border-yellow-500",
+    btn: "border-yellow-500 text-yellow-500 hover:bg-yellow-100",
+    label: "Tolerance Match",
+  },
+  discrepancy: {
+    bg: "bg-red-50",
+    text: "text-red-600",
+    ring: "ring-red-500/20",
+    dot: "bg-red-500",
+    rowHighlight: "border-l-4 border-red-500",
+    btn: "border-red-500 text-red-500 hover:bg-red-100",
+    label: "Discrepancy",
+  },
+  unmatched: {
+    bg: "bg-gray-50",
+    text: "text-gray-600",
+    ring: "ring-gray-500/20",
+    dot: "bg-gray-500",
+    rowHighlight: "border-l-4 border-gray-500",
+    btn: "border-gray-500 text-gray-500 hover:bg-gray-100",
+    label: "Unmatched",
+  },
+};
