@@ -1,4 +1,5 @@
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { NavLink, Outlet } from "react-router-dom";
 
 const MainLayout = () => {
@@ -11,9 +12,11 @@ const MainLayout = () => {
 
     try {
       const result = await window.api.importPOSZip()
-      setStatus(`Done ✅ Inserted: ${result.totalInserted} | ${result.message}`)
+      setStatus(`Done ✅`)
+      toast(`Done ✅ Inserted: ${result.totalInserted} | ${result.message}`)
     } catch (err: any) {
       setStatus(`Error ❌ ${err.message}`)
+      toast(`Error ❌ ${err.message}`)
     } finally {
       setLoading(false)
     }
