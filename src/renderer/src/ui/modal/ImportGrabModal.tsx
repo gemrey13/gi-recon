@@ -17,6 +17,7 @@ const ImportGrabModal: React.FC<Props> = ({ onClose }) => {
       const result = await window.api.importGrabManual();
       setStatus(`Done ✅ Inserted: ${result.totalInserted} | ${result.message}`);
       toast(`Done ✅ Inserted: ${result.totalInserted} | ${result.message}`);
+      onClose();
     } catch (err: any) {
       setStatus(`Error ❌ ${err.message}`);
     } finally {
