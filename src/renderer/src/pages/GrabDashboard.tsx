@@ -1,63 +1,85 @@
-import NewGrabReconModal from "@renderer/ui/modal/NewGrabReconModal";
+import ImportGrabModal from "@renderer/ui/modal/ImportGrabModal";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
+type FilterState = {
+  branch?: string;
+  fromDate?: string;
+  toDate?: string;
+};
+
+type MatchResult = {
+  pos?: any;
+  grab?: any;
+  variance: number;
+  status: string;
+};
+
 const GrabDashboard = () => {
   const navigate = useNavigate();
   const [showNewRecon, setShowNewRecon] = useState(false);
-  const [sessions, setSessions] = useState<any[]>([]);
+  const [branches, setBranches] = useState<string[]>([]);
+  const [filters, setFilters] = useState<FilterState>({});
+  const [results, setResults] = useState<MatchResult[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [rows, setRows] = useState<any[]>([]);
 
-  const [searchQuery, setSearchQuery] = useState("");
+  // 🔹 Load branch options
+  useEffect(() => {
+    window.api.getGrabBranches().then(setBranches);
+  }, []);
 
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-
-  const filteredSessions = sessions.filter((session) => {
-    const query = searchQuery.toLowerCase().trim();
-
-    if (!query) return true;
-
-    // Match either session ID or branch name
-    const matchesId = session.id.toString().includes(query);
-    const matchesBranch = session.branch.toLowerCase().includes(query);
-
-    return matchesId || matchesBranch;
-  });
-
-  const handleSetToday = () => {
-    const today = new Date().toISOString().split("T")[0];
-    setStartDate(today);
-    setEndDate(today);
+  // 🔹 Handlers
+  const updateFilter = (key: keyof FilterState, value?: string) => {
+    setFilters((prev) => ({ ...prev, [key]: value || undefined }));
   };
 
-  const handleClearFilters = () => {
-    setSearchQuery("");
-    setStartDate("");
-    setEndDate("");
-  };
+  const handleRunRecon = async () => {
+    setLoading(true);
 
-  const fetchSessions = async () => {
-    const api = (window as any).api;
+    try {
+      const results = await window.api.reconGrabPos(filters);
 
-    const result = await api.fetchSession({
-      searchQuery,
-      startDate,
-      endDate,
-    });
+      if (!results || results.length === 0) {
+        toast.error("No reconciliation results found.");
+        setRows([]);
+        return;
+      }
+      console.log(results);
 
-    if (result.error) {
-      toast.error(result.error);
-      setSessions([]);
-    } else {
-      setSessions(result);
+      const mapped = results.map((r: any) => ({
+        pos_amount: r.pos?.grschrg ?? "",
+        pos_cusno: r.pos?.cusno ?? "",
+        pos_branch_name: r.pos?.branch_name ?? "",
+        pos_date: r.pos ? new Date(r.pos.orddate).toLocaleDateString("en-US") : "",
+        grab_amount: r.grab?.amount ?? "",
+        grab_booking_id: r.grab?.booking_id ?? "",
+        grab_store_name: r.grab?.store_name ?? "",
+        grab_date: r.grab ? new Date(r.grab.created_on).toLocaleDateString("en-US") : "",
+        variance: r.variance,
+        status: r.status,
+      }));
+
+      setRows(mapped);
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Re-fetch whenever filters change
-  useEffect(() => {
-    fetchSessions();
-  }, [searchQuery, startDate, endDate]);
+  const runToday = async () => {
+    setLoading(true);
+    try {
+      const data = await window.api.reconGrabPos({ preset: "today", branch: filters.branch });
+      setResults(data);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleClearFilters = () => {
+    setFilters({});
+  };
 
   return (
     <div className="p-8 max-w-7xl mx-auto">
@@ -75,35 +97,44 @@ const GrabDashboard = () => {
           <span>+</span> New Reconciliation
         </button>
       </div>
+      <button onClick={handleRunRecon} disabled={loading}>
+        {loading ? "Running…" : "Run"}
+      </button>
 
       {/* --- FILTER TOOLBAR --- */}
       <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm mb-8 flex flex-wrap items-end gap-4">
         {/* Search ID */}
         <div className="flex-1 min-w-37.5">
           <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1 mb-1 block">
-            Search ID or Branch
+            Search Branch
           </label>
           <div className="relative">
-            <span className="absolute left-3 top-2.5 text-slate-400">🔍</span>
-            <input
-              type="text"
-              placeholder="e.g. 101, Southwoods Mall"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-slate-50 border-none rounded-xl py-2 pl-9 pr-4 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-indigo-500"
-            />
+            <span className="absolute left-3 top-1.5 text-slate-400">
+              🔍
+            </span>
+            <select
+              value={filters.branch ?? ""}
+              onChange={(e) => updateFilter("branch", e.target.value)}
+              className="w-full bg-slate-50 border-none rounded-xl py-2 pl-9 pr-4 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-indigo-500">
+              <option value="">All</option>
+              {branches.map((b) => (
+                <option key={b} value={b}>
+                  {b}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 
-        {/* Start Date */}
+        {/* From Date */}
         <div className="w-40">
           <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1 mb-1 block">
             From
           </label>
           <input
             type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
+            value={filters.fromDate ?? ""}
+            onChange={(e) => updateFilter("fromDate", e.target.value)}
             className="w-full bg-slate-50 border-none rounded-xl py-2 px-3 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-indigo-500"
           />
         </div>
@@ -115,9 +146,9 @@ const GrabDashboard = () => {
           </label>
           <input
             type="date"
-            value={endDate}
-            min={startDate} // Prevent selecting an end date before start date
-            onChange={(e) => setEndDate(e.target.value)}
+            value={filters.toDate ?? ""}
+            min={filters.fromDate}
+            onChange={(e) => updateFilter("toDate", e.target.value)}
             className="w-full bg-slate-50 border-none rounded-xl py-2 px-3 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-indigo-500"
           />
         </div>
@@ -125,12 +156,13 @@ const GrabDashboard = () => {
         {/* Shortcuts & Actions */}
         <div className="flex gap-2">
           <button
-            onClick={handleSetToday}
+            disabled={loading}
+            onClick={runToday}
             className="bg-indigo-50 hover:bg-indigo-100 text-indigo-600 px-4 py-2.5 rounded-xl text-sm font-bold transition-colors">
             Today
           </button>
 
-          {(searchQuery || startDate || endDate) && (
+          {(filters.branch || filters.toDate || filters.fromDate) && (
             <button
               onClick={handleClearFilters}
               className="text-slate-400 hover:text-slate-600 px-3 py-2.5 text-xs font-bold transition-colors">
@@ -141,7 +173,7 @@ const GrabDashboard = () => {
       </div>
 
       {/* QUICK STATS ROW (Dynamic based on filtered results could be cool here) */}
-      <div className="grid grid-cols-3 gap-6 mb-8">
+      {/* <div className="grid grid-cols-3 gap-6 mb-8">
         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
           <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
             Sessions Shown
@@ -153,7 +185,7 @@ const GrabDashboard = () => {
             This Period
           </p>
           <p className="text-3xl font-black text-slate-800 mt-1">
-            {/* Calculate Total for displayed sessions */}₱{" "}
+            ₱ 
             {filteredSessions.reduce((acc, curr) => acc + curr.total, 0).toLocaleString()}
           </p>
         </div>
@@ -165,10 +197,10 @@ const GrabDashboard = () => {
             {filteredSessions.reduce((acc, curr) => acc + curr.issues, 0)}
           </p>
         </div>
-      </div>
+      </div> */}
 
       {/* SESSIONS GRID */}
-      <div className="grid grid-cols-1 gap-4">
+      {/* <div className="grid grid-cols-1 gap-4">
         {filteredSessions.length > 0 ? (
           filteredSessions.map((session) => (
             <div
@@ -235,9 +267,9 @@ const GrabDashboard = () => {
             </button>
           </div>
         )}
-      </div>
+      </div> */}
 
-      {showNewRecon && <NewGrabReconModal onClose={() => setShowNewRecon(false)} />}
+      {showNewRecon && <ImportGrabModal onClose={() => setShowNewRecon(false)} />}
     </div>
   );
 };

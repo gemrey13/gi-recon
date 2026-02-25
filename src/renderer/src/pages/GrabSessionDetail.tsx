@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ReviewModal from "@renderer/ui/modal/ReviewModel";
-import { STATUS_MAP, TransactionRow } from "@renderer/constant/grabConstant";
+// import { STATUS_MAP, TransactionRow } from "@renderer/constant/grabConstant";
 import SessionHeader from "@renderer/ui/SessionHeader";
 import GrabTransactionDetails from "@renderer/ui/GrabTransactionDetails";
 
 const GrabSessionDetail = () => {
   const { sessionId } = useParams();
   const navigate = useNavigate();
-  const [rows, setRows] = useState<TransactionRow[]>([]);
+  // const [rows, setRows] = useState<TransactionRow[]>([]);
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [showReview, setShowReview] = useState(false);
-  const [activeItem, setActiveItem] = useState<TransactionRow | null>(null);
+  // const [activeItem, setActiveItem] = useState<TransactionRow | null>(null);
 
   useEffect(() => {
     if (!sessionId) return;

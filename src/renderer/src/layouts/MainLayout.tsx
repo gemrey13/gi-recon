@@ -1,10 +1,23 @@
+import { useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
 
 const MainLayout = () => {
-  let posPath;
-  const handleReadPOSBranches = () => {};
-  const openPosPath = () => {};
-  const changePosPath = () => {};
+  const [status, setStatus] = useState<string>('Idle')
+  const [loading, setLoading] = useState(false)
+
+  const handlePOSImport = async () => {
+    setLoading(true)
+    setStatus('Importing POS ZIP...')
+
+    try {
+      const result = await window.api.importPOSZip()
+      setStatus(`Done ✅ Inserted: ${result.totalInserted} | ${result.message}`)
+    } catch (err: any) {
+      setStatus(`Error ❌ ${err.message}`)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <div className="flex h-screen bg-slate-50 text-slate-900 overflow-hidden font-sans">
@@ -25,37 +38,21 @@ const MainLayout = () => {
 
         <div className="mt-auto mb-4">
           <div className="bg-slate-800 rounded-xl p-3 text-xs space-y-2">
-            <p className="text-slate-400 font-semibold tracking-wide">POS Data Folder</p>
+            <p className="text-slate-400 font-semibold tracking-wide">Import POS Data</p>
 
-            <p className="text-slate-300 truncate" title={posPath ?? "Not selected"}>
-              {posPath ?? "Not selected"}
+            <p className="text-slate-300 truncate" title={status ?? "Not selected"}>
+              Status: {status ?? "Not selected"}
             </p>
 
             <div className="flex gap-2 pt-1">
               <button
-                onClick={openPosPath}
-                disabled={!posPath}
-                className="flex-1 bg-slate-700 hover:bg-slate-600 disabled:opacity-40 rounded-lg py-1">
-                Open
+                onClick={handlePOSImport}
+                disabled={loading}
+                className="w-full bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg py-1 text-xs font-semibold">
+                Sync POS
               </button>
-
-              <button
-                onClick={changePosPath}
-                className="flex-1 bg-indigo-600 hover:bg-indigo-500 rounded-lg py-1 font-semibold">
-                Change
-              </button>
-            </div>
+            </div> 
           </div>
-        </div>
-
-        <div className="p-4 bg-slate-800 rounded-xl text-xs">
-          <p className="opacity-60">Last Sync</p>
-          <p className="font-bold">Today, 10:45 AM</p>
-          <button
-            onClick={handleReadPOSBranches}
-            className="w-full bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg py-1 text-xs font-semibold">
-            Sync POS Branches
-          </button>
         </div>
       </aside>
 
