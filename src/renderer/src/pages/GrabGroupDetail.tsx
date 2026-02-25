@@ -41,7 +41,7 @@ const GrabGroupDetail = () => {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-slate-50/50 border-b border-slate-100">
-                {["Transaction Info", "Grab Net", "POS Gross", "Status", "Actions"].map((h, i) => (
+                {["Transaction Info", "POS Gross", "Grab Net", "Status", "Actions"].map((h, i) => (
                   <th
                     key={h}
                     className={`px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest ${i === 3 ? "text-center" : i > 0 ? "text-right" : ""}`}>
@@ -76,10 +76,10 @@ const GrabGroupDetail = () => {
                         </div>
                       </td>
                       <td className="px-6 py-5 text-right font-bold text-slate-700">
-                        ₱{r.grab?.amount?.toLocaleString() ?? "0.00"}
+                        ₱{r.pos?.grschrg?.toLocaleString() ?? "0.00"}
                       </td>
                       <td className="px-6 py-5 text-right font-bold text-slate-700">
-                        ₱{r.pos?.grschrg?.toLocaleString() ?? "0.00"}
+                        ₱{r.grab?.amount?.toLocaleString() ?? "0.00"}
                       </td>
                       <td className="px-6 py-5">
                         <div className="flex justify-center">
