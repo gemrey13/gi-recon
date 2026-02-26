@@ -3,7 +3,7 @@ const SessionHeader = ({ storeName, onBack, onGenerate }: any) => (
     <div className="flex items-center gap-6">
       <button
         onClick={onBack}
-        className="flex items-center gap-2 text-slate-500 hover:text-indigo-600 transition-colors font-bold text-sm">
+        className="flex items-center gap-2 cursor-pointer text-slate-500 hover:text-indigo-600 transition-colors font-bold text-sm">
         <span className="text-lg">←</span> Back
       </button>
       <div className="h-8 w-px bg-slate-200" />
