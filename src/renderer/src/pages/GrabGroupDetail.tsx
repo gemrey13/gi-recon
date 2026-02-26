@@ -57,7 +57,8 @@ const GrabGroupDetail = () => {
                   | "exact_match"
                   | "tolerance_match"
                   | "discrepancy"
-                  | "unmatched";
+                  | "unmatched"
+                  | "chargeback_match";
                 const style = STATUS_MAP[statusKey];
 
                 return (
@@ -176,5 +177,14 @@ const STATUS_MAP: Record<string, any> = {
     rowHighlight: "border-l-4 border-gray-500",
     btn: "border-gray-500 text-gray-500 hover:bg-gray-100",
     label: "Unmatched",
+  },
+  chargeback_match: {
+    bg: "bg-indigo-50",
+    text: "text-indigo-600",
+    ring: "ring-indigo-500/20",
+    dot: "bg-indigo-500",
+    rowHighlight: "border-l-4 border-indigo-500",
+    btn: "border-indigo-500 text-indigo-500 hover:bg-indigo-100",
+    label: "Chargeback Match",
   },
 };
