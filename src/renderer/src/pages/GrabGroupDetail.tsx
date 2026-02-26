@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import ReviewModal from "@renderer/ui/modal/ReviewModel";
 import SessionHeader from "@renderer/ui/SessionHeader";
 import GrabTransactionDetails from "@renderer/ui/GrabTransactionDetails";
-import { MatchItem, ReconcileGroup } from "@renderer/types/results";
+import { ReconcileGroup } from "@renderer/types/results";
 
 const GrabGroupDetail = () => {
   const location = useLocation();
@@ -12,8 +11,6 @@ const GrabGroupDetail = () => {
   const group = location.state as ReconcileGroup;
 
   const [expandedId, setExpandedId] = useState<number | null>(null);
-  const [showReview, setShowReview] = useState(false);
-  const [activeItem, setActiveItem] = useState<MatchItem | null>(null);
 
   useEffect(() => {
     if (!group) {
@@ -41,7 +38,7 @@ const GrabGroupDetail = () => {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-slate-50/50 border-b border-slate-100">
-                {["Transaction Info", "POS Gross", "Grab Net", "Status", "Actions"].map((h, i) => (
+                {["Transaction Info", "POS Gross", "Grab Net", "Type", "Status"].map((h, i) => (
                   <th
                     key={h}
                     className={`px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest ${i === 3 ? "text-center" : i > 0 ? "text-right" : ""}`}>
@@ -82,6 +79,16 @@ const GrabGroupDetail = () => {
                       <td className="px-6 py-5 text-right font-bold text-slate-700">
                         ₱{r.grab?.amount?.toLocaleString() ?? "0.00"}
                       </td>
+                      <td className="px-6 py-5 text-right">
+                        <span
+                          className={`text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded border ${
+                            r.grab?.order_type === "Auto-Chargeback"
+                              ? "text-purple-600 border-purple-200 bg-purple-50"
+                              : "text-slate-500 border-slate-200 bg-slate-50"
+                          }`}>
+                          {r.grab?.order_type || "Unknown"}
+                        </span>
+                      </td>
                       <td className="px-6 py-5">
                         <div className="flex justify-center">
                           <span
@@ -94,21 +101,6 @@ const GrabGroupDetail = () => {
                             {style.label}
                           </span>
                         </div>
-                      </td>
-                      <td className="px-6 py-5 text-right">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setActiveItem(r);
-                            setShowReview(true);
-                          }}
-                          className={`text-[10px] font-black px-4 py-2 rounded-xl transition-all uppercase tracking-widest border ${
-                            statusKey === "exact_match"
-                              ? style.btn
-                              : `${style.btn} shadow-md active:scale-95`
-                          }`}>
-                          {statusKey === "exact_match" ? "Review" : "Resolve"}
-                        </button>
                       </td>
                     </tr>
                     {isOpen && (
@@ -127,14 +119,6 @@ const GrabGroupDetail = () => {
           </table>
         </div>
       </div>
-
-      {showReview && activeItem && (
-        <ReviewModal
-          item={activeItem}
-          onClose={() => setShowReview(false)}
-          onSave={(s: any, n: any) => console.log(s, n)}
-        />
-      )}
     </div>
   );
 };
