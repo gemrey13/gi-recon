@@ -9,7 +9,7 @@ const SessionHeader = ({ storeName, onBack, onGenerate }: any) => (
       <div className="h-8 w-px bg-slate-200" />
       <div>
         <div className="flex items-center gap-2">
-          <h2 className="text-xl font-black tracking-tight text-slate-800">Session #{"asdsa"}</h2>
+          <h2 className="text-xl font-black tracking-tight text-slate-800">Records</h2>
           <span className="px-2 py-0.5 bg-slate-100 text-slate-500 rounded text-[10px] font-bold uppercase tracking-widest">
             GrabFood
           </span>
