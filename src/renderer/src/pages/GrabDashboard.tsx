@@ -61,15 +61,11 @@ const GrabDashboard = () => {
   const totalIssues = results.reduce((sum, group) => sum + group.issueCount, 0);
 
   // 🔹 total amount (choose POS or GRAB source)
-  const totalAmount = results.reduce((sum, group) => {
-    const groupTotal = group.items.reduce((s, item) => {
-      const amount = item.pos?.totchrg ?? item.grab?.amount ?? 0;
-      return s + amount;
-    }, 0);
+  const totalAmountPOS = results.reduce((sum, group) => sum + (group.totalPOSAmount ?? 0), 0);
+  const totalAmountGrab = results.reduce((sum, group) => sum + (group.totalGrabAmount ?? 0), 0);
 
-    return sum + groupTotal;
-  }, 0);
-
+  console.log("Total POS Amount:", totalAmountPOS.toFixed(2));
+  console.log("Total Grab Amount:", totalAmountGrab.toFixed(2));
   return (
     <div className="p-8 max-w-7xl mx-auto">
       {/* HEADER */}
@@ -172,10 +168,25 @@ const GrabDashboard = () => {
           <p className="text-3xl font-black text-slate-800 mt-1">{groupCount}</p>
         </div>
         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-            This Period
-          </p>
-          <p className="text-3xl font-black text-slate-800 mt-1">₱{totalAmount.toLocaleString()}</p>
+          {/* Header row */}
+          <div className="grid grid-cols-3 text-center mb-2">
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+              POS Total
+            </p>
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+              This Period
+            </p>
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+              Grab Total
+            </p>
+          </div>
+
+          {/* Amounts row */}
+          <div className="grid grid-cols-3 text-center">
+            <p className="text-xl font-bold text-slate-800">₱{totalAmountPOS.toLocaleString()}</p>
+            <p className="text-xl font-bold text-slate-800">—</p>
+            <p className="text-xl font-bold text-slate-800">₱{totalAmountGrab.toLocaleString()}</p>
+          </div>
         </div>
         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
           <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">

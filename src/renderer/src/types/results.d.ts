@@ -12,6 +12,10 @@ export type ReconcileGroup = {
   matchRate: number;
   totalCount: number;
   exactCount: number;
+  totalGrabAmount: number;
+  netGrabSales: number;
+  totalPayout: number;
+  totalPOSAmount: number;
   items: MatchResult[];
 };
 
