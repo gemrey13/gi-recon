@@ -114,6 +114,7 @@ const GrabDashboard = () => {
           <div className="relative">
             <span className="absolute left-3 top-1.5 text-slate-400">🔍</span>
             <select
+              disabled={loading}
               value={filters.branch ?? ""}
               onChange={(e) => updateFilter("branch", e.target.value)}
               className="w-full bg-slate-50 border-none rounded-xl py-2 pl-9 pr-4 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-indigo-500">
@@ -134,6 +135,7 @@ const GrabDashboard = () => {
           </label>
           <input
             type="date"
+            disabled={loading}
             value={filters.fromDate ?? ""}
             onChange={(e) => updateFilter("fromDate", e.target.value)}
             className="w-full bg-slate-50 border-none rounded-xl py-2 px-3 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-indigo-500"
@@ -148,6 +150,7 @@ const GrabDashboard = () => {
           <input
             type="date"
             value={filters.toDate ?? ""}
+            disabled={loading}
             min={filters.fromDate}
             onChange={(e) => updateFilter("toDate", e.target.value)}
             className="w-full bg-slate-50 border-none rounded-xl py-2 px-3 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-indigo-500"
