@@ -63,8 +63,6 @@ const GrabDashboard = () => {
   const totalAmountGrab = results.reduce((sum, group) => sum + (group.totalGrabAmount ?? 0), 0);
   const totalPayout = results.reduce((sum, group) => sum + (group.totalPayout ?? 0), 0);
 
-  console.log("Total POS Amount:", totalAmountPOS.toFixed(2));
-  console.log("Total Grab Amount:", totalAmountGrab.toFixed(2));
   return (
     <div className="p-8 max-w-7xl mx-auto">
       {/* HEADER */}
