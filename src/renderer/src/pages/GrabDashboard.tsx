@@ -2,9 +2,13 @@ import { FilterState, ReconcileResponse } from "@renderer/types/results";
 import ImportGrabModal from "@renderer/ui/modal/ImportGrabModal";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import queryString from "query-string";
 
 const GrabDashboard = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const [showAddGrab, setShowAddGrab] = useState(false);
   const [branches, setBranches] = useState<string[]>([]);
   const [filters, setFilters] = useState<FilterState>({});
@@ -16,24 +20,39 @@ const GrabDashboard = () => {
     window.api.getGrabBranches().then(setBranches);
   }, []);
 
-  // 🔹 Handlers
+  // 🔹 Load filters from URL on mount
+  useEffect(() => {
+    const params = queryString.parse(location.search);
+    setFilters({
+      branch: (params.branch as string) || undefined,
+      fromDate: (params.fromDate as string) || undefined,
+      toDate: (params.toDate as string) || undefined,
+    });
+  }, [location.search]);
+
+  // 🔹 Update URL when filters change
   const updateFilter = (key: keyof FilterState, value?: string) => {
-    setFilters((prev) => ({ ...prev, [key]: value || undefined }));
+    const newFilters = { ...filters, [key]: value || undefined };
+    setFilters(newFilters);
+
+    navigate({
+      pathname: location.pathname,
+      search: queryString.stringify(newFilters),
+    });
   };
 
   const handleRunRecon = async () => {
     setLoading(true);
-
     try {
-      const results: ReconcileResponse = await window.api.reconGrabPos(filters);
+      const data: ReconcileResponse = await window.api.reconGrabPos(filters);
 
-      if (!results || results.length === 0) {
+      if (!data || data.length === 0) {
         toast.error("No reconciliation results found.");
         setResults([]);
         return;
       }
-      console.log(results);
-      setResults(results);
+
+      setResults(data);
     } finally {
       setLoading(false);
     }
@@ -47,6 +66,12 @@ const GrabDashboard = () => {
         branch: filters.branch,
       });
       setResults(data);
+
+      // Update URL to reflect "today" preset
+      navigate({
+        pathname: location.pathname,
+        search: queryString.stringify({ branch: filters.branch, preset: "today" }),
+      });
     } finally {
       setLoading(false);
     }
@@ -54,11 +79,10 @@ const GrabDashboard = () => {
 
   const handleClearFilters = () => {
     setFilters({});
+    navigate({ pathname: location.pathname, search: "" });
   };
 
   const totalIssues = results.reduce((sum, group) => sum + group.issueCount, 0);
-
-  // 🔹 total amount (choose POS or GRAB source)
   const totalAmountPOS = results.reduce((sum, group) => sum + (group.totalPOSAmount ?? 0), 0);
   const totalAmountGrab = results.reduce((sum, group) => sum + (group.totalGrabAmount ?? 0), 0);
   const totalPayout = results.reduce((sum, group) => sum + (group.totalPayout ?? 0), 0);
@@ -80,9 +104,9 @@ const GrabDashboard = () => {
         </button>
       </div>
 
-      {/* --- FILTER TOOLBAR --- */}
+      {/* FILTER TOOLBAR */}
       <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm mb-8 flex flex-wrap items-end gap-4">
-        {/* Search ID */}
+        {/* Branch */}
         <div className="flex-1 min-w-37.5">
           <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1 mb-1 block">
             Search Branch
@@ -103,7 +127,7 @@ const GrabDashboard = () => {
           </div>
         </div>
 
-        {/* From Date */}
+        {/* From */}
         <div className="w-40">
           <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1 mb-1 block">
             From
@@ -116,7 +140,7 @@ const GrabDashboard = () => {
           />
         </div>
 
-        {/* End Date */}
+        {/* To */}
         <div className="w-40">
           <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1 mb-1 block">
             To
@@ -156,14 +180,28 @@ const GrabDashboard = () => {
         </button>
       </div>
 
-      {/* QUICK STATS ROW (Dynamic based on filtered results could be cool here) */}
+      {/* QUICK STATS */}
       <div className="grid grid-cols-3 gap-6 mb-8">
         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-            Total Payout
-          </p>
+          {/* Header centered */}
+          <div className="flex items-center justify-between gap-2">
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+              Total Payout
+            </p>
+
+            {/* Tooltip */}
+            <div className="relative group">
+              <span className="cursor-pointer text-slate-400 hover:text-slate-600 text-md">ⓘ</span>
+              <div className="absolute left-1/2 -translate-x-1/2 top-5 z-10 hidden group-hover:block w-56 bg-slate-900 text-white text-[10px] font-semibold p-2 rounded-lg shadow-lg">
+                Total payout from Grab after deductions, adjustments, and fees.
+              </div>
+            </div>
+          </div>
+
+          {/* Value (not centered) */}
           <p className="text-3xl font-black text-slate-800 mt-1">₱{totalPayout.toLocaleString()}</p>
         </div>
+
         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
           {/* Header row */}
           <div className="grid grid-cols-3 text-center mb-2">
@@ -185,6 +223,7 @@ const GrabDashboard = () => {
             <p className="text-xl font-bold text-slate-800">₱{totalAmountGrab.toLocaleString()}</p>
           </div>
         </div>
+
         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
           <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
             Total Issues
@@ -198,10 +237,12 @@ const GrabDashboard = () => {
         {results.length > 0 ? (
           results.map((row) => (
             <Link
-              to={"record"}
+              to={{
+                pathname: "/recon/grab/record",
+                search: location.search, // keep current filters in URL
+              }}
               state={row}
               key={`${row.branch}-${row.date}`}
-              // onClick={() => navigate(`/recon/grab/${session.id}`)}
               className="group bg-white p-6 rounded-2xl border border-slate-200 hover:border-indigo-600 hover:shadow-md cursor-pointer transition-all flex justify-between items-center">
               <div className="flex items-center gap-6">
                 <div className="bg-slate-100 p-4 rounded-xl group-hover:bg-indigo-50 transition-colors">
@@ -211,7 +252,7 @@ const GrabDashboard = () => {
                   <div className="flex items-center gap-2">
                     <h3 className="font-bold text-lg text-slate-800">{row.branch}</h3>
                     <span className="bg-slate-100 text-slate-500 text-[10px] px-2 py-0.5 rounded font-mono">
-                      #{row.status}
+                      #{row.totalCount}
                     </span>
                   </div>
                   <p className="text-slate-500 text-sm font-medium">{row.date}</p>

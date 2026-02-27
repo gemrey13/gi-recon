@@ -3,21 +3,38 @@ import { useLocation, useNavigate } from "react-router-dom";
 import SessionHeader from "@renderer/ui/SessionHeader";
 import GrabTransactionDetails from "@renderer/ui/GrabTransactionDetails";
 import { ReconcileGroup } from "@renderer/types/results";
+import queryString from "query-string";
 
 const GrabGroupDetail = () => {
   const location = useLocation();
   const navigate = useNavigate();
-
-  const group = location.state as ReconcileGroup;
+  const [group, setGroup] = useState<ReconcileGroup | null>(null);
 
   const [expandedId, setExpandedId] = useState<number | null>(null);
 
   useEffect(() => {
-    if (!group) {
-      // Redirect if no data
-      navigate("/recon/grab");
+    const stateGroup = location.state as ReconcileGroup | null;
+
+    if (stateGroup) {
+      setGroup(stateGroup);
+    } else {
+      // fallback if someone navigates directly via URL
+      const params = queryString.parse(location.search);
+      window.api
+        .reconGrabPos({
+          branch: params.branch as string,
+          fromDate: params.fromDate as string,
+          toDate: params.toDate as string,
+        })
+        .then((results) => {
+          const foundGroup = results.find(
+            (g) => g.branch === params.branch && g.date === params.date,
+          );
+          if (foundGroup) setGroup(foundGroup);
+          else navigate("/recon/grab"); // fallback to dashboard
+        });
     }
-  }, [group, navigate]);
+  }, [location, navigate]);
 
   const handleGenerateReport = () => {
     console.log("Generating CSV/PDF for Session:", group?.branch, group?.date);
@@ -25,11 +42,18 @@ const GrabGroupDetail = () => {
 
   const rows = group?.items || [];
 
+  const handleBack = () => {
+    navigate({
+      pathname: "/recon/grab",
+      search: location.search, // restore filters
+    });
+  };
+
   return (
     <div className="flex flex-col h-full bg-slate-50 font-sans text-slate-900 selection:bg-indigo-100">
       <SessionHeader
         storeName={group?.branch || "GrabFood Reconciliation"}
-        onBack={() => navigate("/recon/grab")}
+        onBack={handleBack}
         onGenerate={handleGenerateReport}
       />
 
