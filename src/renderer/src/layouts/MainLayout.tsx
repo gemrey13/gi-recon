@@ -9,7 +9,7 @@ const MainLayout = () => {
 
   const handlePOSImport = async () => {
     setLoading(true);
-    setStatus("Importing POS ZIP...");
+    setStatus("Importing POS Data...");
 
     try {
       const result = await window.api.importPOSZip();
@@ -18,7 +18,7 @@ const MainLayout = () => {
       } else {
         toast.success(`Inserted: ${result.totalInserted} | ${result.message}`);
       }
-      setStatus(`Action Done ✅`);
+      setStatus(`Data Imported ✅`);
     } catch (err: any) {
       setStatus(`Error ❌ ${err.message}`);
       toast.error(`Error ❌ ${err.message}`);
@@ -58,8 +58,21 @@ const MainLayout = () => {
                 <button
                   onClick={handlePOSImport}
                   disabled={loading}
-                  className="w-full bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg py-1 text-xs font-semibold">
-                  Sync POS
+                  className={`w-full flex items-center justify-center gap-2 text-white rounded-lg py-1 text-xs font-semibold transition
+                  ${
+                    loading
+                      ? "bg-indigo-400 animate-pulse cursor-not-allowed"
+                      : "bg-indigo-600 hover:bg-indigo-500"
+                  }`}>
+                  {loading ? (
+                    <>
+                      {/* Spinner */}
+                      <span className="w-3 h-3 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                      Syncing POS
+                    </>
+                  ) : (
+                    "Sync POS"
+                  )}
                 </button>
               </div>
             </div>
