@@ -56,13 +56,12 @@ const GrabDashboard = () => {
     setFilters({});
   };
 
-  const groupCount = results.length;
-
   const totalIssues = results.reduce((sum, group) => sum + group.issueCount, 0);
 
   // 🔹 total amount (choose POS or GRAB source)
   const totalAmountPOS = results.reduce((sum, group) => sum + (group.totalPOSAmount ?? 0), 0);
   const totalAmountGrab = results.reduce((sum, group) => sum + (group.totalGrabAmount ?? 0), 0);
+  const totalPayout = results.reduce((sum, group) => sum + (group.totalPayout ?? 0), 0);
 
   console.log("Total POS Amount:", totalAmountPOS.toFixed(2));
   console.log("Total Grab Amount:", totalAmountGrab.toFixed(2));
@@ -163,9 +162,9 @@ const GrabDashboard = () => {
       <div className="grid grid-cols-3 gap-6 mb-8">
         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
           <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-            Group Shown
+            Total Payout
           </p>
-          <p className="text-3xl font-black text-slate-800 mt-1">{groupCount}</p>
+          <p className="text-3xl font-black text-slate-800 mt-1">₱{totalPayout.toLocaleString()}</p>
         </div>
         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
           {/* Header row */}
