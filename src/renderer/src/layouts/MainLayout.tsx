@@ -16,7 +16,7 @@ const MainLayout = () => {
       if (result.totalInserted === 0) {
         toast.error(`${result.message}`);
       } else {
-        toast.success(`Inserted: ${result.totalInserted} | ${result.message}`);
+        toast.success(`Inserted: ${result.message}`);
       }
       setStatus(`Data Imported ✅`);
     } catch (err: any) {

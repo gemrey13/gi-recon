@@ -62,7 +62,7 @@ export function registerPosIpc() {
     await Promise.all(readerPromises)
     writerWorker.postMessage({ done: true })
 
-    const totalInserted = await writerPromise
+    await writerPromise
 
     fs.rmSync(extractDir, { recursive: true, force: true })
 
@@ -70,6 +70,8 @@ export function registerPosIpc() {
     console.log(`[Main] Import finished at ${endTime.toLocaleString()}`)
     console.log(`[Main] Total time: ${(endTime.getTime() - startTime.getTime()) / 1000}s`)
 
-    return { totalInserted, message: 'Added POS file' }
+    const totalTime = ((endTime.getTime() - startTime.getTime()) / 1000).toFixed(2)
+
+    return { message: `Added POS file in ${totalTime}s` }
   })
 }
