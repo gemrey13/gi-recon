@@ -66,7 +66,6 @@ const MainLayout = () => {
                   }`}>
                   {loading ? (
                     <>
-                      {/* Spinner */}
                       <span className="w-3 h-3 border-2 border-white/40 border-t-white rounded-full animate-spin" />
                       Syncing POS
                     </>
