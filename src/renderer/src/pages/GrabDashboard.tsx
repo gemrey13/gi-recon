@@ -58,6 +58,22 @@ const GrabDashboard = () => {
     }
   };
 
+  const handleStartGrabImport = async () => {
+    setLoading(true);
+    try {
+      const result = await window.api.startImportGrab();
+      if (result.totalInserted === 0) {
+        toast.error(`${result.message}`);
+      } else {
+        toast.success(`Inserted: ${result.message}`);
+      }
+    } catch (err: any) {
+      toast.error(`Error ❌ ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const runToday = async () => {
     setLoading(true);
     try {
@@ -97,11 +113,19 @@ const GrabDashboard = () => {
             Select a record to view transactions or add a new grab record.
           </p>
         </div>
-        <button
-          onClick={() => setShowAddGrab(true)}
-          className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-indigo-200 transition-all flex items-center gap-2 cursor-pointer">
-          <span>+</span> Add Grab Record
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={() => setShowAddGrab(true)}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-indigo-200 transition-all flex items-center gap-2 cursor-pointer">
+            <span>+</span> Add Grab Record
+          </button>
+          <button
+            onClick={handleStartGrabImport}
+            disabled={loading}
+            className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-indigo-200 transition-all flex items-center gap-2 cursor-pointer">
+            <span>+</span> Import Grab Folder
+          </button>
+        </div>
       </div>
 
       {/* FILTER TOOLBAR */}

@@ -87,6 +87,8 @@ export function registerGrabIpc() {
     const endTime = new Date()
     console.log(`[Main][Grab] Finished at ${endTime.toLocaleString()}`)
     console.log(`[Main][Grab] Total time: ${(endTime.getTime() - startTime.getTime()) / 1000}s`)
-    return { totalInserted }
+    console.log(`[Main][Grab] Total inserted: ${totalInserted}`)
+    const totalTime = ((endTime.getTime() - startTime.getTime()) / 1000).toFixed(2)
+    return { message: `Added POS file in ${totalTime}s` }
   })
 }
