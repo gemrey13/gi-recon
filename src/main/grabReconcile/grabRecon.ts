@@ -60,7 +60,6 @@ export function grabPosReconciliation(filters: ReconcileFilters = {}) {
   const grabParams: any[] = [];
 
   // 🔹 Date filter
-  // 🔹 Date filter
   if (from && to) {
     // range
     posQuery += ` AND orddate BETWEEN ? AND ?`;
