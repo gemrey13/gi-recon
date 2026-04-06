@@ -122,6 +122,9 @@ async function processBranch(branch: string) {
   const zipPath = path.join(rootFolder, branch, '2026', '01', 'GC013126.ZIP')
   if (!fs.existsSync(zipPath)) return
 
+  const tmpDir = path.join(os.tmpdir(), 'pos-import')
+  if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir, { recursive: true })
+
   const zip = new AdmZip(zipPath)
 
   let branch_name: string | null = null
@@ -139,9 +142,6 @@ async function processBranch(branch: string) {
 
   const entry = zip.getEntries().find((e) => e.entryName.toUpperCase() === 'CHARGES.DBF')
   if (!entry) return
-
-  const tmpDir = path.join(os.tmpdir(), 'pos-import')
-  if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir, { recursive: true })
 
   const tmpPath = path.join(tmpDir, `${branch}-CHARGES.DBF`)
   fs.writeFileSync(tmpPath, entry.getData(ZIP_PASSWORD))
