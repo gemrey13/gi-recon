@@ -250,7 +250,7 @@ export const branchMappings: BranchMapping[] = [
   },
   {
     posCode: "PCJ",
-    posName: "PUREGOLD CAINTA JUNCTION",
+    posName: "GILIGAN'S PUREGOLD CAINTA JUNCTION",
     grabName: "Giligan's Restaurant - Puregold Cainta Junction",
     foodpandaName: "Giligan's - Puregold Cainta",
   },
