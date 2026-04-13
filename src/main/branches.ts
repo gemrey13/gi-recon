@@ -244,7 +244,7 @@ export const branchMappings: BranchMapping[] = [
   },
   {
     posCode: "PAC",
-    posName: "GILIGAN'S PACO MALL",
+    posName: "GILIGANS PACO MALL",
     grabName: "Giligan's Restaurant - Paco Mall",
     foodpandaName: null,
   },
