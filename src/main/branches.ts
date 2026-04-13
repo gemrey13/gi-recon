@@ -125,7 +125,7 @@ export const branchMappings: BranchMapping[] = [
   },
   {
     posCode: "HIC",
-    posName: "GILIGAN'S HYPERMARKET IMUS CAVITE",
+    posName: "GILIGANS HYPERMARKET IMUS CAVITE",
     grabName: "Giligan's Restaurant - SM Hypermarket Imus",
     foodpandaName: null,
   },
