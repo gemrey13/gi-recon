@@ -106,7 +106,7 @@ export const branchMappings: BranchMapping[] = [
   {
     posCode: "GBR",
     posName: "GILIGAN'S GAISANO BINANGONAN RIZAL",
-    grabName: "Gaisano Binangonan Rizal",
+    grabName: "Giligan's Restaurant - Gaisano Binagonan Rizal",
     foodpandaName: null,
   },
   {
