@@ -137,7 +137,7 @@ export const branchMappings: BranchMapping[] = [
   },
   {
     posCode: "HSL",
-    posName: "GILIGAN'S HYPERMARKET SUCAT-LOPEZ",
+    posName: "GILIGAN'S HYPERMART SUCAT-LOPEZ",
     grabName: "Giligan's Restaurant - SM Hypermarket Sucat-Lopez",
     foodpandaName: "Giligan's - SM Hypermarket Sucat",
   },
