@@ -210,7 +210,8 @@ export function initDatabase() {
     CREATE TABLE IF NOT EXISTS branch_mapping (
       pos_code TEXT PRIMARY KEY,
       pos_name TEXT,
-      grab_name TEXT
+      grab_name TEXT,
+      foodpanda_name TEXT
     );
   `)
 
@@ -223,16 +224,17 @@ export function initDatabase() {
 
 function seedBranchMapping(mappings: BranchMapping[]) {
   const insert = db.prepare(`
-    INSERT INTO branch_mapping (pos_code, pos_name, grab_name)
-    VALUES (?, ?, ?)
+    INSERT INTO branch_mapping (pos_code, pos_name, grab_name, foodpanda_name)
+    VALUES (?, ?, ?, ?)
     ON CONFLICT(pos_code) DO UPDATE SET
       pos_name = excluded.pos_name,
-      grab_name = excluded.grab_name
+      grab_name = excluded.grab_name,
+      foodpanda_name = excluded.foodpanda_name
   `)
 
   const insertMany = db.transaction((rows: BranchMapping[]) => {
     for (const row of rows) {
-      insert.run(row.posCode, row.posName, row.grabName)
+      insert.run(row.posCode, row.posName, row.grabName, row.foodpandaName)
     }
   })
 
