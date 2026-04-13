@@ -149,7 +149,7 @@ export const branchMappings: BranchMapping[] = [
   },
   {
     posCode: "IMU",
-    posName: "GILIGAN'S 5M IMUS",
+    posName: "GILIGAN'S SM IMUS",
     grabName: "Giligan's Restaurant - SM Center Imus",
     foodpandaName: "Giligan's - SM Center Imus",
   },
