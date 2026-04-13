@@ -166,6 +166,47 @@ export function initDatabase() {
       recon_at TEXT
     );
 
+    CREATE TABLE IF NOT EXISTS foodpanda_transactions (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      official_doc_number TEXT,
+      invoice_number TEXT,
+      invoice_date TEXT,
+      partner_name TEXT,
+      vendor_code TEXT,
+      order_code TEXT,
+      reversal TEXT,
+      order_date TEXT,
+      delivery_mode TEXT,
+      gross_food_value REAL,
+      container_charges REAL,
+      mov_paid_by_customer REAL,
+      partner_delivery_fee REAL,
+      voucher_paid_by_vendor REAL,
+      discount_paid_by_vendor REAL,
+      pandabox_voucher_vendor REAL,
+      sales_revenue_net REAL,
+      withholding_tax_half_pct REAL,
+      waiting_time_fee REAL,
+      commission_base REAL,
+      commission_pct REAL,
+      commission_amt REAL, 
+      pandabox_fee REAL,
+      customer_targeting_pct REAL,
+      customer_targeting_fee REAL,
+      delivery_campaign_fee REAL,
+      tax_on_partner_charges REAL,
+      expanded_withholding_tax REAL,
+      already_received_amt REAL,
+      balance_to_be_paid REAL,
+
+      -- 🔹 Reconciliation fields
+      recon_status TEXT,
+      recon_pos_id INTEGER,
+      recon_variance REAL,
+      recon_notes TEXT,
+      recon_at TEXT
+  );
+
     CREATE TABLE IF NOT EXISTS branch_mapping (
       pos_code TEXT PRIMARY KEY,
       pos_name TEXT,
