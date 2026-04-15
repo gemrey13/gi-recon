@@ -14,6 +14,8 @@ declare global {
 
       reconGrabPos: (filters?: any) => Promise<any>;
       getGrabBranches: () => Promise<string[]>;
+
+      runGrabRecon: () => Promise<any>;
     };
   }
 }

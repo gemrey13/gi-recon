@@ -1,3 +1,11 @@
+import Database from "better-sqlite3";
+import { app } from "electron";
+import path from "path";
+
+
+const dbPath = path.join(app.getPath("userData"), "pos.db");
+export const databasePath = new Database(dbPath);
+
 export function toNumber(v: any): number {
   if (!v) return 0;
   const num = Number(String(v).replace(/,/g, "").trim());

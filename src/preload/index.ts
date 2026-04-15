@@ -12,6 +12,9 @@ const api = {
 
   reconGrabPos: (filters?: any) => ipcRenderer.invoke("recon:grab-pos", filters),
   getGrabBranches: () => ipcRenderer.invoke("get-grab-branches"),
+
+
+  runGrabRecon: () => ipcRenderer.invoke("run-grab-recon"),
 };
 
 if (process.contextIsolated) {

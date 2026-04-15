@@ -5,6 +5,7 @@ import os from "os";
 import creategrabWorkerReader from "../worker/grabReaderWorker?nodeWorker";
 import creategrabWorkerWriter from "../worker/grabWriterWorker?nodeWorker";
 import { importGrabManual } from "../worker/importGrabManual";
+import { runGrabReconciliation } from "../services/grabService";
 
 export function registerGrabIpc() {
   ipcMain.handle("grab:importManual", async () => {
@@ -91,4 +92,9 @@ export function registerGrabIpc() {
     const totalTime = ((endTime.getTime() - startTime.getTime()) / 1000).toFixed(2);
     return { message: `Added POS file in ${totalTime}s` };
   });
+
+
+  ipcMain.handle('run-grab-recon', async () => {
+    return runGrabReconciliation();
+});
 }
