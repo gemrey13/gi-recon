@@ -1,19 +1,19 @@
-import Database from 'better-sqlite3'
-import { app } from 'electron'
-import path from 'path'
-import fs from 'fs'
-import { BranchMapping, branchMappings } from './branches'
+import Database from "better-sqlite3";
+import { app } from "electron";
+import path from "path";
+import fs from "fs";
+import { BranchMapping, branchMappings } from "./branches";
 
-let db: Database.Database
+let db: Database.Database;
 
 export function initDatabase() {
-  const dbPath = path.join(app.getPath('userData'), 'pos.db')
-  console.log('[DB] Initializing at:', dbPath)
+  const dbPath = path.join(app.getPath("userData"), "pos.db");
+  console.log("[DB] Initializing at:", dbPath);
 
-  const exists = fs.existsSync(dbPath)
-  console.log('[DB] File exists before init?', exists)
+  const exists = fs.existsSync(dbPath);
+  console.log("[DB] File exists before init?", exists);
 
-  db = new Database(dbPath)
+  db = new Database(dbPath);
 
   // 🔹 Always enable WAL and performance PRAGMAs
   db.exec(`
@@ -21,7 +21,7 @@ export function initDatabase() {
     PRAGMA synchronous = NORMAL;
     PRAGMA cache_size = -100000;
     PRAGMA temp_store = MEMORY;
-  `)
+  `);
 
   // 🔹 Always create tables if missing
   db.exec(`
@@ -200,13 +200,13 @@ export function initDatabase() {
       grab_name TEXT,
       foodpanda_name TEXT
     );
-  `)
+  `);
 
-  console.log('[DB] Tables ensured.')
+  console.log("[DB] Tables ensured.");
 
-  seedBranchMapping(branchMappings)
+  seedBranchMapping(branchMappings);
 
-  return db
+  return db;
 }
 
 function seedBranchMapping(mappings: BranchMapping[]) {
@@ -217,13 +217,13 @@ function seedBranchMapping(mappings: BranchMapping[]) {
       pos_name = excluded.pos_name,
       grab_name = excluded.grab_name,
       foodpanda_name = excluded.foodpanda_name
-  `)
+  `);
 
   const insertMany = db.transaction((rows: BranchMapping[]) => {
     for (const row of rows) {
-      insert.run(row.posCode, row.posName, row.grabName, row.foodpandaName)
+      insert.run(row.posCode, row.posName, row.grabName, row.foodpandaName);
     }
-  })
+  });
 
-  insertMany(mappings)
+  insertMany(mappings);
 }
