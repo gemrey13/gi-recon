@@ -83,13 +83,6 @@ export function initDatabase() {
       filler1 TEXT,
       filler2 TEXT,
 
-      -- 🔹 Reconciliation fields
-      recon_status TEXT,
-      recon_grab_id INTEGER,
-      recon_variance REAL,
-      recon_notes TEXT,
-      recon_at TEXT,
-      
       UNIQUE(branch, cslipno)
     );
 
@@ -156,14 +149,7 @@ export function initDatabase() {
       incident_alias TEXT,
       customer_refund_item TEXT,
       appeal_link TEXT,
-      appeal_status TEXT,
-
-      -- 🔹 Reconciliation fields
-      recon_status TEXT,
-      recon_pos_id INTEGER,
-      recon_variance REAL,
-      recon_notes TEXT,
-      recon_at TEXT
+      appeal_status TEXT
     );
 
     CREATE TABLE IF NOT EXISTS foodpanda_transactions (
@@ -197,15 +183,16 @@ export function initDatabase() {
       tax_on_partner_charges REAL,
       expanded_withholding_tax REAL,
       already_received_amt REAL,
-      balance_to_be_paid REAL,
+      balance_to_be_paid REAL
+    );
 
-      -- 🔹 Reconciliation fields
-      recon_status TEXT,
-      recon_pos_id INTEGER,
-      recon_variance REAL,
-      recon_notes TEXT,
-      recon_at TEXT
-  );
+    CREATE TABLE IF NOT EXISTS recon_summary (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        pos_id INTEGER,
+        grab_id INTEGER,
+        variance REAL,
+        recon_type TEXT     -- 'AUTO_MATCHED', 'MANUAL_FIX', 'UNRESOLVED'
+    );
 
     CREATE TABLE IF NOT EXISTS branch_mapping (
       pos_code TEXT PRIMARY KEY,
