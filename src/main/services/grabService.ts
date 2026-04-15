@@ -22,6 +22,16 @@ export const runGrabReconciliation = () => {
     )
     .all() as any[];
 
+  const cancelled = databasePath
+    .prepare(
+      `
+        SELECT id, store_name, created_on, amount, status, booking_id
+        FROM grab_transactions 
+        WHERE status IN ('Cancelled')
+      `,
+    )
+    .all() as any[];
+
   const allGrabInPOS = databasePath
     .prepare(
       `
@@ -97,6 +107,7 @@ export const runGrabReconciliation = () => {
       unmatchedGrab: unmatchedGrab,
       allGrabInPOS: allGrabInPOS,
       allGrabInGrabTransactions: allGrabInGrabTransactions,
+      cancelled: cancelled,
     };
 
     return results;
