@@ -17,6 +17,7 @@ export const runGrabReconciliation = () => {
         SELECT id, store_name, created_on, amount, status, booking_id
         FROM grab_transactions 
         WHERE status IN ('Cancelled', 'Completed', 'Transferred')
+        AND category != 'Adjustment'
       `,
     )
     .all() as any[];
