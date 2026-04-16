@@ -32,23 +32,6 @@ export const runGrabReconciliation = () => {
     )
     .all() as any[];
 
-  const allGrabInPOS = databasePath
-    .prepare(
-      `
-        SELECT * FROM pos_transactions 
-        WHERE cusname LIKE '%GRAB%';
-      `,
-    )
-    .all() as any[];
-
-  const allGrabInGrabTransactions = databasePath
-    .prepare(
-      `
-        SELECT * FROM grab_transactions;
-      `,
-    )
-    .all() as any[];
-
   const query = `
         SELECT 
             p.id AS pos_id, 
@@ -105,8 +88,6 @@ export const runGrabReconciliation = () => {
       matched: finalizedMatches,
       unmatchedPos: unmatchedPos,
       unmatchedGrab: unmatchedGrab,
-      allGrabInPOS: allGrabInPOS,
-      allGrabInGrabTransactions: allGrabInGrabTransactions,
       cancelled: cancelled,
     };
 
