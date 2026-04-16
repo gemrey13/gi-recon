@@ -7,6 +7,11 @@ const TestingPage = () => {
   const [reconData, setReconData] = useState<any>(null);
   const [branches, setBranches] = useState<any[]>([]);
 
+  // Input States
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [selectedBranch, setSelectedBranch] = useState("ALL");
+
   useEffect(() => {
     async function fetchBranches() {
       try {
@@ -20,10 +25,15 @@ const TestingPage = () => {
   }, []);
 
   const handleRunRecon = async () => {
+    if (!startDate) {
+      toast.error("Please select a date range.");
+      return;
+    }
+
     setLoading(true);
     try {
       // 1. Run the math logic
-      const data = await window.api.runGrabRecon("2026-01-01", "2026-01-31");
+      const data = await window.api.runGrabRecon(startDate, endDate, selectedBranch);
 
       if (!data || (data.matched.length === 0 && data.unmatchedPos.length === 0)) {
         toast.error("No transactions found for this range.");
@@ -79,14 +89,45 @@ const TestingPage = () => {
         )}
       </div>
 
-      <select className="border border-gray-300 rounded-md p-2 w-full max-w-xs">
-        <option value="">Select Branch</option>
-        {branches.map((branch) => (
-          <option key={branch.pos_code} value={branch.pos_name}>
-            {branch.partner_name}
-          </option>
-        ))}
-      </select>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* START DATE */}
+        <div className="flex flex-col gap-1">
+          <label className="text-xs font-semibold text-gray-500 uppercase">Start Date</label>
+          <input
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            className="border border-gray-200 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 outline-none"
+          />
+        </div>
+
+        {/* END DATE */}
+        <div className="flex flex-col gap-1">
+          <label className="text-xs font-semibold text-gray-500 uppercase">End Date</label>
+          <input
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            className="border border-gray-200 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 outline-none"
+          />
+        </div>
+
+        {/* BRANCH SELECT */}
+        <div className="flex flex-col gap-1">
+          <label className="text-xs font-semibold text-gray-500 uppercase">Branch</label>
+          <select
+            value={selectedBranch}
+            onChange={(e) => setSelectedBranch(e.target.value)}
+            className="border border-gray-200 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 outline-none bg-white">
+            <option value="ALL">All Branches</option>
+            {branches.map((branch) => (
+              <option key={branch.pos_code} value={branch.pos_name}>
+                {branch.partner_name}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
 
       {reconData && (
         <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
