@@ -2,9 +2,9 @@ import { contextBridge, ipcRenderer } from "electron";
 import { electronAPI } from "@electron-toolkit/preload";
 
 const api = {
-  minimize: () => ipcRenderer.send('window-minimize'),
-  maximize: () => ipcRenderer.send('window-maximize'),
-  close: () => ipcRenderer.send('window-close'),
+  minimize: () => ipcRenderer.send("window-minimize"),
+  maximize: () => ipcRenderer.send("window-maximize"),
+  close: () => ipcRenderer.send("window-close"),
 
   startImportGrab: () => ipcRenderer.invoke("start-import-grab"),
   importGrabManual: () => ipcRenderer.invoke("grab:importManual"),
@@ -13,8 +13,12 @@ const api = {
   reconGrabPos: (filters?: any) => ipcRenderer.invoke("recon:grab-pos", filters),
   getGrabBranches: () => ipcRenderer.invoke("get-grab-branches"),
 
+  // New IPC for running and saving Grab reconciliation
+  runGrabRecon: (startDate: string, endDate?: string, branchName?: string) =>
+    ipcRenderer.invoke("run-grab-recon", startDate, endDate, branchName),
 
-  runGrabRecon: () => ipcRenderer.invoke("run-grab-recon"),
+  saveGrabRecon: (range: { startDate: string; endDate: string; branch: string }, results: any) =>
+    ipcRenderer.invoke("save-grab-recon", range, results),
 };
 
 if (process.contextIsolated) {

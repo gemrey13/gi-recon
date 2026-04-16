@@ -4,9 +4,9 @@ declare global {
   interface Window {
     electron: ElectronAPI;
     api: {
-      minimize: () => Promise<any>
-      maximize: () => Promise<any>
-      close: () => Promise<any>
+      minimize: () => Promise<any>;
+      maximize: () => Promise<any>;
+      close: () => Promise<any>;
 
       startImportGrab: () => Promise<any>;
       importGrabManual: () => Promise<any>;
@@ -15,7 +15,12 @@ declare global {
       reconGrabPos: (filters?: any) => Promise<any>;
       getGrabBranches: () => Promise<string[]>;
 
-      runGrabRecon: () => Promise<any>;
+      // New IPC for running and saving Grab reconciliation
+      runGrabRecon: (startDate: string, endDate?: string, branchName?: string) => Promise<any>;
+      saveGrabRecon: (
+        range: IGrabReconRange,
+        results: any,
+      ) => Promise<{ success: boolean; message: string }>;
     };
   }
 }
