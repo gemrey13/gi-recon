@@ -1,5 +1,6 @@
 import { contextBridge, ipcRenderer } from "electron";
 import { electronAPI } from "@electron-toolkit/preload";
+import { SystemLog } from "../main/services/logService";
 
 const api = {
   minimize: () => ipcRenderer.send("window-minimize"),
@@ -21,6 +22,7 @@ const api = {
     ipcRenderer.invoke("save-grab-recon", range, results),
 
   getBranch: (partner: "PANDA" | "GRAB") => ipcRenderer.invoke("get-branches", partner),
+  sendSystemLog: (logData: SystemLog) => ipcRenderer.invoke('write-log', logData),
 };
 
 if (process.contextIsolated) {

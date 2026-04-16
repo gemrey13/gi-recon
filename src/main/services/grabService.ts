@@ -1,4 +1,5 @@
 import { getDb } from "../utils";
+import { insertSystemLog } from "./logService";
 
 /**
  * Reconciles Grab vs POS for a date range and specific branch.
@@ -100,14 +101,30 @@ export const runGrabReconciliation = (startDate: string, endDate?: string, branc
     const unmatchedPos = posEntries.filter((p) => !usedPosIds.has(p.id));
     const unmatchedGrab = processedGrabEntries.filter((g) => !usedGrabIds.has(g.id));
 
+    insertSystemLog({
+      level: "INFO",
+      module: "GRAB_SERVICE",
+      action: "RECON_RUN",
+      message: "Reconciliation triggered",
+      description: `Period: ${startDate} to ${endDate}`,
+      user_name: "System",
+    });
+
     return {
       matched: finalizedMatches,
       unmatchedPos,
       unmatchedGrab,
       range: { startDate, endDate: finalEndDate, branch: branchName || "ALL" },
     };
-  } catch (error) {
+  } catch (error: any) {
     console.error("Database Error in grabService:", error);
+    insertSystemLog({
+      level: "ERROR",
+      module: "GRAB_SERVICE",
+      action: "API_ERROR",
+      message: "Failed to run Grab recon",
+      description: error.message,
+    });
     throw error;
   }
 };
@@ -175,12 +192,31 @@ export const saveGrabReconciliationResults = (
 
   try {
     transaction();
+
+    insertSystemLog({
+      level: "INFO",
+      module: "GRAB_SERVICE",
+      action: "RECON_SAVE",
+      message: `Reconciliation finalized for ${branch}`,
+      description: `Period: ${startDate} to ${endDate}. Matched: ${matched.length}, Unmatched POS: ${unmatchedPos.length}, Unmatched Grab: ${unmatchedGrab.length}`,
+      user_name: "System",
+    });
+
     return {
       success: true,
       message: `Reconciliation for ${branch} finalized (${startDate} to ${endDate}).`,
     };
-  } catch (error) {
+  } catch (error: any) {
     console.error("Save Error in grabService:", error);
+
+    insertSystemLog({
+      level: "ERROR",
+      module: "GRAB_SERVICE",
+      action: "RECON_SAVE",
+      message: `Failed to finalize reconciliation for ${branch}`,
+      description: error.message || "Unknown database error during transaction",
+      user_name: "System",
+    });
     throw error;
   }
 };

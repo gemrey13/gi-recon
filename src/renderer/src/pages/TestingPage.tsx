@@ -31,21 +31,55 @@ const TestingPage = () => {
     }
 
     setLoading(true);
+
+    window.api.sendSystemLog({
+      level: "INFO",
+      module: "UI",
+      action: "CLICK",
+      message: "User initiated Grab Reconciliation",
+      description: `Branch: ${selectedBranch}, Range: ${startDate} to ${endDate}`,
+    });
     try {
       // 1. Run the math logic
       const data = await window.api.runGrabRecon(startDate, endDate, selectedBranch);
 
       if (!data || (data.matched.length === 0 && data.unmatchedPos.length === 0)) {
         toast.error("No transactions found for this range.");
+
+        window.api.sendSystemLog({
+          level: "WARN",
+          module: "GRAB_SERVICE",
+          action: "RECON_RUN",
+          message: "Recon completed with zero results",
+          description: `No data found for ${selectedBranch} between ${startDate} and ${endDate}`,
+        });
+
         setReconData(null);
         return;
       }
 
+      window.api.sendSystemLog({
+        level: "INFO",
+        module: "GRAB_SERVICE",
+        action: "RECON_RUN",
+        message: "Recon calculation successful",
+        description: `Matched: ${data.matched.length}, Unmatched POS: ${data.unmatchedPos.length}`,
+      });
+
       setReconData(data);
       toast.success("Reconciliation complete! Review the results below.");
       console.log("Draft Results:", data);
-    } catch (error) {
+    } catch (error: any) {
       toast.error("Failed to run reconciliation.");
+
+      window.api.sendSystemLog({
+        level: "ERROR",
+        module: "UI",
+        action: "RECON_RUN",
+        message: "UI crash/error during recon run",
+        description: error.message || "Unknown Error",
+        user_name: "Gem",
+      });
     } finally {
       setLoading(false);
     }
@@ -55,15 +89,39 @@ const TestingPage = () => {
     if (!reconData) return;
 
     setSaving(true);
+
+    window.api.sendSystemLog({
+      level: "INFO",
+      module: "UI",
+      action: "CLICK",
+      message: "User clicked Save to Database",
+      description: `Target Branch: ${reconData.range.branch}, Date Range: ${reconData.range.startDate} to ${reconData.range.endDate}`,
+    });
     try {
       const response = await window.api.saveGrabRecon(reconData.range, reconData);
 
       if (response.success) {
         toast.success(response.message);
+
+        window.api.sendSystemLog({
+          level: "INFO",
+          module: "UI",
+          action: "RECON_SAVE",
+          message: "Reconciliation successfully saved to DB",
+          description: `Successfully persisted data for ${reconData.range.branch}`,
+        });
       }
-    } catch (error) {
+    } catch (error: any) {
       toast.error("Error saving to database.");
       console.error(error);
+
+      window.api.sendSystemLog({
+        level: "ERROR",
+        module: "UI",
+        action: "RECON_SAVE",
+        message: "UI failed to save reconciliation",
+        description: error.message || "Unknown error in handleSaveToDb",
+      });
     } finally {
       setSaving(false);
     }
