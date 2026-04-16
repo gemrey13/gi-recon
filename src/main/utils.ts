@@ -1,14 +1,14 @@
-import Database from 'better-sqlite3';
-import { app } from 'electron';
-import path from 'path';
+import Database from "better-sqlite3";
+import { app } from "electron";
+import path from "path";
 
 let _db: Database.Database | null = null;
 
 export const getDb = () => {
   if (!_db) {
-    const dbPath = path.join(app.getPath('userData'), 'pos.db');
+    const dbPath = path.join(app.getPath("userData"), "pos.db");
     _db = new Database(dbPath);
-    _db.pragma('journal_mode = WAL');
+    _db.pragma("journal_mode = WAL");
   }
   return _db;
 };

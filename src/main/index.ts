@@ -43,6 +43,7 @@ function createWindow(): void {
 let db: any;
 
 app.whenReady().then(() => {
+  db = initDatabase();
   insertSystemLog({
     level: "INFO",
     module: "MAIN",
@@ -50,7 +51,6 @@ app.whenReady().then(() => {
     message: "Application launched",
     description: `Version: ${app.getVersion()}`,
   });
-  db = initDatabase();
 
   electronApp.setAppUserModelId("com.giligans.girecon");
 

@@ -206,17 +206,17 @@ export function initDatabase() {
 
     CREATE TABLE IF NOT EXISTS system_logs (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-      level TEXT NOT NULL, -- level: Severity (e.g., 'INFO', 'WARN', 'ERROR', 'DEBUG')
-      module TEXT NOT NULL, -- module: Which part of the app sent the log (e.g., 'UI', 'MAIN', 'GRAB_SERVICE')
-      action TEXT NOT NULL, -- action: Specific event name (e.g., 'BTN_CLICK', 'FETCH_START', 'SQL_EXECUTE')
-      message TEXT, -- message: A short, human-readable summary (e.g., "Reconciliation Saved")
-      description TEXT, -- description: Detailed context or "the story" of what happened
-      user_name TEXT DEFAULT 'System' -- user_name: Identifier for the current user profile
+      timestamp DATETIME DEFAULT (datetime('now', 'localtime')),
+      level TEXT NOT NULL,
+      module TEXT NOT NULL,
+      action TEXT NOT NULL,
+      message TEXT,
+      description TEXT,
+      user_name TEXT DEFAULT 'System'
     );
   `);
 
-  console.log("[DB] Tables ensured.");
+  console.log("[DB] Database and System Logs table ready.");
 
   seedBranchMapping(branchMappings);
 
