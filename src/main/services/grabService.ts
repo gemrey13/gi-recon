@@ -6,7 +6,7 @@ import { databasePath } from "../utils";
  * @param endDate - 'YYYY-MM-DD'
  * @param branchName - The POS branch name (from your mapping table)
  */
-export const runGrabReconciliation = (startDate: string = "2026-01-01", endDate: string, branchName?: string) => {
+export const runGrabReconciliation = (startDate: string = "2026-01-01", endDate?: string, branchName?: string) => {
   const finalEndDate = endDate || startDate;
   const isAllBranches = !branchName || branchName === "ALL";
 
