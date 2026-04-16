@@ -1,4 +1,6 @@
-import { databasePath } from "../utils";
+import { getDb } from "../utils";
+
+const databasePath = getDb();
 
 interface BranchMapping {
   pos_code: string;

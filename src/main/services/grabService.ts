@@ -1,4 +1,6 @@
-import { databasePath } from "../utils";
+import { getDb } from "../utils";
+
+const databasePath = getDb();
 
 /**
  * Reconciles Grab vs POS for a date range and specific branch.

@@ -1,9 +1,17 @@
-import Database from "better-sqlite3";
-import { app } from "electron";
-import path from "path";
+import Database from 'better-sqlite3';
+import { app } from 'electron';
+import path from 'path';
 
-const dbPath = path.join(app.getPath("userData"), "pos.db");
-export const databasePath = new Database(dbPath);
+let _db: Database.Database | null = null;
+
+export const getDb = () => {
+  if (!_db) {
+    const dbPath = path.join(app.getPath('userData'), 'pos.db');
+    _db = new Database(dbPath);
+    _db.pragma('journal_mode = WAL');
+  }
+  return _db;
+};
 
 export function toNumber(v: any): number {
   if (!v) return 0;
