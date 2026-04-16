@@ -146,7 +146,16 @@ export const saveGrabReconciliationResults = (
 
     // Save Matched
     for (const m of matched) {
-      insertStmt.run(m.pos_id, m.grab_id, "EXACT", "MATCHED", 0);
+      const isExact = Math.abs(m.amount_diff || 0) < 0.001;
+      const matchLevel = isExact ? "EXACT" : "TOLERANCE";
+
+      insertStmt.run(
+        m.pos_id,
+        m.grab_id,
+        matchLevel,
+        "MATCHED",
+        m.amount_diff || 0, // Save the actual 0.01 or -0.01 difference
+      );
     }
 
     // Save Unmatched POS
