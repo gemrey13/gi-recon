@@ -57,7 +57,6 @@ export const runGrabReconciliation = () => {
     const rawMatches = databasePath.prepare(query).all() as any[];
 
     const finalizedMatches: any[] = [];
-    // Explicitly define the types here
     const usedPosIds = new Set<number>();
     const usedGrabIds = new Set<number>();
 
@@ -71,8 +70,6 @@ export const runGrabReconciliation = () => {
 
     const unmatchedPos = posEntries.filter((p) => !usedPosIds.has(p.id));
     const unmatchedGrab = processedGrabEntries.filter((g) => !usedGrabIds.has(g.id));
-
-    // const results = [finalizedMatches, unmatchedPos, unmatchedGrab, fetchAllGrab];
 
     const results = {
       matched: finalizedMatches,
