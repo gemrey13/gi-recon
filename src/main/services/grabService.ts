@@ -63,6 +63,7 @@ export const runGrabReconciliation = (startDate: string, endDate?: string, branc
           AND g.status IN ('Completed', 'Transferred')
           AND p.orddate = date(g.created_on)
           AND (p.orddate BETWEEN ? AND ?)
+          -- SENIOR MOVE: 0.05 tolerance (5 cents)
           AND abs(p.grschrg - g.amount) <= 0.05
           AND p.cusname LIKE '%GRAB%'
       `;
