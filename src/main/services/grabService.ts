@@ -50,7 +50,9 @@ export const runGrabReconciliation = (startDate: string, endDate?: string, branc
         SELECT 
             p.id AS pos_id, 
             g.id AS grab_id,
-            p.grschrg AS amount,
+            p.grschrg AS pos_amount, -- Specifically name these
+            g.amount AS grab_amount,
+            (p.grschrg - g.amount) AS amount_diff,
             p.branch_name,
             p.orddate,
             g.status
@@ -61,7 +63,7 @@ export const runGrabReconciliation = (startDate: string, endDate?: string, branc
           AND g.status IN ('Completed', 'Transferred')
           AND p.orddate = date(g.created_on)
           AND (p.orddate BETWEEN ? AND ?)
-          AND p.grschrg = g.amount
+          AND abs(p.grschrg - g.amount) <= 0.05
           AND p.cusname LIKE '%GRAB%'
       `;
 

@@ -23,7 +23,7 @@ const TestingPage = () => {
     setLoading(true);
     try {
       // 1. Run the math logic
-      const data = await window.api.runGrabRecon("2026-01-01");
+      const data = await window.api.runGrabRecon("2026-01-01", "2026-01-31");
 
       if (!data || (data.matched.length === 0 && data.unmatchedPos.length === 0)) {
         toast.error("No transactions found for this range.");
