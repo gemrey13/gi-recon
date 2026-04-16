@@ -1,7 +1,5 @@
 import { getDb } from "../utils";
 
-const databasePath = getDb();
-
 export type LogLevel = "DEBUG" | "INFO" | "WARN" | "ERROR";
 
 export type LogModule =
@@ -39,8 +37,10 @@ export interface SystemLog {
 /**
  * Global logging function to track application activity
  */
-export const insertSystemLog = (log: Omit<SystemLog, 'id' | 'timestamp'>) => {
+export const insertSystemLog = (log: Omit<SystemLog, "id" | "timestamp">) => {
   try {
+    const databasePath = getDb();
+
     const stmt = databasePath.prepare(`
       INSERT INTO system_logs (level, module, action, message, description, user_name)
       VALUES (?, ?, ?, ?, ?, ?)
@@ -52,7 +52,7 @@ export const insertSystemLog = (log: Omit<SystemLog, 'id' | 'timestamp'>) => {
       log.action,
       log.message,
       log.description || null,
-      log.user_name || 'System'
+      log.user_name || "System",
     );
   } catch (error) {
     // If the database is locked, we fallback to console so the error isn't lost

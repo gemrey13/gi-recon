@@ -1,7 +1,5 @@
 import { getDb } from "../utils";
 
-const databasePath = getDb();
-
 interface BranchMapping {
   pos_code: string;
   pos_name: string;
@@ -14,6 +12,8 @@ const PARTNER_COLUMN_MAP = {
 } as const;
 
 export const getBranchMapping = (partner: keyof typeof PARTNER_COLUMN_MAP): BranchMapping[] => {
+  const databasePath = getDb();
+
   const column = PARTNER_COLUMN_MAP[partner];
 
   // If the partner isn't in our map, we exit early

@@ -1,7 +1,5 @@
 import { getDb } from "../utils";
 
-const databasePath = getDb();
-
 /**
  * Reconciles Grab vs POS for a date range and specific branch.
  * @param startDate - 'YYYY-MM-DD'
@@ -13,6 +11,8 @@ export const runGrabReconciliation = (startDate: string, endDate?: string, branc
   const isAllBranches = !branchName || branchName === "ALL";
 
   try {
+    const databasePath = getDb();
+
     let posSql = `
       SELECT id, branch_name, orddate, grschrg as amount, cusname 
       FROM pos_transactions 
@@ -116,6 +116,8 @@ export const saveGrabReconciliationResults = (
   range: { startDate: string; endDate: string; branch: string },
   results: any,
 ) => {
+  const databasePath = getDb();
+
   const { matched, unmatchedPos, unmatchedGrab } = results;
   const { startDate, endDate, branch } = range;
   const isAll = branch === "ALL";
