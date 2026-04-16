@@ -21,6 +21,7 @@ declare global {
         range: IGrabReconRange,
         results: any,
       ) => Promise<{ success: boolean; message: string }>;
+      getBranch: (partner: "PANDA" | "GRAB") => Promise<string[]>;
     };
   }
 }

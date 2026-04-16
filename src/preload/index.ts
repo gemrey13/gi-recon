@@ -19,6 +19,8 @@ const api = {
 
   saveGrabRecon: (range: { startDate: string; endDate: string; branch: string }, results: any) =>
     ipcRenderer.invoke("save-grab-recon", range, results),
+
+  getBranch: (partner: "PANDA" | "GRAB") => ipcRenderer.invoke("get-branches", partner),
 };
 
 if (process.contextIsolated) {

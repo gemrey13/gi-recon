@@ -1,10 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 const TestingPage = () => {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [reconData, setReconData] = useState<any>(null); // State to hold the full results object
+  const [reconData, setReconData] = useState<any>(null);
+  const [branches, setBranches] = useState<any[]>([]);
+
+  useEffect(() => {
+    async function fetchBranches() {
+      try {
+        const branchList = await window.api.getBranch("GRAB");
+        setBranches(branchList);
+      } catch (error) {
+        toast.error("Failed to fetch branches.");
+      }
+    }
+    fetchBranches();
+  }, []);
 
   const handleRunRecon = async () => {
     setLoading(true);
@@ -30,12 +43,11 @@ const TestingPage = () => {
 
   const handleSaveToDb = async () => {
     if (!reconData) return;
-    
+
     setSaving(true);
     try {
-      // 2. Pass the range and the results to the save service
       const response = await window.api.saveGrabRecon(reconData.range, reconData);
-      
+
       if (response.success) {
         toast.success(response.message);
       }
@@ -50,28 +62,32 @@ const TestingPage = () => {
   return (
     <div className="p-8 space-y-4">
       <div className="flex gap-4">
-        {/* RUN BUTTON */}
         <button
           onClick={handleRunRecon}
           disabled={loading}
-          className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-sm disabled:opacity-50 transition-colors"
-        >
+          className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-sm disabled:opacity-50 transition-colors">
           {loading ? "Calculating..." : "Run Reconciliation"}
         </button>
 
-        {/* SAVE BUTTON - Only show if we have data */}
         {reconData && (
           <button
             onClick={handleSaveToDb}
             disabled={saving}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-sm disabled:opacity-50 transition-colors"
-          >
+            className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-sm disabled:opacity-50 transition-colors">
             {saving ? "Saving..." : "Finalize & Save to DB"}
           </button>
         )}
       </div>
 
-      {/* Basic Stats Display */}
+      <select className="border border-gray-300 rounded-md p-2 w-full max-w-xs">
+        <option value="">Select Branch</option>
+        {branches.map((branch) => (
+          <option key={branch.pos_code} value={branch.pos_name}>
+            {branch.partner_name}
+          </option>
+        ))}
+      </select>
+
       {reconData && (
         <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
           <h3 className="font-bold text-gray-700">Summary for {reconData.range.branch}</h3>

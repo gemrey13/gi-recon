@@ -17,7 +17,11 @@ export const getBranchMapping = (partner: keyof typeof PARTNER_COLUMN_MAP): Bran
   // If the partner isn't in our map, we exit early
   if (!column) return [];
 
-  const sql = `SELECT pos_code, pos_name, ${column} AS partner_name FROM branch_mapping`;
-
+  const sql = `
+    SELECT pos_code, pos_name, ${column} AS partner_name 
+    FROM branch_mapping 
+    WHERE ${column} IS NOT NULL 
+      AND ${column} != ''
+  `;
   return databasePath.prepare(sql).all() as BranchMapping[];
 };
