@@ -26,9 +26,9 @@ const MainLayout = () => {
           <button
             onClick={toggleSidebar}
             className={`
-              absolute top-6 z-50 
+              top-10 z-50 
               flex items-center justify-center
-              w-8 h-8 p-1
+              w-8 h-8 p-1 m-2
               bg-white border border-slate-200 rounded-full shadow-sm
               hover:shadow-md hover:scale-110 active:scale-95
               transition-all duration-400 ease-in-out left-2
@@ -42,7 +42,9 @@ const MainLayout = () => {
             </div>
           </button>
 
-          <Outlet />
+          <div className="p-6">
+            <Outlet />
+          </div>
         </main>
       </div>
     </>

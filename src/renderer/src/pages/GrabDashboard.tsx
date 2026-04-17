@@ -104,7 +104,7 @@ const GrabDashboard = () => {
   const totalPayout = results.reduce((sum, group) => sum + (group.totalPayout ?? 0), 0);
 
   return (
-    <div className="p-8 max-w-7xl mx-auto">
+    <div className="max-w-7xl mx-auto">
       {/* HEADER */}
       <div className="flex justify-between items-end mb-8">
         <div>
