@@ -15,7 +15,8 @@ const MainLayout = () => {
     <>
       <MenuBar />
       <div className="flex h-[calc(100vh-32px)] bg-slate-50 text-slate-900 overflow-hidden font-sans relative">
-        <div className={`h-full transition-all duration-300 ease-in-out ${showSidebar ? "w-64" : "w-0"}`}>
+        <div
+          className={`h-full transition-all duration-300 ease-in-out ${showSidebar ? "w-64" : "w-0"}`}>
           <Activity mode={showSidebar ? "visible" : "hidden"}>
             <SideBar />
           </Activity>
