@@ -4,6 +4,7 @@ declare global {
   interface Window {
     electron: ElectronAPI;
     api: {
+      // System Window Controls
       minimize: () => Promise<any>;
       maximize: () => Promise<any>;
       close: () => Promise<any>;

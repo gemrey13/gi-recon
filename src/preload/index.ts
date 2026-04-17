@@ -3,6 +3,7 @@ import { electronAPI } from "@electron-toolkit/preload";
 import { SystemLog } from "../main/services/logService";
 
 const api = {
+  // System Window Controls
   minimize: () => ipcRenderer.send("window-minimize"),
   maximize: () => ipcRenderer.send("window-maximize"),
   close: () => ipcRenderer.send("window-close"),
@@ -22,7 +23,7 @@ const api = {
     ipcRenderer.invoke("save-grab-recon", range, results),
 
   getBranch: (partner: "PANDA" | "GRAB") => ipcRenderer.invoke("get-branches", partner),
-  sendSystemLog: (logData: SystemLog) => ipcRenderer.invoke('write-log', logData),
+  sendSystemLog: (logData: SystemLog) => ipcRenderer.invoke("write-log", logData),
 };
 
 if (process.contextIsolated) {
