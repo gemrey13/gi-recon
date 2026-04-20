@@ -361,8 +361,8 @@ const TestingPage = () => {
                               <span>{g.created_on.split(" ")[0]}</span>
                               <br />
                               <span
-                                className={
-                                  g.category === "Adjustment" ? "text-orange-500 font-semibold" : ""
+                                className={ "font-semibold " +
+                                  g.category === "Adjustment" ? "text-orange-500 " : g.status === "Cancelled" ? "text-rose-500 " : "text-emerald-500 "
                                 }>
                                 {g.category || g.status}
                               </span>
