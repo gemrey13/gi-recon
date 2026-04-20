@@ -42,7 +42,7 @@ export const runGrabReconciliation = (startDate: string, endDate?: string, branc
       grabSql += ` WHERE (date(g.created_on) BETWEEN ? AND ?)`;
     }
 
-    grabSql += ` AND g.status IN ('Cancelled', 'Completed', 'Transferred') AND g.category != 'Adjustment'`;
+    grabSql += ` AND g.status IN ('Cancelled', 'Completed', 'Transferred')`;
 
     const grabParams = isAllBranches
       ? [startDate, finalEndDate]
@@ -128,6 +128,8 @@ export const runGrabReconciliation = (startDate: string, endDate?: string, branc
     throw error;
   }
 };
+
+
 
 export const saveGrabReconciliationResults = (
   range: { startDate: string; endDate: string; branch: string },
