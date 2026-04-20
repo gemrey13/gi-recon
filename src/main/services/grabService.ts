@@ -65,7 +65,7 @@ export const runGrabReconciliation = (startDate: string, endDate?: string, branc
         JOIN branch_mapping m ON g.store_name = m.grab_name
         JOIN pos_transactions p ON p.branch_name = m.pos_name
         WHERE g.category IN ('Adjustment', 'Payment')
-          AND g.status IN ('Completed', 'Transferred')
+          AND g.status IN ('Completed', 'Transferred', 'Cancelled')
           AND p.orddate = date(g.created_on)
           AND (p.orddate BETWEEN ? AND ?)
           -- SENIOR MOVE: 0.05 tolerance (5 cents)
@@ -108,7 +108,7 @@ export const runGrabReconciliation = (startDate: string, endDate?: string, branc
       module: "GRAB_SERVICE",
       action: "RECON_RUN",
       message: "Reconciliation triggered",
-      description: `Period: ${startDate} to ${endDate}`,
+      description: `Period: ${startDate} to ${finalEndDate}`,
       user_name: "System",
     });
 
