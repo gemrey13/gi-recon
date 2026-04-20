@@ -64,7 +64,7 @@ export const runGrabReconciliation = (startDate: string, endDate?: string, branc
         FROM grab_transactions g
         JOIN branch_mapping m ON g.store_name = m.grab_name
         JOIN pos_transactions p ON p.branch_name = m.pos_name
-        WHERE g.category = 'Payment'
+        WHERE g.category IN ('Adjustment', 'Payment')
           AND g.status IN ('Completed', 'Transferred')
           AND p.orddate = date(g.created_on)
           AND (p.orddate BETWEEN ? AND ?)
@@ -156,8 +156,7 @@ export const saveGrabReconciliationResults = (
         WHERE (date(g.created_on) BETWEEN ? AND ?)
         ${isAll ? "" : "AND m.pos_name = ?"}
       )
-    ) -- 👈 This parenthesis is critical!
-    AND match_level NOT LIKE 'MANUAL%'
+    )
   `;
 
   const deleteParams = isAll
