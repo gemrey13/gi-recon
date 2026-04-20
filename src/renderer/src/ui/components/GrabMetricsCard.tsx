@@ -1,6 +1,16 @@
 import { FiAlertCircle, FiAlertTriangle, FiCheckCircle } from "react-icons/fi";
 
 const GrabMetricsCard = ({ reconData }: { reconData: any }) => {
+  
+  const formatDate = (dateStr: any) => {
+    if (!dateStr) return "";
+    return new Date(dateStr).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  };
+
   return (
     <div className="mt-6 space-y-4">
       {/* Section Header */}
@@ -9,9 +19,9 @@ const GrabMetricsCard = ({ reconData }: { reconData: any }) => {
           Reconciliation Overview: <span className="text-slate-900">{reconData.range.branch}</span>
         </h3>
         <span className="text-xs font-medium px-2 py-1 bg-indigo-50 text-indigo-700 rounded-md border border-indigo-100">
-          {reconData.range.startDate}{" "}
+          {formatDate(reconData.range.startDate)}
           {reconData.range.endDate !== reconData.range.startDate
-            ? `to ${reconData.range.endDate}`
+            ? ` to ${formatDate(reconData.range.endDate)}`
             : ""}
         </span>
       </div>
