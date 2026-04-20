@@ -16,10 +16,15 @@ const MainLayout = () => {
       <MenuBar />
       <div className="flex h-[calc(100vh-32px)] bg-slate-50 text-slate-900 overflow-hidden font-sans relative">
         <div
-          className={`h-full transition-all duration-300 ease-in-out ${showSidebar ? "w-64" : "w-0"}`}>
-          <Activity mode={showSidebar ? "visible" : "hidden"}>
-            <SideBar />
-          </Activity>
+          className={`h-full transition-all duration-500 ease-ease-[cubic-bezier(0.25,0.8,0.25,1)] ${showSidebar ? "w-64" : "w-0"}`}>
+          <div
+            className={`h-full w-64 transform transition-transform duration-500 ease-in-out ${
+              showSidebar ? "translate-x-0" : "-translate-x-full"
+            }`}>
+            <Activity mode={showSidebar ? "visible" : "hidden"}>
+              <SideBar />
+            </Activity>
+          </div>
         </div>
 
         {/* CONTENT AREA */}
