@@ -100,36 +100,33 @@ const TestingPage = () => {
     if (!selectedGrab || posBasket.length === 0) return;
 
     const posIds = posBasket.map((p) => p.id);
+    const matchType = posIds.length > 1 ? "MANUAL_BATCH" : "MANUAL_SINGLE";
 
     try {
-      const res = await window.api.saveManualMatchBatch(
-        posIds,
-        selectedGrab.id,
-        basketTotal, // Sum of the basket
-        grabAmount, // The Grab row amount
+      setReconData((prev: any) => ({
+        ...prev,
+        matched: [
+          ...prev.matched,
+          ...posBasket.map(p => ({
+            pos_id: p.id,
+            grab_id: selectedGrab.id,
+            amount_diff: basketTotal - grabAmount,
+            match_level: matchType, // 👈 Store the type here
+          }))
+        ],
+        // Remove the matched items from the lists
+        unmatchedPos: prev.unmatchedPos.filter((p: any) => !posIds.includes(p.id)),
+        unmatchedGrab: prev.unmatchedGrab.filter((g: any) => g.id !== selectedGrab.id),
+      }));
+
+      toast.success(
+        Math.abs(difference) > 0
+          ? `Matched with ₱${difference.toFixed(2)} variance`
+          : "Perfect Match Saved!",
       );
 
-      if (res.success) {
-        toast.success(
-          Math.abs(difference) > 0
-            ? `Matched with ₱${difference.toFixed(2)} variance`
-            : "Perfect Match Saved!",
-        );
-
-        // --- Update UI State ---
-        setReconData((prev: any) => ({
-          ...prev,
-          // Remove the matched items from the lists
-          unmatchedPos: prev.unmatchedPos.filter((p: any) => !posIds.includes(p.id)),
-          unmatchedGrab: prev.unmatchedGrab.filter((g: any) => g.id !== selectedGrab.id),
-        }));
-
-        // --- Reset Selection ---
-        setPosBasket([]);
-        setSelectedGrab(null);
-      } else {
-        toast.error(res.error || "Failed to save match.");
-      }
+      setPosBasket([]);
+      setSelectedGrab(null);
     } catch (error) {
       toast.error("Bridge Error.");
     }
@@ -361,8 +358,12 @@ const TestingPage = () => {
                               <span>{g.created_on.split(" ")[0]}</span>
                               <br />
                               <span
-                                className={ "font-semibold " +
-                                  g.category === "Adjustment" ? "text-orange-500 " : g.status === "Cancelled" ? "text-rose-500 " : "text-emerald-500 "
+                                className={
+                                  "font-semibold " + g.category === "Adjustment"
+                                    ? "text-orange-500 "
+                                    : g.status === "Cancelled"
+                                      ? "text-rose-500 "
+                                      : "text-emerald-500 "
                                 }>
                                 {g.category || g.status}
                               </span>

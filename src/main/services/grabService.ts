@@ -173,8 +173,12 @@ export const saveGrabReconciliationResults = (
 
     // Save Matched
     for (const m of matched) {
-      const isExact = Math.abs(m.amount_diff || 0) < 0.001;
-      const matchLevel = isExact ? "EXACT" : "TOLERANCE";
+      let matchLevel = m.match_level;
+
+      if (!matchLevel) {
+        const isExact = Math.abs(m.amount_diff || 0) < 0.001;
+        matchLevel = isExact ? "EXACT" : "TOLERANCE";
+      }
 
       insertStmt.run(
         m.pos_id,
@@ -224,56 +228,5 @@ export const saveGrabReconciliationResults = (
       user_name: "System",
     });
     throw error;
-  }
-};
-
-export const saveManualMatchBatch = (
-  posIds: number[],
-  grabId: number,
-  totalPosAmount: number,
-  grabAmount: number,
-) => {
-  const db = getDb();
-  const variance = totalPosAmount - grabAmount;
-
-  // We use a transaction so all POS links are saved together
-  const transaction = db.transaction(() => {
-    const stmt = db.prepare(`
-      INSERT INTO recon_results_grab (
-        pos_id, 
-        grab_id, 
-        match_level, 
-        recon_status, 
-        amount_difference
-      ) VALUES (?, ?, ?, 'MATCHED', ?)
-    `);
-
-    const matchLevel = posIds.length > 1 ? "MANUAL_BATCH" : "MANUAL_SINGLE";
-
-    for (const id of posIds) {
-      // Logic: We store the variance.
-      // Option A: Put the full variance on every row (for reporting per row)
-      // Option B: Put the variance only on the first row, 0 on others.
-      // Usually, Option A is better for individual row auditing.
-      stmt.run(id, grabId, matchLevel, variance);
-    }
-  });
-
-  try {
-    transaction();
-
-    insertSystemLog({
-      level: Math.abs(variance) > 0.05 ? "WARN" : "INFO",
-      module: "DATABASE",
-      action: "RECON_SAVE",
-      message: `Manual Match: ${posIds.length} POS to 1 Grab`,
-      description: `POS (${posIds.join(", ")}) Sum: ${totalPosAmount}, Grab (${grabId}): ${grabAmount}, Diff: ${variance.toFixed(2)}`,
-      user_name: "User",
-    });
-
-    return { success: true };
-  } catch (error: any) {
-    console.error("Manual Match Error:", error);
-    return { success: false, error: error.message };
   }
 };
