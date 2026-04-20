@@ -30,7 +30,7 @@ function mapRow(branch: string, row: any) {
     branch,
     cslipno: sanitizeValue(row.CSLIPNO),
     orddate: sanitizeValue(row.ORDDATE),
-    ordtime: sanitizeValue(row.ORDTIME),
+    ordtime: formatString(row.ORDTIME),
     cusno: sanitizeValue(row.CUSNO),
     cusname: sanitizeValue(row.CUSNAME),
     cusaddr1: sanitizeValue(row.CUSADDR1),
