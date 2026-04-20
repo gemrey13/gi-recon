@@ -263,8 +263,10 @@ const TestingPage = () => {
                         </td>
                         <td className="p-3">
                           <div className="font-semibold">{p.cusno}</div>
-                          <div className="text-slate-400">
-                            {p.orddate} | {p.branch_name}
+                          <div className="text-[10px] text-slate-400 mt-1 leading-tight">
+                            <span>{p.orddate} </span>
+                            <br />
+                            <span>{p.branch_name}</span>
                           </div>
                         </td>
                         <td className="p-3 text-right font-mono font-bold text-indigo-600">
@@ -346,15 +348,27 @@ const TestingPage = () => {
                         onClick={() => setSelectedGrab(g)}
                         className={`border-b border-slate-50 cursor-pointer transition-colors ${selectedGrab?.id === g.id ? "bg-amber-50 ring-1 ring-inset ring-amber-200" : "hover:bg-slate-50"}`}>
                         <td className="p-3">
-                          <div className="font-semibold">{useShortId ? g.short_order_id : g.booking_id}</div>
+                          <div className="font-semibold">
+                            {useShortId ? g.short_order_id : g.booking_id}
+                          </div>
                           <div className="text-slate-400 flex items-center gap-1">
                             {g.is_batched && (
                               <span className="bg-amber-100 text-amber-700 px-1 rounded text-[10px]">
                                 BATCH ({g.id_count})
                               </span>
                             )}
-                            {g.created_on.split(" ")[0]} | {g.category ? g.category : g.status} |{" "}
-                            {g.store_name}
+                            <div className="text-[10px] text-slate-400 mt-1 leading-tight">
+                              <span>{g.created_on.split(" ")[0]}</span>
+                              <br />
+                              <span
+                                className={
+                                  g.category === "Adjustment" ? "text-orange-500 font-semibold" : ""
+                                }>
+                                {g.category || g.status}
+                              </span>
+                              <br />
+                              <span className="truncate">{g.store_name}</span>
+                            </div>
                           </div>
                         </td>
                         <td className="p-3 text-right font-mono font-bold text-amber-600">
