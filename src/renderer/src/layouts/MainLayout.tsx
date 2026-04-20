@@ -43,7 +43,7 @@ const MainLayout = () => {
             </div>
           </button>
 
-          <div className="p-6">
+          <div className="px-6 py-4">
             <Outlet />
           </div>
         </main>

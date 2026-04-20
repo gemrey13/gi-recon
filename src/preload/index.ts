@@ -23,6 +23,14 @@ const api = {
     ipcRenderer.invoke("save-grab-recon", range, results),
 
   getBranch: (partner: "PANDA" | "GRAB") => ipcRenderer.invoke("get-branches", partner),
+
+  saveManualMatchBatch: (
+    posIds: number[],
+    grabId: number,
+    totalPosAmount: number,
+    grabAmount: number,
+  ) => ipcRenderer.invoke("save-manual-match-batch", posIds, grabId, totalPosAmount, grabAmount),
+
   sendSystemLog: (logData: SystemLog) => ipcRenderer.invoke("write-log", logData),
 };
 

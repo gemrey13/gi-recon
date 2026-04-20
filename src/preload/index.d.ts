@@ -23,6 +23,12 @@ declare global {
         results: any,
       ) => Promise<{ success: boolean; message: string }>;
       getBranch: (partner: "PANDA" | "GRAB") => Promise<string[]>;
+      saveManualMatchBatch: (
+        posIds: number[],
+        grabId: number,
+        totalPosAmount: number,
+        grabAmount: number,
+      ) => Promise<{ success: boolean; error?: string }>;
       sendSystemLog: (logData: SystemLog) => Promise<void>;
     };
   }

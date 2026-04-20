@@ -5,7 +5,11 @@ import os from "os";
 import creategrabWorkerReader from "../worker/grabReaderWorker?nodeWorker";
 import creategrabWorkerWriter from "../worker/grabWriterWorker?nodeWorker";
 import { importGrabManual } from "../worker/importGrabManual";
-import { runGrabReconciliation, saveGrabReconciliationResults } from "../services/grabService";
+import {
+  runGrabReconciliation,
+  saveGrabReconciliationResults,
+  saveManualMatchBatch,
+} from "../services/grabService";
 
 export function registerGrabIpc() {
   ipcMain.handle("grab:importManual", async () => {
@@ -100,4 +104,11 @@ export function registerGrabIpc() {
   ipcMain.handle("save-grab-recon", async (_event, range, results) => {
     return saveGrabReconciliationResults(range, results);
   });
+
+  ipcMain.handle(
+    "save-manual-match-batch",
+    async (_event, posIds, grabId, totalPosAmount, grabAmount) => {
+      return saveManualMatchBatch(posIds, grabId, totalPosAmount, grabAmount);
+    },
+  );
 }

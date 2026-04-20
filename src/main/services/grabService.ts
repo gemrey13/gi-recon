@@ -15,7 +15,7 @@ export const runGrabReconciliation = (startDate: string, endDate?: string, branc
     const databasePath = getDb();
 
     let posSql = `
-      SELECT id, branch_name, orddate, grschrg as amount, cusname 
+      SELECT id, branch_name, orddate, grschrg as amount, cusname, cusno
       FROM pos_transactions 
       WHERE (orddate BETWEEN ? AND ?) AND cusname LIKE '%GRAB%'
     `;
@@ -28,7 +28,7 @@ export const runGrabReconciliation = (startDate: string, endDate?: string, branc
     const posEntries = databasePath.prepare(posSql).all(...posParams) as any[];
 
     let grabSql = `
-      SELECT g.id, g.store_name, g.created_on, g.amount, g.status, g.booking_id
+      SELECT g.id, g.store_name, g.created_on, g.amount, g.status, g.booking_id, g.category, g.short_order_id
       FROM grab_transactions g
     `;
 
@@ -43,6 +43,8 @@ export const runGrabReconciliation = (startDate: string, endDate?: string, branc
     }
 
     grabSql += ` AND g.status IN ('Cancelled', 'Completed', 'Transferred')`;
+
+    grabSql += ` ORDER BY g.category DESC, g.created_on DESC`;
 
     const grabParams = isAllBranches
       ? [startDate, finalEndDate]
@@ -129,8 +131,6 @@ export const runGrabReconciliation = (startDate: string, endDate?: string, branc
   }
 };
 
-
-
 export const saveGrabReconciliationResults = (
   range: { startDate: string; endDate: string; branch: string },
   results: any,
@@ -143,16 +143,21 @@ export const saveGrabReconciliationResults = (
 
   let deleteSql = `
     DELETE FROM recon_results_grab 
-    WHERE pos_id IN (
-      SELECT id FROM pos_transactions 
-      WHERE (orddate BETWEEN ? AND ?)
-      ${isAll ? "" : "AND branch_name = ?"}
-    ) OR grab_id IN (
-      SELECT g.id FROM grab_transactions g
-      ${isAll ? "" : "JOIN branch_mapping m ON g.store_name = m.grab_name"}
-      WHERE (date(g.created_on) BETWEEN ? AND ?)
-      ${isAll ? "" : "AND m.pos_name = ?"}
-    )
+    WHERE (
+      pos_id IN (
+        SELECT id FROM pos_transactions 
+        WHERE (orddate BETWEEN ? AND ?)
+        ${isAll ? "" : "AND branch_name = ?"}
+      ) 
+      OR 
+      grab_id IN (
+        SELECT g.id FROM grab_transactions g
+        ${isAll ? "" : "JOIN branch_mapping m ON g.store_name = m.grab_name"}
+        WHERE (date(g.created_on) BETWEEN ? AND ?)
+        ${isAll ? "" : "AND m.pos_name = ?"}
+      )
+    ) -- 👈 This parenthesis is critical!
+    AND match_level NOT LIKE 'MANUAL%'
   `;
 
   const deleteParams = isAll
@@ -220,5 +225,56 @@ export const saveGrabReconciliationResults = (
       user_name: "System",
     });
     throw error;
+  }
+};
+
+export const saveManualMatchBatch = (
+  posIds: number[],
+  grabId: number,
+  totalPosAmount: number,
+  grabAmount: number,
+) => {
+  const db = getDb();
+  const variance = totalPosAmount - grabAmount;
+
+  // We use a transaction so all POS links are saved together
+  const transaction = db.transaction(() => {
+    const stmt = db.prepare(`
+      INSERT INTO recon_results_grab (
+        pos_id, 
+        grab_id, 
+        match_level, 
+        recon_status, 
+        amount_difference
+      ) VALUES (?, ?, ?, 'MATCHED', ?)
+    `);
+
+    const matchLevel = posIds.length > 1 ? "MANUAL_BATCH" : "MANUAL_SINGLE";
+
+    for (const id of posIds) {
+      // Logic: We store the variance.
+      // Option A: Put the full variance on every row (for reporting per row)
+      // Option B: Put the variance only on the first row, 0 on others.
+      // Usually, Option A is better for individual row auditing.
+      stmt.run(id, grabId, matchLevel, variance);
+    }
+  });
+
+  try {
+    transaction();
+
+    insertSystemLog({
+      level: Math.abs(variance) > 0.05 ? "WARN" : "INFO",
+      module: "DATABASE",
+      action: "RECON_SAVE",
+      message: `Manual Match: ${posIds.length} POS to 1 Grab`,
+      description: `POS (${posIds.join(", ")}) Sum: ${totalPosAmount}, Grab (${grabId}): ${grabAmount}, Diff: ${variance.toFixed(2)}`,
+      user_name: "User",
+    });
+
+    return { success: true };
+  } catch (error: any) {
+    console.error("Manual Match Error:", error);
+    return { success: false, error: error.message };
   }
 };
