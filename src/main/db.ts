@@ -1,19 +1,19 @@
-import Database from 'better-sqlite3'
-import { app } from 'electron'
-import path from 'path'
-import fs from 'fs'
-import { BranchMapping, branchMappings } from './branches'
+import Database from "better-sqlite3";
+import { app } from "electron";
+import path from "path";
+import fs from "fs";
+import { BranchMapping, branchMappings } from "./branches";
 
-let db: Database.Database
+let db: Database.Database;
 
 export function initDatabase() {
-  const dbPath = path.join(app.getPath('userData'), 'pos.db')
-  console.log('[DB] Initializing at:', dbPath)
+  const dbPath = path.join(app.getPath("userData"), "pos.db");
+  console.log("[DB] Initializing at:", dbPath);
 
-  const exists = fs.existsSync(dbPath)
-  console.log('[DB] File exists before init?', exists)
+  const exists = fs.existsSync(dbPath);
+  console.log("[DB] File exists before init?", exists);
 
-  db = new Database(dbPath)
+  db = new Database(dbPath);
 
   // 🔹 Always enable WAL and performance PRAGMAs
   db.exec(`
@@ -21,7 +21,7 @@ export function initDatabase() {
     PRAGMA synchronous = NORMAL;
     PRAGMA cache_size = -100000;
     PRAGMA temp_store = MEMORY;
-  `)
+  `);
 
   // 🔹 Always create tables if missing
   db.exec(`
@@ -83,13 +83,6 @@ export function initDatabase() {
       filler1 TEXT,
       filler2 TEXT,
 
-      -- 🔹 Reconciliation fields
-      recon_status TEXT,
-      recon_grab_id INTEGER,
-      recon_variance REAL,
-      recon_notes TEXT,
-      recon_at TEXT,
-      
       UNIQUE(branch, cslipno)
     );
 
@@ -156,14 +149,7 @@ export function initDatabase() {
       incident_alias TEXT,
       customer_refund_item TEXT,
       appeal_link TEXT,
-      appeal_status TEXT,
-
-      -- 🔹 Reconciliation fields
-      recon_status TEXT,
-      recon_pos_id INTEGER,
-      recon_variance REAL,
-      recon_notes TEXT,
-      recon_at TEXT
+      appeal_status TEXT
     );
 
     CREATE TABLE IF NOT EXISTS foodpanda_transactions (
@@ -197,15 +183,19 @@ export function initDatabase() {
       tax_on_partner_charges REAL,
       expanded_withholding_tax REAL,
       already_received_amt REAL,
-      balance_to_be_paid REAL,
+      balance_to_be_paid REAL
+    );
 
-      -- 🔹 Reconciliation fields
-      recon_status TEXT,
-      recon_pos_id INTEGER,
-      recon_variance REAL,
-      recon_notes TEXT,
-      recon_at TEXT
-  );
+    CREATE TABLE IF NOT EXISTS recon_results_grab (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      pos_id INTEGER,
+      grab_id INTEGER,
+      match_level TEXT, -- 'EXACT', 'FUZZY', 'MANUAL'
+      recon_status TEXT, -- 'MATCHED', 'DISCREPANCY', 'UNMATCHED'
+      amount_difference REAL,
+      FOREIGN KEY(pos_id) REFERENCES pos_transactions(id),
+      FOREIGN KEY(grab_id) REFERENCES grab_transactions(id)
+    );
 
     CREATE TABLE IF NOT EXISTS branch_mapping (
       pos_code TEXT PRIMARY KEY,
@@ -213,13 +203,24 @@ export function initDatabase() {
       grab_name TEXT,
       foodpanda_name TEXT
     );
-  `)
 
-  console.log('[DB] Tables ensured.')
+    CREATE TABLE IF NOT EXISTS system_logs (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      timestamp DATETIME DEFAULT (datetime('now', 'localtime')),
+      level TEXT NOT NULL,
+      module TEXT NOT NULL,
+      action TEXT NOT NULL,
+      message TEXT,
+      description TEXT,
+      user_name TEXT DEFAULT 'System'
+    );
+  `);
 
-  seedBranchMapping(branchMappings)
+  console.log("[DB] Database and System Logs table ready.");
 
-  return db
+  seedBranchMapping(branchMappings);
+
+  return db;
 }
 
 function seedBranchMapping(mappings: BranchMapping[]) {
@@ -230,13 +231,13 @@ function seedBranchMapping(mappings: BranchMapping[]) {
       pos_name = excluded.pos_name,
       grab_name = excluded.grab_name,
       foodpanda_name = excluded.foodpanda_name
-  `)
+  `);
 
   const insertMany = db.transaction((rows: BranchMapping[]) => {
     for (const row of rows) {
-      insert.run(row.posCode, row.posName, row.grabName, row.foodpandaName)
+      insert.run(row.posCode, row.posName, row.grabName, row.foodpandaName);
     }
-  })
+  });
 
-  insertMany(mappings)
+  insertMany(mappings);
 }

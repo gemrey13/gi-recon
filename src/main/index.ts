@@ -5,6 +5,7 @@ import icon from "../../resources/icon.png?asset";
 import path from "path";
 import { initDatabase } from "./db";
 import { registerAllIpc } from "./ipc";
+import { insertSystemLog } from "./services/logService";
 
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
@@ -43,6 +44,13 @@ let db: any;
 
 app.whenReady().then(() => {
   db = initDatabase();
+  insertSystemLog({
+    level: "INFO",
+    module: "MAIN",
+    action: "APP_START",
+    message: "Application launched",
+    description: `Version: ${app.getVersion()}`,
+  });
 
   electronApp.setAppUserModelId("com.giligans.girecon");
 
