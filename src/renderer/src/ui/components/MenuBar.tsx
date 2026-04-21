@@ -1,3 +1,5 @@
+import appIcon from '../../assets/icons/ico.ico';
+
 export default function MenuBar() {
   const buttonStyle: React.CSSProperties & { WebkitAppRegion?: string } = {
     WebkitAppRegion: "no-drag",
@@ -26,7 +28,15 @@ export default function MenuBar() {
         />
       </div>
 
-      <div className="text-xs font-medium pointer-events-none left-3">Giligans Reconciliation</div>
+      <div className="text-xs font-medium pointer-events-none left-3 flex items-center align-middle gap-2">
+        <img
+          src={appIcon}
+          alt="App Icon"
+          className="w-7 h-7 object-contain"
+          style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
+        />
+        Giligans Reconciliation
+      </div>
     </div>
   );
 }
