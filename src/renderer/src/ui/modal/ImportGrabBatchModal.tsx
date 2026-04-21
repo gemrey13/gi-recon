@@ -58,7 +58,7 @@ const ImportGrabBatchModal: React.FC<Props> = ({ onCancel }) => {
             onClick={onCancel}
             disabled={loading}
             className="w-full py-3 cursor-pointer font-bold text-slate-400 uppercase text-[10px] tracking-widest hover:text-slate-600 transition-colors disabled:opacity-0">
-            Cancel and Review
+            Cancel Sync
           </button>
         </div>
       </div>
