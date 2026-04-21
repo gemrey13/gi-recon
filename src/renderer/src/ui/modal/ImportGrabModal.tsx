@@ -1,3 +1,4 @@
+import { useAppSound } from "@renderer/hooks/useAppSound";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 
@@ -6,25 +7,29 @@ interface Props {
 }
 
 const ImportGrabModal: React.FC<Props> = ({ onClose }) => {
-  const [status, setStatus] = useState<string>("Idle");
+  const [status, setStatus] = useState<string>("Ready for ingestion");
   const [loading, setLoading] = useState(false);
+  const { playSound } = useAppSound();
 
   const handleImportGrabManual = async () => {
     setLoading(true);
-    setStatus("Importing GRAB Excel...");
+    setStatus("Reading file buffer...");
 
     try {
       const result = await window.api.importGrabManual();
 
       if (result.totalInserted === 0) {
+        playSound("error");
         toast.error(`${result.message}`);
+        setStatus("Process aborted: No valid records found");
       } else {
-        toast.success(`Done Inserted: ${result.totalInserted} | ${result.message}`);
+        playSound("success");
+        toast.success(`Success: ${result.totalInserted} records synchronized.`);
         onClose();
       }
-      setStatus(`Action Done ✅`);
     } catch (err: any) {
-      setStatus(`Error ❌ ${err.message}`);
+      playSound("error");
+      setStatus(`System Error: ${err.message}`);
     } finally {
       setLoading(false);
     }
@@ -34,14 +39,15 @@ const ImportGrabModal: React.FC<Props> = ({ onClose }) => {
     <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div
         className="bg-white w-full max-w-lg rounded-3xl shadow-2xl p-8
-                      flex flex-col items-center
-                      animate-in fade-in zoom-in duration-200">
-        <Header status={status} />
+                   flex flex-col items-center
+                   animate-in fade-in zoom-in duration-200">
+        <Header status={status} loading={loading} />
 
         <div className="flex justify-center mb-8 w-full">
           <FilePicker
-            label="Grab (CSV)"
-            icon={"📊"}
+            label="Merchant Transaction Report"
+            subLabel="Supported: CSV, XLSX"
+            icon={"📄"}
             onClick={handleImportGrabManual}
             loading={loading}
           />
@@ -51,8 +57,8 @@ const ImportGrabModal: React.FC<Props> = ({ onClose }) => {
           <button
             onClick={onClose}
             disabled={loading}
-            className="flex-1 py-3 cursor-pointer font-bold text-slate-400 uppercase text-[10px] tracking-widest hover:text-slate-600 transition-colors">
-            Cancel
+            className="flex-1 py-3 cursor-pointer font-bold text-slate-400 uppercase text-[10px] tracking-widest hover:text-slate-600 transition-colors disabled:opacity-30">
+            Cancel Upload
           </button>
         </div>
       </div>
@@ -62,30 +68,39 @@ const ImportGrabModal: React.FC<Props> = ({ onClose }) => {
 
 // --- Sub-components ---
 
-const Header = ({ status }: any) => (
+const Header = ({ status, loading }: any) => (
   <div className="mb-6 text-center w-full">
-    <h3 className="text-2xl font-black text-slate-800 mb-1 tracking-tight">Import Grab Data</h3>
-    <p className="text-slate-500 text-xs">
-      Status: <span className="font-bold">{status ?? "idle"}</span>
-    </p>
-    <p className="text-slate-500 text-[10px] mt-2 italic">
-      Select grab files to begin the importing.
+    <h3 className="text-2xl font-black text-slate-800 mb-1 tracking-tight">
+      Data Source Ingestion
+    </h3>
+    <div className="flex items-center justify-center gap-2">
+      {loading && <span className="w-2 h-2 bg-indigo-500 rounded-full animate-pulse" />}
+      <p className="text-slate-500 text-xs font-medium">{status}</p>
+    </div>
+    <p className="text-slate-400 text-[10px] mt-4 leading-relaxed max-w-70 mx-auto">
+      Upload the merchant report file exported from the Grab Portal to reconcile with local POS
+      logs.
     </p>
   </div>
 );
 
-const FilePicker = ({ label, icon, onClick, loading }: any) => (
-  <div
+const FilePicker = ({ label, subLabel, icon, onClick, loading }: any) => (
+  <button
     onClick={!loading ? onClick : undefined}
-    className="border-2 border-dashed border-slate-200 rounded-2xl p-8
+    disabled={loading}
+    className="border-2 border-dashed border-slate-200 rounded-2xl p-10
                flex flex-col items-center justify-center
-               hover:border-indigo-400 hover:bg-indigo-50
-               transition-all cursor-pointer group w-full max-w-xs">
-    <span className="text-3xl mb-3 group-hover:scale-110 transition-transform">{icon}</span>
+               hover:border-indigo-400 hover:bg-indigo-50/50
+               transition-all cursor-pointer group w-full max-w-xs
+               disabled:opacity-50 disabled:cursor-wait outline-none">
+    <span
+      className={`text-4xl mb-4 transition-transform ${loading ? "animate-bounce" : "group-hover:scale-110"}`}>
+      {loading ? "⏳" : icon}
+    </span>
 
-    <p className="text-xs font-bold text-slate-600">{label}</p>
-    <p className="text-[10px] text-slate-400 mt-1 text-center">Select File</p>
-  </div>
+    <p className="text-sm font-bold text-slate-700">{label}</p>
+    <p className="text-[11px] text-slate-400 mt-1">{subLabel}</p>
+  </button>
 );
 
 export default ImportGrabModal;
