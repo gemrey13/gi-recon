@@ -2,11 +2,14 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { logger } from "@renderer/lib/logger";
 import { ReconData } from "@shared/grab-recon.types";
+import { useAppSound } from "@renderer/hooks/useAppSound";
 
 export const useGrabRecon = () => {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [reconData, setReconData] = useState<ReconData | null>(null);
+
+  const { playSound } = useAppSound();
 
   const runRecon = async (startDate: string, endDate: string, branch: string) => {
     if (!startDate) {
@@ -74,6 +77,8 @@ export const useGrabRecon = () => {
 
       if (response.success) {
         toast.success(response.message);
+        playSound("success");
+
         logger.info(
           "UI",
           "RECON_SAVE",
@@ -83,6 +88,8 @@ export const useGrabRecon = () => {
       }
     } catch (error: any) {
       toast.error("Error saving to database.");
+      playSound("error");
+
       logger.error(
         "UI",
         "RECON_SAVE",
