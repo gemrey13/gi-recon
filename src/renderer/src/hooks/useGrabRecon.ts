@@ -1,7 +1,7 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { logger } from "@renderer/lib/logger";
-import { ReconData } from "@renderer/types/grabrecon";
+import { ReconData } from "@shared/grab-recon.types";
 
 export const useGrabRecon = () => {
   const [loading, setLoading] = useState(false);

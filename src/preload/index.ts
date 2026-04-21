@@ -12,9 +12,6 @@ const api = {
   importGrabManual: () => ipcRenderer.invoke("grab:importManual"),
   importPOSZip: () => ipcRenderer.invoke("POS:importZip"),
 
-  reconGrabPos: (filters?: any) => ipcRenderer.invoke("recon:grab-pos", filters),
-  getGrabBranches: () => ipcRenderer.invoke("get-grab-branches"),
-
   // New IPC for running and saving Grab reconciliation
   runGrabRecon: (startDate: string, endDate?: string, branchName?: string) =>
     ipcRenderer.invoke("run-grab-recon", startDate, endDate, branchName),

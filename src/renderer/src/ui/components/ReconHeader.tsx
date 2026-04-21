@@ -1,4 +1,4 @@
-import { Branch } from "@renderer/types/grabrecon";
+import { Branch } from "@shared/grab-recon.types";
 
 interface ReconHeaderProps {
   branches: Branch[];

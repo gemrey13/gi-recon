@@ -1,12 +1,4 @@
-import { LogLevel } from "@renderer/types/grabrecon";
-
-interface LogPayload {
-  level: LogLevel;
-  module: string;
-  action: string;
-  message: string;
-  description: string;
-}
+import { LogPayload } from "@shared/logger";
 
 const send = (payload: LogPayload) => {
   window.api.sendSystemLog(payload);

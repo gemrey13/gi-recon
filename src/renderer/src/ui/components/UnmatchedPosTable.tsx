@@ -1,4 +1,4 @@
-import { PosItem } from "@renderer/types/grabrecon";
+import { PosItem } from "@shared/grab-recon.types";
 
 interface UnmatchedPosTableProps {
   items: PosItem[];

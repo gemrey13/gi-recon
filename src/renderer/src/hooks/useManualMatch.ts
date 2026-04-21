@@ -1,4 +1,4 @@
-import { GrabItem, MatchedItem, PosItem, ReconData } from "@renderer/types/grabrecon";
+import { GrabItem, MatchedItem, PosItem, ReconData } from "@shared/grab-recon.types";
 import { useState } from "react";
 import toast from "react-hot-toast";
 

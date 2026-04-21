@@ -50,5 +50,3 @@ export interface Branch {
   pos_name: string;
   partner_name: string;
 }
-
-export type LogLevel = "DEBUG" | "INFO" | "WARN" | "ERROR";

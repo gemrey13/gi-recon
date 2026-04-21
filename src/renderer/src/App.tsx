@@ -1,8 +1,8 @@
-import { HashRouter, Routes, Route } from 'react-router-dom';
-import Overview from '@renderer/pages/Overview';
-import MainLayout from '@renderer/layouts/MainLayout';
+import { HashRouter, Routes, Route } from "react-router-dom";
+import Overview from "@renderer/pages/Overview";
+import MainLayout from "@renderer/layouts/MainLayout";
 import { Toaster } from "react-hot-toast";
-import GrabPage from '@renderer/pages/GrabPage';
+import GrabPage from "@renderer/pages/GrabPage";
 
 function App() {
   return (

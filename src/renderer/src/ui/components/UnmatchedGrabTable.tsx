@@ -1,4 +1,4 @@
-import { GrabItem } from "@renderer/types/grabrecon";
+import { GrabItem } from "@shared/grab-recon.types";
 import { useState } from "react";
 
 interface UnmatchedGrabTableProps {
