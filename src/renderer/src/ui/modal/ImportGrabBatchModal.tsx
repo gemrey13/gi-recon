@@ -24,8 +24,7 @@ const ImportGrabBatchModal: React.FC<Props> = ({ onCancel }) => {
         setStatus("Sync aborted: No matches to commit");
       } else {
         playSound("success");
-        toast.success(`Success: ${result.totalInserted} records committed.`);
-        // Small delay to let the user see the "Action Done" status
+        toast.success(`Success: New records committed.`);
         setTimeout(onCancel, 600);
       }
     } catch (err: any) {
