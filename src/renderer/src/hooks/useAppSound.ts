@@ -13,7 +13,7 @@ const soundMap: Record<SoundEffect, HTMLAudioElement> = {
 };
 
 export const useAppSound = () => {
-  const playSound = (effect: SoundEffect, volume: number = 0.3) => {
+  const playSound = (effect: SoundEffect, volume: number = 1.0) => {
     const audio = soundMap[effect];
     
     // Reset sound to start in case it's already playing
