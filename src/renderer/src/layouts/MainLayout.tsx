@@ -94,7 +94,6 @@ const SideBar = () => {
         </div>
         <NavItem to="/recon/panda" label="FoodPanda" icon="🐼" />
         <NavItem to="/recon/grab" label="GrabFood" icon="🚗" />
-        <NavItem to="/recon/test" label="Testing" icon="🧪" />
       </nav>
 
       <div className="mt-auto mb-4">

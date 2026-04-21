@@ -1,5 +1,4 @@
 import { useState } from "react";
-import GrabMetricsCard from "@renderer/ui/components/GrabMetricsCard";
 
 // Hooks
 import { useBranches } from "@renderer/hooks/useBranches";
@@ -12,11 +11,15 @@ import UnmatchedPosTable from "@renderer/ui/components/UnmatchedPosTable";
 import MatchingWorkspace from "@renderer/ui/components/MatchingWorkspace";
 import UnmatchedGrabTable from "@renderer/ui/components/UnmatchedGrabTable";
 import FinalizeFooter from "@renderer/ui/components/FinalizeFooter";
+import ImportGrabModal from "@renderer/ui/modal/ImportGrabModal";
+import GrabTitle from "@renderer/ui/components/GrabTitle";
+import GrabMetricsCard from "@renderer/ui/components/GrabMetricsCard";
 
-const TestingPage = () => {
+const GrabPage = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [selectedBranch, setSelectedBranch] = useState("ALL");
+  const [showAddGrab, setShowAddGrab] = useState(false);
 
   const { branches } = useBranches();
   const { loading, saving, reconData, setReconData, runRecon, saveToDb } = useGrabRecon();
@@ -34,6 +37,8 @@ const TestingPage = () => {
 
   return (
     <div className="space-y-6 max-w-400 mx-auto">
+      <GrabTitle onAddGrab={() => setShowAddGrab(true)} />
+
       <ReconHeader
         branches={branches}
         selectedBranch={selectedBranch}
@@ -75,8 +80,10 @@ const TestingPage = () => {
           <FinalizeFooter saving={saving} onSave={() => saveToDb(reconData)} />
         </>
       )}
+
+      {showAddGrab && <ImportGrabModal onClose={() => setShowAddGrab(false)} />}
     </div>
   );
 };
 
-export default TestingPage;
+export default GrabPage;
