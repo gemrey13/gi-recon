@@ -12,10 +12,7 @@ declare global {
       startImportGrab: () => Promise<any>;
       importGrabManual: () => Promise<any>;
       importPOSZip: () => Promise<any>;
-
-      reconGrabPos: (filters?: any) => Promise<any>;
-      getGrabBranches: () => Promise<string[]>;
-
+      
       // New IPC for running and saving Grab reconciliation
       runGrabRecon: (startDate: string, endDate?: string, branchName?: string) => Promise<any>;
       saveGrabRecon: (
