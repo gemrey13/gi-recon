@@ -1,8 +1,8 @@
-import MenuBar from "@renderer/ui/components/MenuBar";
+import MenuBar from "@renderer/components/ui/MenuBar";
 import { Activity, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { TbLayoutSidebarLeftCollapse, TbLayoutSidebarRightCollapse } from "react-icons/tb";
-import SideBar from "@renderer/ui/components/Sidebar";
+import SideBar from "@renderer/components/ui/Sidebar";
 
 const MainLayout = () => {
   const [showSidebar, setShowSidebar] = useState(true);

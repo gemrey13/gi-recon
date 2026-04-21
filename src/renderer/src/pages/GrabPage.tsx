@@ -6,16 +6,16 @@ import { useGrabRecon } from "@renderer/hooks/useGrabRecon";
 import { useManualMatch } from "@renderer/hooks/useManualMatch";
 
 // Components
-import ReconHeader from "@renderer/ui/components/ReconHeader";
-import UnmatchedPosTable from "@renderer/ui/components/UnmatchedPosTable";
-import MatchingWorkspace from "@renderer/ui/components/MatchingWorkspace";
-import UnmatchedGrabTable from "@renderer/ui/components/UnmatchedGrabTable";
-import FinalizeFooter from "@renderer/ui/components/FinalizeFooter";
-import ImportGrabModal from "@renderer/ui/modal/ImportGrabModal";
-import GrabTitle from "@renderer/ui/components/GrabTitle";
-import GrabMetricsCard from "@renderer/ui/components/GrabMetricsCard";
-import ConfirmGrabSaveDBModal from "@renderer/ui/modal/ConfirmGrabSaveDBModal";
-import ImportGrabBatchModal from "@renderer/ui/modal/ImportGrabBatchModal";
+import ReconHeader from "@renderer/components/grab/ReconHeader";
+import UnmatchedPosTable from "@renderer/components/grab/UnmatchedPosTable";
+import MatchingWorkspace from "@renderer/components/grab/MatchingWorkspace";
+import UnmatchedGrabTable from "@renderer/components/grab/UnmatchedGrabTable";
+import FinalizeFooter from "@renderer/components/grab/FinalizeFooter";
+import ImportGrabModal from "@renderer/components/grab/modal/ImportGrabModal";
+import GrabTitle from "@renderer/components/grab/GrabTitle";
+import GrabMetricsCard from "@renderer/components/grab/GrabMetricsCard";
+import ConfirmGrabSaveDBModal from "@renderer/components/grab/modal/ConfirmGrabSaveDBModal";
+import ImportGrabBatchModal from "@renderer/components/grab/modal/ImportGrabBatchModal";
 
 const GrabPage = () => {
   const [startDate, setStartDate] = useState("");

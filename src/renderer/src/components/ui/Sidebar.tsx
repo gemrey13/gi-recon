@@ -1,4 +1,4 @@
-import ImportPOSModal from "@renderer/ui/modal/ImportPOSModal";
+import ImportPOSModal from "@renderer/components/pos/modal/ImportPOSModal";
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 
