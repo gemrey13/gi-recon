@@ -14,12 +14,14 @@ import FinalizeFooter from "@renderer/ui/components/FinalizeFooter";
 import ImportGrabModal from "@renderer/ui/modal/ImportGrabModal";
 import GrabTitle from "@renderer/ui/components/GrabTitle";
 import GrabMetricsCard from "@renderer/ui/components/GrabMetricsCard";
+import ConfirmGrabSaveDBModal from "@renderer/ui/modal/ConfirmGrabSaveDBModal";
 
 const GrabPage = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [selectedBranch, setSelectedBranch] = useState("ALL");
   const [showAddGrab, setShowAddGrab] = useState(false);
+  const [showConfirmSave, setShowConfirmSave] = useState(false);
 
   const { branches } = useBranches();
   const { loading, saving, reconData, setReconData, runRecon, saveToDb } = useGrabRecon();
@@ -34,6 +36,11 @@ const GrabPage = () => {
     togglePos,
     commitMatch,
   } = useManualMatch(setReconData);
+
+  const handleConfirmSave = async () => {
+    await saveToDb(reconData!);
+    setShowConfirmSave(false);
+  };
 
   return (
     <div className="space-y-6 max-w-400 mx-auto">
@@ -77,11 +84,22 @@ const GrabPage = () => {
             />
           </div>
 
-          <FinalizeFooter saving={saving} onSave={() => saveToDb(reconData)} />
+          <FinalizeFooter
+            saving={saving}
+            onSave={() => setShowConfirmSave(true)} // ← was: () => saveToDb(reconData)
+          />
         </>
       )}
 
       {showAddGrab && <ImportGrabModal onClose={() => setShowAddGrab(false)} />}
+
+      {showConfirmSave && (
+        <ConfirmGrabSaveDBModal
+          saving={saving}
+          onConfirm={handleConfirmSave}
+          onCancel={() => setShowConfirmSave(false)}
+        />
+      )}
     </div>
   );
 };
