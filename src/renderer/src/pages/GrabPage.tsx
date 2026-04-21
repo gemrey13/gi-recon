@@ -15,6 +15,7 @@ import ImportGrabModal from "@renderer/ui/modal/ImportGrabModal";
 import GrabTitle from "@renderer/ui/components/GrabTitle";
 import GrabMetricsCard from "@renderer/ui/components/GrabMetricsCard";
 import ConfirmGrabSaveDBModal from "@renderer/ui/modal/ConfirmGrabSaveDBModal";
+import ImportGrabBatchModal from "@renderer/ui/modal/ImportGrabBatchModal";
 
 const GrabPage = () => {
   const [startDate, setStartDate] = useState("");
@@ -22,6 +23,7 @@ const GrabPage = () => {
   const [selectedBranch, setSelectedBranch] = useState("ALL");
   const [showAddGrab, setShowAddGrab] = useState(false);
   const [showConfirmSave, setShowConfirmSave] = useState(false);
+  const [showAddGrabBatch, setShowAddGrabBatch] = useState(false);
 
   const { branches } = useBranches();
   const { loading, saving, reconData, setReconData, runRecon, saveToDb } = useGrabRecon();
@@ -44,7 +46,10 @@ const GrabPage = () => {
 
   return (
     <div className="space-y-6 max-w-400 mx-auto">
-      <GrabTitle onAddGrab={() => setShowAddGrab(true)} />
+      <GrabTitle
+        onAddGrab={() => setShowAddGrab(true)}
+        onAddGrabBatch={() => setShowAddGrabBatch(true)}
+      />
 
       <ReconHeader
         branches={branches}
@@ -92,6 +97,8 @@ const GrabPage = () => {
       )}
 
       {showAddGrab && <ImportGrabModal onClose={() => setShowAddGrab(false)} />}
+
+      {showAddGrabBatch && <ImportGrabBatchModal onCancel={() => setShowAddGrabBatch(false)} />}
 
       {showConfirmSave && (
         <ConfirmGrabSaveDBModal

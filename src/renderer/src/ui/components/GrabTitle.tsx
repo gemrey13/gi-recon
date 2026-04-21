@@ -1,29 +1,9 @@
-import { useState } from "react";
-import toast from "react-hot-toast";
-
 interface GrabTitleProps {
   onAddGrab: () => void;
+  onAddGrabBatch: () => void;
 }
 
-const GrabTitle = ({ onAddGrab }: GrabTitleProps) => {
-  const [loading, setLoading] = useState(false);
-
-  const handleStartGrabImport = async () => {
-    setLoading(true);
-    try {
-      const result = await window.api.startImportGrab();
-      if (result.totalInserted === 0) {
-        toast.error(`${result.message}`);
-      } else {
-        toast.success(`Inserted: ${result.message}`);
-      }
-    } catch (err: any) {
-      toast.error(`Error ❌ ${err.message}`);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+const GrabTitle = ({ onAddGrab, onAddGrabBatch }: GrabTitleProps) => {
   return (
     <div className="flex justify-between items-end mb-8">
       <div>
@@ -41,11 +21,9 @@ const GrabTitle = ({ onAddGrab }: GrabTitleProps) => {
           <span>+</span> Manual Entry
         </button>
         <button
-          onClick={handleStartGrabImport}
-          disabled={loading}
+          onClick={onAddGrabBatch}
           className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-green-200 transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
-          {loading ? <span className="animate-spin">◌</span> : <span>↑</span>}
-          Batch Import Records
+          <span>↑</span> Batch Import Records
         </button>
       </div>
     </div>
