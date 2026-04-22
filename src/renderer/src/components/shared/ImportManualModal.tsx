@@ -1,4 +1,5 @@
 import { useAppSound } from "@renderer/hooks/useAppSound";
+import { logger } from "@renderer/lib/logger";
 import { Platform } from "@shared/constants.types";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
@@ -52,6 +53,13 @@ const ImportManualModal: React.FC<Props> = ({ platform, onClose }) => {
     setLoading(true);
     setStatus("Reading file buffer...");
 
+    logger.info(
+      "IMPORT_SERVICE",
+      "CLICK",
+      `${cfg.label} manual import started`,
+      "User triggered manual file import from modal",
+    );
+
     try {
       const result = await cfg.apiCall();
 
@@ -59,14 +67,32 @@ const ImportManualModal: React.FC<Props> = ({ platform, onClose }) => {
         playSound("error");
         toast.error(`${result.message}`);
         setStatus("Process aborted: No valid records found");
+        logger.warn(
+          "IMPORT_SERVICE",
+          "RECON_RUN",
+          `${cfg.label} import returned 0 records`,
+          result.message ?? "No valid records found in uploaded file",
+        );
       } else {
         playSound("success");
         toast.success(`Success: ${result.totalInserted} records synchronized.`);
+        logger.info(
+          "IMPORT_SERVICE",
+          "RECON_SAVE",
+          `${cfg.label} import successful`,
+          `${result.totalInserted} records written to database`,
+        );
         onClose();
       }
     } catch (err: any) {
       playSound("error");
       setStatus(`System Error: ${err.message}`);
+      logger.error(
+        "IMPORT_SERVICE",
+        "API_ERROR",
+        `${cfg.label} import failed`,
+        err.message ?? "Unknown error during manual import",
+      );
     } finally {
       setLoading(false);
     }

@@ -1,8 +1,8 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useAppSound } from "@renderer/hooks/useAppSound";
-
-type Platform = "panda" | "grab";
+import { Platform } from "@shared/constants.types";
+import { logger } from "@renderer/lib/logger";
 
 interface Props {
   platform: Platform;
@@ -48,6 +48,13 @@ const ImportBatchModal: React.FC<Props> = ({ platform, onCancel }) => {
     setLoading(true);
     setStatus("Scanning directory and preparing ledger...");
 
+    logger.info(
+      "IMPORT_SERVICE",
+      "CLICK",
+      `${cfg.label} batch import started`,
+      "User triggered batch directory import from modal",
+    );
+
     try {
       const result = await cfg.apiCall();
 
@@ -55,14 +62,32 @@ const ImportBatchModal: React.FC<Props> = ({ platform, onCancel }) => {
         playSound("error");
         toast.error(`${result.message}`);
         setStatus("Sync aborted: No matches to commit");
+        logger.warn(
+          "IMPORT_SERVICE",
+          "RECON_RUN",
+          `${cfg.label} batch import returned 0 records`,
+          result.message ?? "No matching records found in directory",
+        );
       } else {
         playSound("success");
         toast.success(`Success: New records committed.`);
+        logger.info(
+          "IMPORT_SERVICE",
+          "RECON_SAVE",
+          `${cfg.label} batch import successful`,
+          `${result.totalInserted} records written to database`,
+        );
         setTimeout(onCancel, 600);
       }
     } catch (err: any) {
       playSound("error");
       setStatus(`System Error: ${err.message}`);
+      logger.error(
+        "IMPORT_SERVICE",
+        "API_ERROR",
+        `${cfg.label} batch import failed`,
+        err.message ?? "Unknown error during batch import",
+      );
     } finally {
       setLoading(false);
     }
