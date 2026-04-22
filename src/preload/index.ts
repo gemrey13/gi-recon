@@ -24,6 +24,7 @@ const api = {
   sendSystemLog: (logData: SystemLog) => ipcRenderer.invoke("write-log", logData),
 
   // Panda IPC
+  startImportPanda: () => ipcRenderer.invoke("start-import-panda"),
   importPandaManual: () => ipcRenderer.invoke("panda:importManual"),
 };
 

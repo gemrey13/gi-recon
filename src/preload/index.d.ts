@@ -23,6 +23,7 @@ declare global {
       sendSystemLog: (logData: SystemLog) => Promise<void>;
 
       // Panda IPC Types
+      startImportPanda: () => Promise<any>;
       importPandaManual: () => Promise<any>;
     };
   }
