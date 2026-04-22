@@ -2,7 +2,7 @@ import { ipcMain, app, dialog } from "electron";
 import path from "path";
 import fs from "fs";
 import os from "os";
-import createPandaReaderWriter from "../worker/panda/pandaReaderWorker?nodeWorker";
+import createPandaWorkerReader from "../worker/panda/pandaReaderWorker?nodeWorker";
 import createPandaWorkerWriter from "../worker/panda/pandaWriterWorker?nodeWorker";
 import { importPandaManual } from "../worker/panda/importPandaManual";
 
@@ -71,7 +71,7 @@ export function registerPandaIpc() {
     });
 
     const readerPromises = readerGroups.map((group) => {
-      const reader = createPandaReaderWriter({
+      const reader = createPandaWorkerReader({
         workerData: { files: group, rootFolder, batchSize },
       });
       reader.on("message", (msg) => writerWorker.postMessage(msg));

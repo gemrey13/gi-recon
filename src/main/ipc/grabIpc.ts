@@ -2,10 +2,10 @@ import { ipcMain, app, dialog } from "electron";
 import path from "path";
 import fs from "fs";
 import os from "os";
-import creategrabWorkerReader from "../worker/grabReaderWorker?nodeWorker";
-import creategrabWorkerWriter from "../worker/grabWriterWorker?nodeWorker";
-import { importGrabManual } from "../worker/importGrabManual";
+import createGrabWorkerReader from "../worker/grab/grabReaderWorker?nodeWorker";
+import createGrabWorkerWriter from "../worker/grab/grabWriterWorker?nodeWorker";
 import { runGrabReconciliation, saveGrabReconciliationResults } from "../services/grabService";
+import { importGrabManual } from "../worker/grab/importGrabManual";
 
 export function registerGrabIpc() {
   ipcMain.handle("grab:importManual", async () => {
@@ -65,7 +65,7 @@ export function registerGrabIpc() {
     const readerGroups: string[][] = Array.from({ length: numReaders }, () => []);
     allFiles.forEach((file, i) => readerGroups[i % numReaders].push(file));
 
-    const writerWorker = creategrabWorkerWriter({ workerData: { dbPath } });
+    const writerWorker = createGrabWorkerWriter({ workerData: { dbPath } });
     const writerPromise = new Promise<number>((resolve) => {
       writerWorker.on("message", (msg) => {
         if ("totalInserted" in msg) resolve(msg.totalInserted);
@@ -73,7 +73,7 @@ export function registerGrabIpc() {
     });
 
     const readerPromises = readerGroups.map((group) => {
-      const reader = creategrabWorkerReader({
+      const reader = createGrabWorkerReader({
         workerData: { files: group, rootFolder, batchSize },
       });
       reader.on("message", (msg) => writerWorker.postMessage(msg));
