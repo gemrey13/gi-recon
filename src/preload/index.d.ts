@@ -21,6 +21,9 @@ declare global {
       ) => Promise<{ success: boolean; message: string }>;
       getBranch: (partner: "PANDA" | "GRAB") => Promise<BranchMapping[]>;
       sendSystemLog: (logData: SystemLog) => Promise<void>;
+
+      // Panda IPC Types
+      importPandaManual: () => Promise<any>;
     };
   }
 }

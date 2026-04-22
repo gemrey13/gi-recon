@@ -22,6 +22,9 @@ const api = {
   getBranch: (partner: "PANDA" | "GRAB") => ipcRenderer.invoke("get-branches", partner),
 
   sendSystemLog: (logData: SystemLog) => ipcRenderer.invoke("write-log", logData),
+
+  // Panda IPC
+  importPandaManual: () => ipcRenderer.invoke("panda:importManual"),
 };
 
 if (process.contextIsolated) {

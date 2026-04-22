@@ -1,11 +1,35 @@
 import Database from "better-sqlite3";
 import * as XLSX from "xlsx";
-import { formatString, toNumber, toSqliteDateTime } from "../utils";
+import { formatString, toNumber } from "../utils";
 
 export type ImportPandaManualOptions = {
   dbPath: string;
   filePath: string;
 };
+
+export function toSqliteDateTime(v: any, includeTime: boolean = false): string | null {
+  if (!v) return null;
+
+  const date = v instanceof Date ? v : new Date(v);
+  if (isNaN(date.getTime())) return null;
+
+  const localDate = new Date(date.getTime() + date.getTimezoneOffset() * -60000);
+  const rounded = new Date(Math.round(localDate.getTime() / 86400000) * 86400000);
+
+  const yyyy = rounded.getUTCFullYear();
+  const mm = String(rounded.getUTCMonth() + 1).padStart(2, "0");
+  const dd = String(rounded.getUTCDate()).padStart(2, "0");
+  const dateString = `${yyyy}-${mm}-${dd}`;
+
+  if (includeTime) {
+    const hh = String(localDate.getUTCHours()).padStart(2, "0");
+    const min = String(localDate.getUTCMinutes()).padStart(2, "0");
+    const ss = String(localDate.getUTCSeconds()).padStart(2, "0");
+    return `${dateString} ${hh}:${min}:${ss}`;
+  }
+
+  return dateString;
+}
 
 function mapRow(row: any) {
   return {
@@ -25,7 +49,9 @@ function mapRow(row: any) {
     voucher_paid_by_vendor: toNumber(row["Voucher Paid By Vendor (N)"]),
     discount_paid_by_vendor: toNumber(row["Discount Paid By Vendor (O)"]),
     pandabox_voucher_vendor: toNumber(row["Pandabox Voucher Paid By Vendor (P)"]),
-    sales_revenue_net: toNumber(row["Sales Revenue Via foodpanda After Partner Funded Discounts (Q) =J+K+L+M-N-O-P"]),
+    sales_revenue_net: toNumber(
+      row["Sales Revenue Via foodpanda After Partner Funded Discounts (Q) =J+K+L+M-N-O-P"],
+    ),
     withholding_tax_half_pct: toNumber(row["1/2% Withholding Tax (R)"]),
     waiting_time_fee: toNumber(row["Waiting Time Fee (S)"]),
     commission_base: toNumber(row["foodpanda Commission Base (T)"]),
@@ -51,70 +77,71 @@ export function importPandaManual({ dbPath, filePath }: ImportPandaManualOptions
   `);
 
   const insertStmt = db.prepare(`
-    INSERT INTO grab_transactions (
-      merchant_name, merchant_id, store_name, store_id,
-      updated_on, created_on, type, category, receiving_account,
-      subcategory, status, transaction_id, linked_transaction_id,
-      partner_transaction_id_1, partner_transaction_id_2,
-      long_order_id, short_order_id, booking_id,
-      order_channel, order_type, payment_method, terminal_id,
-      channel, offer_type,
-      grab_fee_percent, points_multiplier, points_issued,
-      settlement_id, transfer_date,
-      amount, tax_on_order_value, packaging_charge,
-      non_member_fee, service_charge, offer,
-      discount_merchant, delivery_fee_discount,
-      delivery_charge_gos, delivery_charge_merchant,
-      grabexpress_fee, net_sales, net_mdr,
-      tax_on_mdr, grab_fee, marketing_success_fee,
-      delivery_commission, channel_commission,
-      order_commission, grabfood_other_commission,
-      grabkitchen_commission, grabkitchen_other_commission,
-      withholding_tax, total,
-      cancellation_reason, cancelled_by,
-      reason_for_refund, description,
-      incident_group, incident_alias,
-      customer_refund_item, appeal_link, appeal_status
+    INSERT INTO foodpanda_transactions (
+      official_doc_number, invoice_number, invoice_date, partner_name,
+      vendor_code, order_code, reversal, order_date, delivery_mode,
+      gross_food_value, container_charges, mov_paid_by_customer, partner_delivery_fee,
+      voucher_paid_by_vendor, discount_paid_by_vendor,
+      pandabox_voucher_vendor, sales_revenue_net, withholding_tax_half_pct,
+      waiting_time_fee, commission_base, commission_pct, commission_amt,
+      pandabox_fee, customer_targeting_pct,
+      customer_targeting_fee, delivery_campaign_fee, tax_on_partner_charges,
+      expanded_withholding_tax, already_received_amt,
+      balance_to_be_paid
     )
     VALUES (
-      @merchant_name, @merchant_id, @store_name, @store_id,
-      @updated_on, @created_on, @type, @category, @receiving_account,
-      @subcategory, @status, @transaction_id, @linked_transaction_id,
-      @partner_transaction_id_1, @partner_transaction_id_2,
-      @long_order_id, @short_order_id, @booking_id,
-      @order_channel, @order_type, @payment_method, @terminal_id,
-      @channel, @offer_type,
-      @grab_fee_percent, @points_multiplier, @points_issued,
-      @settlement_id, @transfer_date,
-      @amount, @tax_on_order_value, @packaging_charge,
-      @non_member_fee, @service_charge, @offer,
-      @discount_merchant, @delivery_fee_discount,
-      @delivery_charge_gos, @delivery_charge_merchant,
-      @grabexpress_fee, @net_sales, @net_mdr,
-      @tax_on_mdr, @grab_fee, @marketing_success_fee,
-      @delivery_commission, @channel_commission,
-      @order_commission, @grabfood_other_commission,
-      @grabkitchen_commission, @grabkitchen_other_commission,
-      @withholding_tax, @total,
-      @cancellation_reason, @cancelled_by,
-      @reason_for_refund, @description,
-      @incident_group, @incident_alias,
-      @customer_refund_item, @appeal_link, @appeal_status
+      @official_doc_number, @invoice_number, @invoice_date, @partner_name,
+      @vendor_code, @order_code, @reversal, @order_date, @delivery_mode,
+      @gross_food_value, @container_charges, @mov_paid_by_customer, @partner_delivery_fee,
+      @voucher_paid_by_vendor, @discount_paid_by_vendor,
+      @pandabox_voucher_vendor, @sales_revenue_net, @withholding_tax_half_pct,
+      @waiting_time_fee, @commission_base, @commission_pct, @commission_amt,
+      @pandabox_fee, @customer_targeting_pct,
+      @customer_targeting_fee, @delivery_campaign_fee, @tax_on_partner_charges,
+      @expanded_withholding_tax, @already_received_amt,
+      @balance_to_be_paid
     )
-    ON CONFLICT(booking_id) DO UPDATE SET
-      updated_on = excluded.updated_on,
-      total = excluded.total
+    ON CONFLICT(order_code) DO UPDATE SET
+      official_doc_number = excluded.official_doc_number,
+      invoice_date = excluded.invoice_date,
+      partner_name = excluded.partner_name,
+      vendor_code = excluded.vendor_code,
+      reversal = excluded.reversal,
+      order_date = excluded.order_date,
+      delivery_mode = excluded.delivery_mode,
+      gross_food_value = excluded.gross_food_value,
+      container_charges = excluded.container_charges,
+      mov_paid_by_customer = excluded.mov_paid_by_customer,
+      partner_delivery_fee = excluded.partner_delivery_fee,
+      voucher_paid_by_vendor = excluded.voucher_paid_by_vendor,
+      discount_paid_by_vendor = excluded.discount_paid_by_vendor,
+      pandabox_voucher_vendor = excluded.pandabox_voucher_vendor,
+      sales_revenue_net = excluded.sales_revenue_net,
+      withholding_tax_half_pct = excluded.withholding_tax_half_pct,
+      waiting_time_fee = excluded.waiting_time_fee,
+      commission_base = excluded.commission_base,
+      commission_pct = excluded.commission_pct,
+      commission_amt = excluded.commission_amt,
+      pandabox_fee = excluded.pandabox_fee,
+      customer_targeting_pct = excluded.customer_targeting_pct,
+      customer_targeting_fee = excluded.customer_targeting_fee,
+      delivery_campaign_fee = excluded.delivery_campaign_fee,
+      tax_on_partner_charges = excluded.tax_on_partner_charges,
+      expanded_withholding_tax = excluded.expanded_withholding_tax,
+      already_received_amt = excluded.already_received_amt,
+      balance_to_be_paid = excluded.balance_to_be_paid
   `);
 
-  const workbook = XLSX.readFile(filePath);
-  const sheet = workbook.Sheets["Transactions"];
-  if (!sheet) throw new Error("Transactions sheet not found");
+  const workbook = XLSX.readFile(filePath, { cellDates: true });
 
-  const rows = XLSX.utils.sheet_to_json<Record<string, any>>(sheet);
+  const sheet = workbook.Sheets["Appendix A"];
+  if (!sheet) throw new Error("Appendix A sheet not found");
+
+  const rows = XLSX.utils.sheet_to_json<Record<string, any>>(sheet, { raw: true });
 
   const transaction = db.transaction((rows: any[]) => {
     for (const row of rows) {
-      if (!row["Booking ID"]) continue;
+      if (!row["Order Code (F)"]) continue;
       insertStmt.run(mapRow(row));
     }
   });
@@ -123,7 +150,7 @@ export function importPandaManual({ dbPath, filePath }: ImportPandaManualOptions
 
   const totalInserted = rows.length;
 
-  console.log(`[Grab Manual Import] Total inserted: ${totalInserted}`);
+  console.log(`[Panda Manual Import] Total inserted: ${totalInserted}`);
 
   return {
     inserted: totalInserted,

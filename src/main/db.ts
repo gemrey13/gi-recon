@@ -159,7 +159,7 @@ export function initDatabase() {
       invoice_date TEXT,
       partner_name TEXT,
       vendor_code TEXT,
-      order_code TEXT,
+      order_code TEXT UNIQUE,
       reversal TEXT,
       order_date TEXT,
       delivery_mode TEXT,
