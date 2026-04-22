@@ -1,5 +1,5 @@
-import ImportPandaBatchModal from "@renderer/components/panda/modal/ImportPandaBatchModal";
-import ImportPandaModal from "@renderer/components/panda/modal/ImportPandaModal";
+import ImportBatchModal from "@renderer/components/shared/ImportBatchModal";
+import ImportManualModal from "@renderer/components/shared/ImportManualModal";
 import PartnerTitle from "@renderer/components/shared/PartnerTitle";
 import { useState } from "react";
 
@@ -15,9 +15,9 @@ const PandaPage = () => {
         title="FoodPanda"
       />
 
-      {showAddPanda && <ImportPandaModal onClose={() => setShowAddPanda(false)} />}
+      {showAddPanda && <ImportManualModal platform="panda" onClose={() => setShowAddPanda(false)} />}
 
-      {showAddPandaBatch && <ImportPandaBatchModal onCancel={() => setShowAddPandaBatch(false)} />}
+      {showAddPandaBatch && <ImportBatchModal platform="panda" onCancel={() => setShowAddPandaBatch(false)} />}
     </div>
   );
 };

@@ -2,21 +2,54 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { useAppSound } from "@renderer/hooks/useAppSound";
 
+type Platform = "panda" | "grab";
+
 interface Props {
+  platform: Platform;
   onCancel: () => void;
 }
 
-const ImportGrabBatchModal: React.FC<Props> = ({ onCancel }) => {
+const config: Record<
+  Platform,
+  {
+    label: string;
+    apiCall: () => Promise<any>;
+    color: string;
+    hoverBorder: string;
+    hoverBg: string;
+    pulse: string;
+  }
+> = {
+  panda: {
+    label: "Foodpanda",
+    apiCall: () => window.api.startImportPanda(),
+    color: "text-pink-500",
+    hoverBorder: "hover:border-pink-400",
+    hoverBg: "hover:bg-pink-50/50",
+    pulse: "bg-pink-500",
+  },
+  grab: {
+    label: "GrabFood",
+    apiCall: () => window.api.startImportGrab(),
+    color: "text-emerald-500",
+    hoverBorder: "hover:border-emerald-400",
+    hoverBg: "hover:bg-emerald-50/50",
+    pulse: "bg-emerald-500",
+  },
+};
+
+const ImportBatchModal: React.FC<Props> = ({ platform, onCancel }) => {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<string>("Ready for batch synchronization");
   const { playSound } = useAppSound();
+  const cfg = config[platform];
 
-  const handleStartGrabImport = async () => {
+  const handleStartImport = async () => {
     setLoading(true);
     setStatus("Scanning directory and preparing ledger...");
 
     try {
-      const result = await window.api.startImportGrab();
+      const result = await cfg.apiCall();
 
       if (result.totalInserted === 0) {
         playSound("error");
@@ -37,19 +70,18 @@ const ImportGrabBatchModal: React.FC<Props> = ({ onCancel }) => {
 
   return (
     <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div
-        className="bg-white w-full max-w-lg rounded-3xl shadow-2xl p-8
-                   flex flex-col items-center
-                   animate-in fade-in zoom-in duration-200">
-        <Header status={status} loading={loading} />
+      <div className="bg-white w-full max-w-lg rounded-3xl shadow-2xl p-8 flex flex-col items-center animate-in fade-in zoom-in duration-200">
+        <Header status={status} loading={loading} pulseColor={cfg.pulse} platform={cfg.label} />
 
         <div className="flex justify-center mb-8 w-full">
           <ActionCard
             label="Commit All Matches"
             subLabel="Permanently write to database"
-            icon={"🗂️"}
-            onClick={handleStartGrabImport}
+            icon="🗂️"
+            onClick={handleStartImport}
             loading={loading}
+            hoverBorder={cfg.hoverBorder}
+            hoverBg={cfg.hoverBg}
           />
         </div>
 
@@ -66,15 +98,13 @@ const ImportGrabBatchModal: React.FC<Props> = ({ onCancel }) => {
   );
 };
 
-// --- Sub-components (Matched to ImportGrabModal) ---
-
-const Header = ({ status, loading }: any) => (
+const Header = ({ status, loading, pulseColor, platform }: any) => (
   <div className="mb-6 text-center w-full">
     <h3 className="text-2xl font-black text-slate-800 mb-1 tracking-tight">
-      Batch Synchronization
+      {platform} Batch Sync
     </h3>
     <div className="flex items-center justify-center gap-2">
-      {loading && <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />}
+      {loading && <span className={`w-2 h-2 ${pulseColor} rounded-full animate-pulse`} />}
       <p className="text-slate-500 text-xs font-medium">{status}</p>
     </div>
     <p className="text-slate-400 text-[10px] mt-4 leading-relaxed max-w-70 mx-auto">
@@ -84,23 +114,22 @@ const Header = ({ status, loading }: any) => (
   </div>
 );
 
-const ActionCard = ({ label, subLabel, icon, onClick, loading }: any) => (
+const ActionCard = ({ label, subLabel, icon, onClick, loading, hoverBorder, hoverBg }: any) => (
   <button
     onClick={!loading ? onClick : undefined}
     disabled={loading}
-    className="border-2 border-dashed border-slate-200 rounded-2xl p-10
+    className={`border-2 border-dashed border-slate-200 rounded-2xl p-10
                flex flex-col items-center justify-center
-               hover:border-emerald-400 hover:bg-emerald-50/50
+               ${hoverBorder} ${hoverBg}
                transition-all cursor-pointer group w-full max-w-xs
-               disabled:opacity-50 disabled:cursor-wait outline-none">
+               disabled:opacity-50 disabled:cursor-wait outline-none`}>
     <span
       className={`text-4xl mb-4 transition-transform ${loading ? "animate-bounce" : "group-hover:scale-110"}`}>
       {loading ? "⚙️" : icon}
     </span>
-
     <p className="text-sm font-bold text-slate-700">{label}</p>
     <p className="text-[11px] text-slate-400 mt-1">{subLabel}</p>
   </button>
 );
 
-export default ImportGrabBatchModal;
+export default ImportBatchModal;
