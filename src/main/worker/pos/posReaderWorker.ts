@@ -4,7 +4,7 @@ import path from "path";
 import AdmZip from "adm-zip";
 import { DBFFile } from "dbffile";
 import os from "os";
-import { formatString, toNumber, toSqliteDateTime } from "../utils";
+import { formatString, toNumber, toSqliteDateTime } from "../../utils";
 
 const { branches, rootFolder, batchSize } = workerData as {
   branches: string[];

@@ -3,8 +3,8 @@ import path from 'path'
 import fs from 'fs'
 import os from 'os'
 import unzipper from 'unzipper'
-import createPosWorkerReader from '../worker/posReaderWorker?nodeWorker'
-import createPosWorkerWriter from '../worker/posWriterWorker?nodeWorker'
+import createPosWorkerReader from '../worker/pos/posReaderWorker?nodeWorker'
+import createPosWorkerWriter from '../worker/pos/posWriterWorker?nodeWorker'
 
 export function registerPosIpc() {
   ipcMain.handle('POS:importZip', async () => {
