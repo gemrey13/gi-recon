@@ -12,10 +12,10 @@ import MatchingWorkspace from "@renderer/components/grab/MatchingWorkspace";
 import UnmatchedGrabTable from "@renderer/components/grab/UnmatchedGrabTable";
 import FinalizeFooter from "@renderer/components/grab/FinalizeFooter";
 import ImportGrabModal from "@renderer/components/grab/modal/ImportGrabModal";
-import GrabTitle from "@renderer/components/grab/GrabTitle";
 import GrabMetricsCard from "@renderer/components/grab/GrabMetricsCard";
 import ConfirmGrabSaveDBModal from "@renderer/components/grab/modal/ConfirmGrabSaveDBModal";
 import ImportGrabBatchModal from "@renderer/components/grab/modal/ImportGrabBatchModal";
+import PartnerTitle from "@renderer/components/shared/PartnerTitle";
 
 const GrabPage = () => {
   const [startDate, setStartDate] = useState("");
@@ -46,9 +46,10 @@ const GrabPage = () => {
 
   return (
     <div className="space-y-6 max-w-400 mx-auto">
-      <GrabTitle
-        onAddGrab={() => setShowAddGrab(true)}
-        onAddGrabBatch={() => setShowAddGrabBatch(true)}
+      <PartnerTitle
+        onAddPartner={() => setShowAddGrab(true)}
+        onAddPartnerBatch={() => setShowAddGrabBatch(true)}
+        title="GrabFood"
       />
 
       <ReconHeader

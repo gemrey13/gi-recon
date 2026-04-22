@@ -8,8 +8,8 @@ const PandaPage = () => {
   return (
     <div className="space-y-6 max-w-400 mx-auto">
       <PartnerTitle
-        onAddPanda={() => setShowAddPanda(true)}
-        onAddPandaBatch={() => setShowAddPandaBatch(true)}
+        onAddPartner={() => setShowAddPanda(true)}
+        onAddPartnerBatch={() => setShowAddPandaBatch(true)}
         title="FoodPanda"
       />
     </div>
