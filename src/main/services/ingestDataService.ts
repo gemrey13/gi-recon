@@ -1,30 +1,9 @@
-import Database from "better-sqlite3";
 import * as XLSX from "xlsx";
 import { grabInsertStatement, grabMapRow, pandaInsertStatement, pandaMapRow } from "../constants";
-import { PartnerType } from "../types";
-
-export function createDb(dbPath: string) {
-  const db = new Database(dbPath);
-  db.exec(`
-    PRAGMA journal_mode = WAL;
-    PRAGMA synchronous = NORMAL;
-  `);
-  return db;
-}
-
-export type SheetImportOptions = {
-  dbPath: string;
-  filePath: string;
-  sheetName: string;
-  insertStatement: string;
-  skipRow: (row: Record<string, any>) => boolean;
-  mapRow: (row: Record<string, any>) => any;
-  xlsxOptions?: XLSX.ParsingOptions;
-  label: string;
-};
+import { ImportManualOptions, SheetImportOptions } from "../types";
+import { getDb } from "../utils";
 
 function importFromSheet({
-  dbPath,
   filePath,
   sheetName,
   insertStatement,
@@ -33,7 +12,7 @@ function importFromSheet({
   xlsxOptions,
   label,
 }: SheetImportOptions): { inserted: number } {
-  const db = createDb(dbPath);
+  const db = getDb();
 
   const insertStmt = db.prepare(insertStatement);
   const workbook = XLSX.readFile(filePath, xlsxOptions);
@@ -57,12 +36,6 @@ function importFromSheet({
   return { inserted: rows.length };
 }
 
-export type ImportManualOptions = {
-  dbPath: string;
-  filePath: string;
-  type: PartnerType;
-};
-
 const IMPORT_CONFIGS = {
   PANDA: {
     sheetName: "Appendix A",
@@ -81,6 +54,6 @@ const IMPORT_CONFIGS = {
   },
 } as const;
 
-export function importManual({ dbPath, filePath, type }: ImportManualOptions) {
-  return importFromSheet({ dbPath, filePath, ...IMPORT_CONFIGS[type] });
+export function importManual({ filePath, type }: ImportManualOptions) {
+  return importFromSheet({ filePath, ...IMPORT_CONFIGS[type] });
 }

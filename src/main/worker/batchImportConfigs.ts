@@ -1,12 +1,4 @@
-import * as XLSX from "xlsx";
-import { PartnerType } from "../types";
-
-export type BatchImportConfig = {
-  rootFolder: string;
-  sheetName: string;
-  skipKey: string;
-  xlsxOptions?: XLSX.ParsingOptions;
-};
+import { BatchImportConfig, PartnerType } from "../types";
 
 export const BATCH_IMPORT_CONFIGS: Record<PartnerType, BatchImportConfig> = {
   PANDA: {

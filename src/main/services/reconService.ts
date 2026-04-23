@@ -1,18 +1,7 @@
-import { PartnerType } from "../types";
+import { PartnerType, ReconRange, ReconResults } from "../types";
 import { getDb } from "../utils";
 import { insertSystemLog } from "./logService";
 
-interface ReconRange {
-  startDate: string;
-  endDate: string;
-  branch: string;
-}
-
-interface ReconResults {
-  matched: any[];
-  unmatchedPos: any[];
-  unmatchedPartner: any[];
-}
 
 // ─── Config per partner ───────────────────────────────────────────────────────
 
@@ -180,7 +169,6 @@ export const saveReconciliationResults = (
   const { startDate, endDate, branch } = range;
   const isAll = branch === "ALL";
 
-  // Wipe previous results for this period/branch before re-inserting
   const deleteSql = `
     DELETE FROM recon_results
     WHERE partner_type = ?

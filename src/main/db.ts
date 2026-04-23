@@ -2,7 +2,8 @@ import Database from "better-sqlite3";
 import { app } from "electron";
 import path from "path";
 import fs from "fs";
-import { BranchMapping, branchMappings } from "./branches";
+import { branchMappings } from "./branches";
+import { BranchMapping } from "./types";
 
 let db: Database.Database;
 
@@ -235,7 +236,7 @@ function seedBranchMapping(mappings: BranchMapping[]) {
 
   const insertMany = db.transaction((rows: BranchMapping[]) => {
     for (const row of rows) {
-      insert.run(row.posCode, row.posName, row.grabName, row.foodpandaName);
+      insert.run(row.pos_code, row.pos_name, row.grab_name, row.foodpanda_name);
     }
   });
 

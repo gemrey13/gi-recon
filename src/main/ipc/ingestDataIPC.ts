@@ -32,8 +32,7 @@ export function registerIngestDataIPC() {
       fs.copyFileSync(filePath, tmpFilePath);
 
       try {
-        const dbPath = path.join(app.getPath("userData"), "pos.db");
-        const result = importManual({ dbPath, filePath: tmpFilePath, type });
+        const result = importManual({ filePath: tmpFilePath, type });
         totalInserted += result.inserted;
       } catch (err: any) {
         messages.push(`Error with ${filePath}: ${err.message}`);

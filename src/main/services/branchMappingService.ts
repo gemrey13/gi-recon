@@ -1,10 +1,5 @@
+import { BranchMapping } from "../types";
 import { getDb } from "../utils";
-
-interface BranchMapping {
-  pos_code: string;
-  pos_name: string;
-  partner_name: string;
-}
 
 const PARTNER_COLUMN_MAP = {
   PANDA: "foodpanda_name",
