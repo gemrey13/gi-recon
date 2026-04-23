@@ -1,4 +1,5 @@
-import { GrabItem, MatchedItem, PosItem, ReconData } from "@shared/grab-recon.types";
+import { GrabItem, MatchedItem, PosItem } from "@shared/grab-recon.types";
+import { ReconData } from "@shared/recon.types";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
@@ -45,7 +46,7 @@ export const useManualMatch = (
         ...prev,
         matched: [...prev.matched, ...newMatches],
         unmatchedPos: prev.unmatchedPos.filter((p) => !posIds.includes(p.id)),
-        unmatchedGrab: prev.unmatchedGrab.filter((g) => g.id !== selectedGrab.id),
+        unmatchedPartner: prev.unmatchedPartner.filter((g) => g.id !== selectedGrab.id),
       };
     });
 

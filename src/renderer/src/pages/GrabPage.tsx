@@ -2,7 +2,6 @@ import { useState } from "react";
 
 // Hooks
 import { useBranches } from "@renderer/hooks/useBranches";
-import { useGrabRecon } from "@renderer/hooks/useGrabRecon";
 import { useManualMatch } from "@renderer/hooks/useManualMatch";
 
 // Components
@@ -16,6 +15,7 @@ import ConfirmGrabSaveDBModal from "@renderer/components/grab/modal/ConfirmGrabS
 import PartnerTitle from "@renderer/components/shared/PartnerTitle";
 import ImportBatchModal from "@renderer/components/shared/ImportBatchModal";
 import ImportManualModal from "@renderer/components/shared/ImportManualModal";
+import { useRecon } from "@renderer/hooks/useRecon";
 
 const GrabPage = () => {
   const [startDate, setStartDate] = useState("");
@@ -26,7 +26,7 @@ const GrabPage = () => {
   const [showAddGrabBatch, setShowAddGrabBatch] = useState(false);
 
   const { branches } = useBranches();
-  const { loading, saving, reconData, setReconData, runRecon, saveToDb } = useGrabRecon();
+  const { loading, saving, reconData, setReconData, runRecon, saveToDb } = useRecon("GRAB");
   const {
     selectedGrab,
     setSelectedGrab,
@@ -84,7 +84,7 @@ const GrabPage = () => {
             />
 
             <UnmatchedGrabTable
-              items={reconData.unmatchedGrab}
+              items={reconData.unmatchedPartner}
               selectedGrab={selectedGrab}
               onSelect={setSelectedGrab}
             />

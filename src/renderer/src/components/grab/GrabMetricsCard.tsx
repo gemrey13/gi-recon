@@ -72,7 +72,7 @@ const GrabMetricsCard = ({ reconData }: { reconData: any }) => {
             </div>
             <div>
               <p className="text-xs font-semibold text-slate-500 uppercase">Unmatched Grab</p>
-              <p className="text-2xl font-black text-slate-900">{reconData.unmatchedGrab.length}</p>
+              <p className="text-2xl font-black text-slate-900">{reconData.unmatchedPartner.length}</p>
             </div>
           </div>
           <p className="mt-2 text-[10px] text-slate-400 italic">Payments in Grab but not in POS</p>
@@ -84,7 +84,7 @@ const GrabMetricsCard = ({ reconData }: { reconData: any }) => {
           <p className="text-2xl font-black text-white">
             {reconData.matched.length +
               reconData.unmatchedPos.length +
-              reconData.unmatchedGrab.length}
+              reconData.unmatchedPartner.length}
           </p>
           <div className="mt-2 text-[10px] text-indigo-200">Processing complete</div>
         </div>
