@@ -5,7 +5,6 @@ import os from "os";
 import createPandaWorkerReader from "../worker/panda/pandaReaderWorker?nodeWorker";
 import createPandaWorkerWriter from "../worker/panda/pandaWriterWorker?nodeWorker";
 import { importPandaManual } from "../worker/panda/importPandaManual";
-import { runPandaReconciliation, savePandaReconciliationResults } from "../services/pandaService";
 
 export function registerPandaIpc() {
   ipcMain.handle("panda:importManual", async () => {
@@ -90,13 +89,5 @@ export function registerPandaIpc() {
     console.log(`[Main][Panda] Total inserted: ${totalInserted}`);
     const totalTime = ((endTime.getTime() - startTime.getTime()) / 1000).toFixed(2);
     return { message: `Added Panda file in ${totalTime}s` };
-  });
-
-  ipcMain.handle("run-panda-recon", async (_event, startDate, endDate, branchName) => {
-    return runPandaReconciliation(startDate, endDate, branchName);
-  });
-
-  ipcMain.handle("save-panda-recon", async (_event, range, results) => {
-    return savePandaReconciliationResults(range, results);
   });
 }

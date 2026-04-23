@@ -9,29 +9,20 @@ declare global {
       maximize: () => Promise<any>;
       close: () => Promise<any>;
 
+      // GRAB IPC Types
       startImportGrab: () => Promise<any>;
       importGrabManual: () => Promise<any>;
       importPOSZip: () => Promise<any>;
 
-      // New IPC for running and saving Grab reconciliation
-      runGrabRecon: (startDate: string, endDate?: string, branchName?: string) => Promise<any>;
-      saveGrabRecon: (
-        range: IGrabReconRange,
-        results: any,
-      ) => Promise<{ success: boolean; message: string }>;
+      // PANDA IPC Types
+      startImportPanda: () => Promise<any>;
+      importPandaManual: () => Promise<any>;
+
+      // Shared IPC Types
       getBranch: (partner: "PANDA" | "GRAB") => Promise<BranchMapping[]>;
       sendSystemLog: (logData: SystemLog) => Promise<void>;
 
-      // Panda IPC Types
-      startImportPanda: () => Promise<any>;
-      importPandaManual: () => Promise<any>;
-      runPandaRecon: (startDate: string, endDate?: string, branchName?: string) => Promise<any>;
-      savePandaRecon: (
-        range: IPandaReconRange,
-        results: any,
-      ) => Promise<{ success: boolean; message: string }>;
-
-      // ReconRefactor IPC Types
+      // Recon IPC Types
       runRecon: (
         partnerType: "PANDA" | "GRAB",
         startDate: string,
