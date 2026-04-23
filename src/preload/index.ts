@@ -10,8 +10,6 @@ const api = {
   maximize: () => ipcRenderer.send("window-maximize"),
   close: () => ipcRenderer.send("window-close"),
 
-  importPOSZip: () => ipcRenderer.invoke("POS:importZip"),
-
   // Shared IPC
   getBranch: (partner: PARTNER) => ipcRenderer.invoke("get-branches", partner),
   sendSystemLog: (logData: SystemLog) => ipcRenderer.invoke("write-log", logData),
@@ -25,9 +23,10 @@ const api = {
     results: any,
   ) => ipcRenderer.invoke("save-recon", partnerType, range, results),
 
-  // New Import Manual IPC
+  // Import IPC
   importManual: (type: PARTNER) => ipcRenderer.invoke("import:manual", type),
   importBatch: (type: PARTNER) => ipcRenderer.invoke("import:batch", type),
+  importPOSZip: () => ipcRenderer.invoke("POS:importZip"),
 };
 
 if (process.contextIsolated) {
