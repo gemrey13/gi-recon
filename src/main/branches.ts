@@ -63,7 +63,7 @@ export const branchMappings: BranchMapping[] = [
   },
   {
     pos_code: "CAB",
-    pos_name: "GILIGAN'S SM CABANATUAN",
+    pos_name: "GILIGAN'S SM CITY CABANATUAN",
     grab_name: null,
     foodpanda_name: "Giligan's - SM City Cabanatuan",
   },
