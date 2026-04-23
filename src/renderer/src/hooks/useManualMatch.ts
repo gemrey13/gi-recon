@@ -1,51 +1,60 @@
-import { GrabItem, MatchedItem, PosItem, ReconData } from "@shared/grab-recon.types";
+import {
+  MatchedTransaction,
+  PosTransaction,
+  ReconData,
+  UnmatchedPartnerTransaction,
+} from "@shared/recon.types";
 import { useState } from "react";
 import toast from "react-hot-toast";
+
+const getPartnerAmount = (partner: UnmatchedPartnerTransaction): number => {
+  if ("amount" in partner) return partner.amount; // Grab
+  if ("gross_food_value" in partner) return partner.gross_food_value; // Panda
+  return 0;
+};
 
 export const useManualMatch = (
   setReconData: React.Dispatch<React.SetStateAction<ReconData | null>>,
 ) => {
-  const [selectedGrab, setSelectedGrab] = useState<GrabItem | null>(null);
-  const [posBasket, setPosBasket] = useState<PosItem[]>([]);
+  const [selectedPartner, setSelectedPartner] = useState<UnmatchedPartnerTransaction | null>(null);
+  const [posBasket, setPosBasket] = useState<PosTransaction[]>([]);
 
-  const basketTotal = posBasket.reduce((sum, item) => sum + item.amount, 0);
-  const grabAmount = selectedGrab?.amount ?? 0;
-  const difference = basketTotal - grabAmount;
-  const isMatchPossible = selectedGrab !== null && posBasket.length > 0;
+  const basketTotal: number = posBasket.reduce((sum, item) => sum + item.amount, 0);
+  const partnerAmount: number = selectedPartner ? getPartnerAmount(selectedPartner) : 0;
+  const difference: number = basketTotal - partnerAmount;
+  const isMatchPossible: boolean = selectedPartner !== null && posBasket.length > 0;
 
-  const togglePos = (item: PosItem) => {
+  const togglePos = (item: PosTransaction): void => {
     setPosBasket((prev) =>
       prev.some((p) => p.id === item.id) ? prev.filter((p) => p.id !== item.id) : [...prev, item],
     );
   };
 
-  const commitMatch = async () => {
-    if (!selectedGrab || posBasket.length === 0) return;
+  const commitMatch = (): void => {
+    if (!selectedPartner || posBasket.length === 0) return;
 
-    const posIds = posBasket.map((p) => p.id);
-
-    const matchLevel: MatchedItem["match_level"] =
+    const posIds: number[] = posBasket.map((p) => p.id);
+    const matchLevel: MatchedTransaction["match_level"] =
       posBasket.length > 1 ? "MANUAL_BATCH" : "MANUAL_SINGLE";
 
-    const newMatches: MatchedItem[] = posBasket.map((p) => ({
+    const newMatches: MatchedTransaction[] = posBasket.map((p) => ({
       pos_id: p.id,
-      grab_id: selectedGrab.id,
+      partner_id: selectedPartner.id,
       pos_amount: p.amount,
-      grab_amount: grabAmount,
+      partner_amount: partnerAmount,
       amount_diff: difference,
       branch_name: p.branch_name,
       orddate: p.orddate,
-      status: Math.abs(p.amount - grabAmount) < 1 ? "Matched" : "Variance",
       match_level: matchLevel,
     }));
 
-    setReconData((prev) => {
+    setReconData((prev): ReconData | null => {
       if (!prev) return prev;
       return {
         ...prev,
         matched: [...prev.matched, ...newMatches],
         unmatchedPos: prev.unmatchedPos.filter((p) => !posIds.includes(p.id)),
-        unmatchedGrab: prev.unmatchedGrab.filter((g) => g.id !== selectedGrab.id),
+        unmatchedPartner: prev.unmatchedPartner.filter((g) => g.id !== selectedPartner.id),
       };
     });
 
@@ -56,15 +65,15 @@ export const useManualMatch = (
     );
 
     setPosBasket([]);
-    setSelectedGrab(null);
+    setSelectedPartner(null);
   };
 
   return {
-    selectedGrab,
-    setSelectedGrab,
+    selectedPartner,
+    setSelectedPartner,
     posBasket,
     basketTotal,
-    grabAmount,
+    partnerAmount,
     difference,
     isMatchPossible,
     togglePos,

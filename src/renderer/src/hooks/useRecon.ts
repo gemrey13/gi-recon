@@ -1,10 +1,11 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { logger } from "@renderer/lib/logger";
-import { ReconData } from "@shared/grab-recon.types";
 import { useAppSound } from "@renderer/hooks/useAppSound";
+import { PartnerType, ReconData } from "@shared/recon.types";
 
-export const useGrabRecon = () => {
+
+export const useRecon = (partnerType: PartnerType) => {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [reconData, setReconData] = useState<ReconData | null>(null);
@@ -21,18 +22,22 @@ export const useGrabRecon = () => {
     logger.info(
       "UI",
       "CLICK",
-      "User initiated Grab Reconciliation",
+      `User initiated ${partnerType} Reconciliation`,
       `Branch: ${branch}, Range: ${startDate} to ${endDate}`,
     );
 
     try {
-      const data: ReconData = await window.api.runGrabRecon(startDate, endDate, branch);
-      const isEmpty = !data || (data.matched.length === 0 && data.unmatchedPos.length === 0);
+      const data: ReconData = await window.api.runRecon(partnerType, startDate, endDate, branch);
+      const isEmpty =
+        !data ||
+        (data.matched.length === 0 &&
+          data.unmatchedPos.length === 0 &&
+          data.unmatchedPartner.length === 0);
 
       if (isEmpty) {
         toast.error("No transactions found for this range.");
         logger.warn(
-          "GRAB_SERVICE",
+          `${partnerType}_SERVICE`,
           "RECON_RUN",
           "Recon completed with zero results",
           `No data found for ${branch} between ${startDate} and ${endDate}`,
@@ -42,19 +47,20 @@ export const useGrabRecon = () => {
       }
 
       logger.info(
-        "GRAB_SERVICE",
+        `${partnerType}_SERVICE`,
         "RECON_RUN",
         "Recon calculation successful",
-        `Matched: ${data.matched.length}, Unmatched POS: ${data.unmatchedPos.length}`,
+        `Matched: ${data.matched.length}, Unmatched POS: ${data.unmatchedPos.length}, Unmatched Partner: ${data.unmatchedPartner.length}`,
       );
 
       setReconData(data);
+      console.log("Reconciliation Data:", data);
       toast.success("Reconciliation complete!");
     } catch (error: any) {
       logger.error(
         "UI",
         "RECON_RUN",
-        "UI crash/error during recon run",
+        `UI crash during ${partnerType} recon`,
         error?.message ?? "Unknown Error",
       );
       toast.error("Failed to run reconciliation.");
@@ -73,28 +79,26 @@ export const useGrabRecon = () => {
     );
 
     try {
-      const response = await window.api.saveGrabRecon(reconData.range, reconData);
+      const response = await window.api.saveRecon(partnerType, reconData.range, reconData);
 
       if (response.success) {
         toast.success(response.message);
         playSound("success");
-
         logger.info(
           "UI",
           "RECON_SAVE",
           "Reconciliation successfully saved to DB",
-          `Successfully persisted data for ${reconData.range.branch}`,
+          `Persisted data for ${reconData.range.branch}`,
         );
       }
     } catch (error: any) {
       toast.error("Error saving to database.");
       playSound("error");
-
       logger.error(
         "UI",
         "RECON_SAVE",
-        "UI failed to save reconciliation",
-        error?.message ?? "Unknown error in handleSaveToDb",
+        `UI failed to save ${partnerType} reconciliation`,
+        error?.message ?? "Unknown error in saveToDb",
       );
     } finally {
       setSaving(false);

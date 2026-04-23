@@ -2,7 +2,7 @@ import { FiCheckCircle } from "react-icons/fi";
 
 interface MatchingWorkspaceProps {
   basketTotal: number;
-  grabAmount: number;
+  partnerAmount: number;
   difference: number;
   isMatchPossible: boolean;
   onCommit: () => void;
@@ -10,13 +10,13 @@ interface MatchingWorkspaceProps {
 
 const MatchingWorkspace = ({
   basketTotal,
-  grabAmount,
+  partnerAmount,
   difference,
   isMatchPossible,
   onCommit,
 }: MatchingWorkspaceProps) => {
-  const fillPercent = grabAmount > 0
-    ? Math.min((basketTotal / grabAmount) * 100, 100)
+  const fillPercent = partnerAmount > 0
+    ? Math.min((basketTotal / partnerAmount) * 100, 100)
     : 0;
 
   const isPerfectMatch = Math.abs(difference) < 1;
@@ -37,8 +37,8 @@ const MatchingWorkspace = ({
             />
           </div>
           <div className="flex justify-between text-xs text-slate-500 uppercase font-bold px-2">
-            <span>Grab Target</span>
-            <span>₱{grabAmount.toLocaleString()}</span>
+            <span>Partner Target</span>
+            <span>₱{partnerAmount.toLocaleString()}</span>
           </div>
         </div>
 
@@ -61,7 +61,7 @@ const MatchingWorkspace = ({
         </button>
 
         <p className="text-[10px] text-slate-400">
-          Select 1 Grab row and 1 or more POS rows to match them.
+          Select 1 Partner row and 1 or more POS rows to match them.
         </p>
       </div>
     </div>

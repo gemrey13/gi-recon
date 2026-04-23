@@ -2,7 +2,8 @@ import Database from "better-sqlite3";
 import { app } from "electron";
 import path from "path";
 import fs from "fs";
-import { BranchMapping, branchMappings } from "./branches";
+import { branchMappings } from "./branches";
+import { BranchMapping } from "./types";
 
 let db: Database.Database;
 
@@ -159,7 +160,7 @@ export function initDatabase() {
       invoice_date TEXT,
       partner_name TEXT,
       vendor_code TEXT,
-      order_code TEXT,
+      order_code TEXT UNIQUE,
       reversal TEXT,
       order_date TEXT,
       delivery_mode TEXT,
@@ -186,17 +187,17 @@ export function initDatabase() {
       balance_to_be_paid REAL
     );
 
-    CREATE TABLE IF NOT EXISTS recon_results_grab (
+    CREATE TABLE IF NOT EXISTS recon_results (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       pos_id INTEGER,
-      grab_id INTEGER,
-      match_level TEXT, -- 'EXACT', 'FUZZY', 'MANUAL'
-      recon_status TEXT, -- 'MATCHED', 'DISCREPANCY', 'UNMATCHED'
+      partner_id INTEGER,         -- grab_id or panda_id
+      partner_type TEXT NOT NULL, -- 'GRAB' | 'PANDA'
+      match_level TEXT,           -- 'EXACT', 'TOLERANCE', 'NONE'
+      recon_status TEXT,          -- 'MATCHED', 'UNMATCHED'
       amount_difference REAL,
-      FOREIGN KEY(pos_id) REFERENCES pos_transactions(id),
-      FOREIGN KEY(grab_id) REFERENCES grab_transactions(id)
+      FOREIGN KEY(pos_id) REFERENCES pos_transactions(id)
     );
-
+    
     CREATE TABLE IF NOT EXISTS branch_mapping (
       pos_code TEXT PRIMARY KEY,
       pos_name TEXT,
@@ -235,7 +236,7 @@ function seedBranchMapping(mappings: BranchMapping[]) {
 
   const insertMany = db.transaction((rows: BranchMapping[]) => {
     for (const row of rows) {
-      insert.run(row.posCode, row.posName, row.grabName, row.foodpandaName);
+      insert.run(row.pos_code, row.pos_name, row.grab_name, row.foodpanda_name);
     }
   });
 

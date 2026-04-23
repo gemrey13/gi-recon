@@ -17,16 +17,16 @@ import PartnerMetricsCard from "@renderer/components/shared/PartnerMetricsCard";
 import UnmatchedPartnerTable from "@renderer/components/shared/table/UnmatchedPartnerTable";
 import ConfirmSaveDBModal from "@renderer/components/shared/dialog/ConfirmSaveDBModal";
 
-const GrabPage = () => {
+const PandaPage = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [selectedBranch, setSelectedBranch] = useState("ALL");
-  const [showAddGrab, setShowAddGrab] = useState(false);
+  const [showAddPanda, setShowAddPanda] = useState(false);
+  const [showAddPandaBatch, setShowAddPandaBatch] = useState(false);
   const [showConfirmSave, setShowConfirmSave] = useState(false);
-  const [showAddGrabBatch, setShowAddGrabBatch] = useState(false);
 
-  const { branches } = useBranches("GRAB");
-  const { loading, saving, reconData, setReconData, runRecon, saveToDb } = useRecon("GRAB");
+  const { branches } = useBranches("PANDA");
+  const { loading, saving, reconData, setReconData, runRecon, saveToDb } = useRecon("PANDA");
   const {
     selectedPartner,
     setSelectedPartner,
@@ -47,13 +47,13 @@ const GrabPage = () => {
   return (
     <div className="space-y-6 max-w-400 mx-auto">
       <PartnerTitle
-        onAddPartner={() => setShowAddGrab(true)}
-        onAddPartnerBatch={() => setShowAddGrabBatch(true)}
-        title="GrabFood"
+        onAddPartner={() => setShowAddPanda(true)}
+        onAddPartnerBatch={() => setShowAddPandaBatch(true)}
+        title="FoodPanda"
       />
 
       <ReconHeader
-        partnerType="GRAB"
+        partnerType="PANDA"
         branches={branches}
         selectedBranch={selectedBranch}
         startDate={startDate}
@@ -85,24 +85,23 @@ const GrabPage = () => {
             />
 
             <UnmatchedPartnerTable
-              partnerType="GRAB"
+              partnerType="PANDA"
               items={reconData.unmatchedPartner}
               selectedPartner={selectedPartner}
               onSelect={setSelectedPartner}
             />
           </div>
 
-          <FinalizeFooter
-            saving={saving}
-            onSave={() => setShowConfirmSave(true)}
-          />
+          <FinalizeFooter saving={saving} onSave={() => setShowConfirmSave(true)} />
         </>
       )}
 
-      {showAddGrab && <ImportManualModal platform="grab" onClose={() => setShowAddGrab(false)} />}
+      {showAddPanda && (
+        <ImportManualModal platform="panda" onClose={() => setShowAddPanda(false)} />
+      )}
 
-      {showAddGrabBatch && (
-        <ImportBatchModal platform="grab" onCancel={() => setShowAddGrabBatch(false)} />
+      {showAddPandaBatch && (
+        <ImportBatchModal platform="panda" onCancel={() => setShowAddPandaBatch(false)} />
       )}
 
       {showConfirmSave && (
@@ -116,4 +115,4 @@ const GrabPage = () => {
   );
 };
 
-export default GrabPage;
+export default PandaPage;

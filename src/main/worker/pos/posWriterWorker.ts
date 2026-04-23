@@ -11,7 +11,6 @@ db.exec(`
   PRAGMA temp_store = MEMORY;
 `)
 
-// Prepared statement
 const insertStmt = db.prepare(`
   INSERT INTO pos_transactions (
     branch, branch_name, cslipno, orddate, ordtime,

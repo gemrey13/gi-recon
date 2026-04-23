@@ -6,7 +6,7 @@ interface ConfirmSaveModalProps {
   onCancel: () => void;
 }
 
-const ConfirmGrabSaveDBModal = ({ saving, onConfirm, onCancel }: ConfirmSaveModalProps) => (
+const ConfirmSaveDBModal = ({ saving, onConfirm, onCancel }: ConfirmSaveModalProps) => (
   <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
     <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6 space-y-5">
       {/* Header */}
@@ -64,4 +64,4 @@ const ConfirmGrabSaveDBModal = ({ saving, onConfirm, onCancel }: ConfirmSaveModa
   </div>
 );
 
-export default ConfirmGrabSaveDBModal;
+export default ConfirmSaveDBModal;

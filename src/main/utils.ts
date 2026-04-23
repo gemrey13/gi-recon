@@ -9,6 +9,7 @@ export const getDb = () => {
     const dbPath = path.join(app.getPath("userData"), "pos.db");
     _db = new Database(dbPath);
     _db.pragma("journal_mode = WAL");
+    _db.pragma("synchronous = NORMAL");
   }
   return _db;
 };
