@@ -20,12 +20,17 @@ const api = {
     ipcRenderer.invoke("save-grab-recon", range, results),
 
   getBranch: (partner: "PANDA" | "GRAB") => ipcRenderer.invoke("get-branches", partner),
-
   sendSystemLog: (logData: SystemLog) => ipcRenderer.invoke("write-log", logData),
 
   // Panda IPC
   startImportPanda: () => ipcRenderer.invoke("start-import-panda"),
   importPandaManual: () => ipcRenderer.invoke("panda:importManual"),
+
+  runPandaRecon: (startDate: string, endDate?: string, branchName?: string) =>
+    ipcRenderer.invoke("run-panda-recon", startDate, endDate, branchName),
+
+  savePandaRecon: (range: { startDate: string; endDate: string; branch: string }, results: any) =>
+    ipcRenderer.invoke("save-panda-recon", range, results),
 };
 
 if (process.contextIsolated) {

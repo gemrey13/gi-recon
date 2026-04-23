@@ -197,6 +197,17 @@ export function initDatabase() {
       FOREIGN KEY(grab_id) REFERENCES grab_transactions(id)
     );
 
+    CREATE TABLE IF NOT EXISTS recon_results_panda (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      pos_id INTEGER,
+      panda_id INTEGER,
+      match_level TEXT, -- 'EXACT', 'FUZZY', 'MANUAL'
+      recon_status TEXT, -- 'MATCHED', 'DISCREPANCY', 'UNMATCHED'
+      amount_difference REAL,
+      FOREIGN KEY(pos_id) REFERENCES pos_transactions(id),
+      FOREIGN KEY(panda_id) REFERENCES foodpanda_transactions(id)
+    );
+
     CREATE TABLE IF NOT EXISTS branch_mapping (
       pos_code TEXT PRIMARY KEY,
       pos_name TEXT,

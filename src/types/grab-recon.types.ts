@@ -45,6 +45,14 @@ export interface ReconData {
   range: ReconRange;
 }
 
+export interface ReconDataPanda {
+  matched: MatchedItem[];
+  unmatchedPos: PosItem[];
+  unmatchedPanda: GrabItem[];
+  range: ReconRange;
+}
+
+
 export interface Branch {
   pos_code: string;
   pos_name: string;

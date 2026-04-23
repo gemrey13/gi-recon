@@ -12,7 +12,7 @@ declare global {
       startImportGrab: () => Promise<any>;
       importGrabManual: () => Promise<any>;
       importPOSZip: () => Promise<any>;
-      
+
       // New IPC for running and saving Grab reconciliation
       runGrabRecon: (startDate: string, endDate?: string, branchName?: string) => Promise<any>;
       saveGrabRecon: (
@@ -25,6 +25,11 @@ declare global {
       // Panda IPC Types
       startImportPanda: () => Promise<any>;
       importPandaManual: () => Promise<any>;
+      runPandaRecon: (startDate: string, endDate?: string, branchName?: string) => Promise<any>;
+      savePandaRecon: (
+        range: IPandaReconRange,
+        results: any,
+      ) => Promise<{ success: boolean; message: string }>;
     };
   }
 }
