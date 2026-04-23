@@ -4,6 +4,7 @@ import { registerPosIpc } from "./posIpc";
 import { getBranchMapping } from "../services/branchMappingService";
 import { registerReconIPC } from "./reconIPC";
 import { registerIngestDataIPC } from "./ingestDataIPC";
+import { PartnerType } from "../types";
 
 export function registerAllIpc() {
   registerPosIpc();
@@ -11,7 +12,7 @@ export function registerAllIpc() {
   registerReconIPC();
   registerIngestDataIPC();
 
-  ipcMain.handle("get-branches", async (_event, partner: "PANDA" | "GRAB") => {
+  ipcMain.handle("get-branches", async (_event, partner: PartnerType) => {
     return getBranchMapping(partner);
   });
 }

@@ -2,7 +2,7 @@ import { parentPort, workerData } from "worker_threads";
 import path from "path";
 import * as XLSX from "xlsx";
 import { grabMapRow, pandaMapRow } from "../constants";
-import { ImportSource } from "./batchImportConfigs";
+import { PartnerType } from "../types";
 
 const MAP_ROW = { PANDA: pandaMapRow, GRAB: grabMapRow };
 
@@ -13,7 +13,7 @@ const { files, rootFolder, batchSize, sheetName, skipKey, xlsxOptions, source } 
   sheetName: string;
   skipKey: string;
   xlsxOptions?: XLSX.ParsingOptions;
-  source: ImportSource;
+  source: PartnerType;
 };
 
 async function run() {

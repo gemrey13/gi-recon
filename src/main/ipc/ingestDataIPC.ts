@@ -7,9 +7,10 @@ import os from "os";
 import createReaderWorker from "../worker/readerWorker?nodeWorker";
 import createWriterWorker from "../worker/writerWorker?nodeWorker";
 import { BATCH_IMPORT_CONFIGS } from "../worker/batchImportConfigs";
+import { PartnerType } from "../types";
 
 export function registerIngestDataIPC() {
-  ipcMain.handle("import:manual", async (_event, type: "PANDA" | "GRAB") => {
+  ipcMain.handle("import:manual", async (_event, type: PartnerType) => {
     const { canceled, filePaths } = await dialog.showOpenDialog({
       title: `Select ${type} Excel file`,
       properties: ["openFile", "multiSelections"],
@@ -44,7 +45,7 @@ export function registerIngestDataIPC() {
     return { totalInserted, message: messages.length ? messages.join("; ") : "Completed" };
   });
 
-  ipcMain.handle("import:batch", async (_event, type: "PANDA" | "GRAB") => {
+  ipcMain.handle("import:batch", async (_event, type: PartnerType) => {
     const config = BATCH_IMPORT_CONFIGS[type];
     if (!config) throw new Error(`Unknown import type: ${type}`);
 

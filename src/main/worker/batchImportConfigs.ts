@@ -1,4 +1,5 @@
 import * as XLSX from "xlsx";
+import { PartnerType } from "../types";
 
 export type BatchImportConfig = {
   rootFolder: string;
@@ -7,9 +8,7 @@ export type BatchImportConfig = {
   xlsxOptions?: XLSX.ParsingOptions;
 };
 
-export type ImportSource = "PANDA" | "GRAB";
-
-export const BATCH_IMPORT_CONFIGS: Record<ImportSource, BatchImportConfig> = {
+export const BATCH_IMPORT_CONFIGS: Record<PartnerType, BatchImportConfig> = {
   PANDA: {
     rootFolder: "C:\\panda-data",
     sheetName: "Appendix A",

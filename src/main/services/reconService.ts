@@ -1,7 +1,6 @@
+import { PartnerType } from "../types";
 import { getDb } from "../utils";
 import { insertSystemLog } from "./logService";
-
-export type PartnerType = "GRAB" | "PANDA";
 
 interface ReconRange {
   startDate: string;

@@ -1,13 +1,13 @@
 import { parentPort, workerData } from "worker_threads";
 import Database from "better-sqlite3";
 import { grabInsertStatement, pandaInsertStatement } from "../constants";
-import { ImportSource } from "./batchImportConfigs";
+import { PartnerType } from "../types";
 
 const INSERT_STATEMENTS = { PANDA: pandaInsertStatement, GRAB: grabInsertStatement };
 
 const { dbPath, source } = workerData as {
   dbPath: string;
-  source: ImportSource;
+  source: PartnerType;
 };
 
 const db = new Database(dbPath);

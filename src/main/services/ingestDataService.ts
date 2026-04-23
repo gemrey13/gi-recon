@@ -1,6 +1,7 @@
 import Database from "better-sqlite3";
 import * as XLSX from "xlsx";
 import { grabInsertStatement, grabMapRow, pandaInsertStatement, pandaMapRow } from "../constants";
+import { PartnerType } from "../types";
 
 export function createDb(dbPath: string) {
   const db = new Database(dbPath);
@@ -59,7 +60,7 @@ function importFromSheet({
 export type ImportManualOptions = {
   dbPath: string;
   filePath: string;
-  type: "PANDA" | "GRAB";
+  type: PartnerType;
 };
 
 const IMPORT_CONFIGS = {
