@@ -1,51 +1,11 @@
-import { ipcMain, app, dialog } from "electron";
+import { ipcMain, app } from "electron";
 import path from "path";
 import fs from "fs";
 import os from "os";
 import createGrabWorkerReader from "../worker/grab/grabReaderWorker?nodeWorker";
 import createGrabWorkerWriter from "../worker/grab/grabWriterWorker?nodeWorker";
-import { importGrabManual } from "../worker/grab/importGrabManual";
 
 export function registerGrabIpc() {
-  ipcMain.handle("grab:importManual", async () => {
-    const { canceled, filePaths } = await dialog.showOpenDialog({
-      title: "Select Grab Excel file",
-      properties: ["openFile", "multiSelections"],
-      filters: [{ name: "Excel Files", extensions: ["xlsx", "xls"] }],
-    });
-
-    if (canceled || filePaths.length === 0) {
-      return { totalInserted: 0, message: "No GRAB file selected" };
-    }
-
-    let totalInserted = 0;
-    let messages: string[] = [];
-
-    for (const filePath of filePaths) {
-      // Copy to temp folder
-      const tmpFilePath = path.join(
-        app.getPath("temp"),
-        `grab_${Date.now()}_${path.basename(filePath)}`,
-      );
-      fs.copyFileSync(filePath, tmpFilePath);
-
-      try {
-        const dbPath = path.join(app.getPath("userData"), "pos.db");
-        const result = importGrabManual({ dbPath, filePath: tmpFilePath });
-        totalInserted += result.inserted;
-      } catch (err: any) {
-        messages.push(`Error with ${filePath}: ${err.message}`);
-      } finally {
-        fs.unlink(tmpFilePath, () => {});
-      }
-    }
-
-    return {
-      totalInserted,
-      message: "Completed",
-    };
-  });
-
   ipcMain.handle("start-import-grab", async () => {
     const startTime = new Date();
     console.log(`[Main][Grab] Import started at ${startTime.toLocaleString()}`);

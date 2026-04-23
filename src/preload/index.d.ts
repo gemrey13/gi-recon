@@ -1,5 +1,8 @@
 import { ElectronAPI } from "@electron-toolkit/preload";
 
+type PARTNER = "PANDA" | "GRAB";
+
+
 declare global {
   interface Window {
     electron: ElectronAPI;
@@ -18,22 +21,27 @@ declare global {
       startImportPanda: () => Promise<any>;
       importPandaManual: () => Promise<any>;
 
+      
+
       // Shared IPC Types
-      getBranch: (partner: "PANDA" | "GRAB") => Promise<BranchMapping[]>;
+      getBranch: (partner: PARTNER) => Promise<BranchMapping[]>;
       sendSystemLog: (logData: SystemLog) => Promise<void>;
 
       // Recon IPC Types
       runRecon: (
-        partnerType: "PANDA" | "GRAB",
+        partnerType: PARTNER,
         startDate: string,
         endDate?: string,
         branchName?: string,
       ) => Promise<any>;
       saveRecon: (
-        partnerType: "PANDA" | "GRAB",
+        partnerType: PARTNER,
         range: IGrabReconRange,
         results: any,
       ) => Promise<{ success: boolean; message: string }>;
+
+      // New Import Manual IPC
+      importManual: (type: PARTNER) => Promise<any>;
     };
   }
 }

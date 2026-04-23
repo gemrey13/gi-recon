@@ -25,7 +25,7 @@ const config: Record<
     label: "Foodpanda",
     description:
       "Upload the merchant report file exported from the Foodpanda Portal to reconcile with local POS logs.",
-    apiCall: () => window.api.importPandaManual(),
+    apiCall: () => window.api.importManual("PANDA"),
     color: "text-pink-500",
     hoverBorder: "hover:border-pink-400",
     hoverBg: "hover:bg-pink-50/50",
@@ -35,7 +35,7 @@ const config: Record<
     label: "GrabFood",
     description:
       "Upload the merchant report file exported from the Grab Portal to reconcile with local POS logs.",
-    apiCall: () => window.api.importGrabManual(),
+    apiCall: () => window.api.importManual("GRAB"),
     color: "text-emerald-500",
     hoverBorder: "hover:border-emerald-400",
     hoverBg: "hover:bg-emerald-50/50",
