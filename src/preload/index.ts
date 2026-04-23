@@ -1,6 +1,6 @@
 import { contextBridge, ipcRenderer } from "electron";
 import { electronAPI } from "@electron-toolkit/preload";
-import { SystemLog } from "../main/services/logService";
+import { SystemLog } from "../main/types";
 
 type PARTNER = "PANDA" | "GRAB";
 
