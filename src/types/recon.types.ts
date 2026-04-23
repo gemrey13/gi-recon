@@ -20,6 +20,7 @@ export interface UnmatchedPandaTransaction {
   partner_name: string;
   order_date: string; // 'YYYY-MM-DD'
   gross_food_value: number;
+  order_code: string;
 }
 
 export interface UnmatchedGrabTransaction {

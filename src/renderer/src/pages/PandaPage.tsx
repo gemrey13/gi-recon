@@ -1,11 +1,21 @@
+import { useState } from "react";
+
+// Hooks
+import { useBranches } from "@renderer/hooks/useBranches";
+import { useManualMatch } from "@renderer/hooks/useManualMatch";
+import { useRecon } from "@renderer/hooks/useRecon";
+
+// Components
 import ReconHeader from "@renderer/components/shared/ReconHeader";
+import UnmatchedPosTable from "@renderer/components/shared/table/UnmatchedPosTable";
+import MatchingWorkspace from "@renderer/components/shared/table/MatchingWorkspace";
+import FinalizeFooter from "@renderer/components/ui/FinalizeFooter";
+import PartnerTitle from "@renderer/components/shared/PartnerTitle";
 import ImportBatchModal from "@renderer/components/shared/dialog/ImportBatchModal";
 import ImportManualModal from "@renderer/components/shared/dialog/ImportManualModal";
-import PartnerTitle from "@renderer/components/shared/PartnerTitle";
-import { useBranches } from "@renderer/hooks/useBranches";
-import { useRecon } from "@renderer/hooks/useRecon";
-import { useState } from "react";
 import PartnerMetricsCard from "@renderer/components/shared/PartnerMetricsCard";
+import UnmatchedPartnerTable from "@renderer/components/shared/table/UnmatchedPartnerTable";
+import ConfirmSaveDBModal from "@renderer/components/shared/dialog/ConfirmSaveDBModal";
 
 const PandaPage = () => {
   const [startDate, setStartDate] = useState("");
@@ -13,9 +23,26 @@ const PandaPage = () => {
   const [selectedBranch, setSelectedBranch] = useState("ALL");
   const [showAddPanda, setShowAddPanda] = useState(false);
   const [showAddPandaBatch, setShowAddPandaBatch] = useState(false);
+  const [showConfirmSave, setShowConfirmSave] = useState(false);
 
   const { branches } = useBranches("PANDA");
   const { loading, saving, reconData, setReconData, runRecon, saveToDb } = useRecon("PANDA");
+  const {
+    selectedPartner,
+    setSelectedPartner,
+    posBasket,
+    basketTotal,
+    partnerAmount,
+    difference,
+    isMatchPossible,
+    togglePos,
+    commitMatch,
+  } = useManualMatch(setReconData);
+
+  const handleConfirmSave = async () => {
+    await saveToDb(reconData!);
+    setShowConfirmSave(false);
+  };
 
   return (
     <div className="space-y-6 max-w-400 mx-auto">
@@ -41,6 +68,31 @@ const PandaPage = () => {
       {reconData && (
         <>
           <PartnerMetricsCard reconData={reconData} />
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-150">
+            <UnmatchedPosTable
+              items={reconData.unmatchedPos}
+              basket={posBasket}
+              onToggle={togglePos}
+            />
+
+            <MatchingWorkspace
+              basketTotal={basketTotal}
+              partnerAmount={partnerAmount}
+              difference={difference}
+              isMatchPossible={isMatchPossible}
+              onCommit={commitMatch}
+            />
+
+            <UnmatchedPartnerTable
+              partnerType="PANDA"
+              items={reconData.unmatchedPartner}
+              selectedPartner={selectedPartner}
+              onSelect={setSelectedPartner}
+            />
+          </div>
+
+          <FinalizeFooter saving={saving} onSave={() => setShowConfirmSave(true)} />
         </>
       )}
 
@@ -50,6 +102,14 @@ const PandaPage = () => {
 
       {showAddPandaBatch && (
         <ImportBatchModal platform="panda" onCancel={() => setShowAddPandaBatch(false)} />
+      )}
+
+      {showConfirmSave && (
+        <ConfirmSaveDBModal
+          saving={saving}
+          onConfirm={handleConfirmSave}
+          onCancel={() => setShowConfirmSave(false)}
+        />
       )}
     </div>
   );

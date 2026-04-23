@@ -1,17 +1,15 @@
-import { PosItem } from "@shared/grab-recon.types";
+import { PosTransaction } from "@shared/recon.types";
 
 interface UnmatchedPosTableProps {
-  items: PosItem[];
-  basket: PosItem[];
-  onToggle: (item: PosItem) => void;
+  items: PosTransaction[];
+  basket: PosTransaction[];
+  onToggle: (item: PosTransaction) => void;
 }
 
 const UnmatchedPosTable = ({ items, basket, onToggle }: UnmatchedPosTableProps) => (
   <div className="lg:col-span-4 flex flex-col bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
     <div className="p-3 bg-slate-50 border-b border-slate-200">
-      <h3 className="text-sm font-bold text-slate-700">
-        Unmatched POS ({items.length})
-      </h3>
+      <h3 className="text-sm font-bold text-slate-700">Unmatched POS ({items.length})</h3>
     </div>
 
     <div className="flex-1 overflow-y-auto">
@@ -32,8 +30,7 @@ const UnmatchedPosTable = ({ items, basket, onToggle }: UnmatchedPosTableProps) 
                 onClick={() => onToggle(p)}
                 className={`border-b border-slate-50 cursor-pointer transition-colors ${
                   isSelected ? "bg-indigo-50" : "hover:bg-slate-50"
-                }`}
-              >
+                }`}>
                 <td className="p-3">
                   <input type="checkbox" checked={isSelected} readOnly />
                 </td>

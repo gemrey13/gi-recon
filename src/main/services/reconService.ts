@@ -40,7 +40,7 @@ const PARTNER_CONFIG = {
     partnerAmountCol: "gross_food_value",
     partnerNameCol: "partner_name",
     mappingCol: "foodpanda_name",
-    extraPartnerCols: "",
+    extraPartnerCols: ", f.order_code",
     extraPartnerWhere: "",
     extraPartnerOrder: "",
     matchExtraWhere: "",
@@ -229,7 +229,8 @@ export const saveReconciliationResults = (
       insertStmt.run(p.id, null, partnerType, "NONE", "UNMATCHED", p.amount);
     }
     for (const r of unmatchedPartner) {
-      insertStmt.run(null, r.id, partnerType, "NONE", "UNMATCHED", r.amount);
+      const amount = partnerType === "PANDA" ? (r.gross_food_value ?? 0) : (r.amount ?? 0);
+      insertStmt.run(null, r.id, partnerType, "NONE", "UNMATCHED", amount);
     }
   });
 

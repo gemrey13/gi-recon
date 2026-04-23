@@ -3,19 +3,19 @@ import { useState } from "react";
 // Hooks
 import { useBranches } from "@renderer/hooks/useBranches";
 import { useManualMatch } from "@renderer/hooks/useManualMatch";
+import { useRecon } from "@renderer/hooks/useRecon";
 
 // Components
 import ReconHeader from "@renderer/components/shared/ReconHeader";
-import UnmatchedPosTable from "@renderer/components/grab/UnmatchedPosTable";
-import MatchingWorkspace from "@renderer/components/grab/MatchingWorkspace";
-import UnmatchedGrabTable from "@renderer/components/grab/UnmatchedGrabTable";
-import FinalizeFooter from "@renderer/components/grab/FinalizeFooter";
-import ConfirmGrabSaveDBModal from "@renderer/components/grab/modal/ConfirmGrabSaveDBModal";
+import UnmatchedPosTable from "@renderer/components/shared/table/UnmatchedPosTable";
+import MatchingWorkspace from "@renderer/components/shared/table/MatchingWorkspace";
+import FinalizeFooter from "@renderer/components/ui/FinalizeFooter";
 import PartnerTitle from "@renderer/components/shared/PartnerTitle";
 import ImportBatchModal from "@renderer/components/shared/dialog/ImportBatchModal";
 import ImportManualModal from "@renderer/components/shared/dialog/ImportManualModal";
-import { useRecon } from "@renderer/hooks/useRecon";
 import PartnerMetricsCard from "@renderer/components/shared/PartnerMetricsCard";
+import UnmatchedPartnerTable from "@renderer/components/shared/table/UnmatchedPartnerTable";
+import ConfirmSaveDBModal from "@renderer/components/shared/dialog/ConfirmSaveDBModal";
 
 const GrabPage = () => {
   const [startDate, setStartDate] = useState("");
@@ -78,22 +78,23 @@ const GrabPage = () => {
 
             <MatchingWorkspace
               basketTotal={basketTotal}
-              grabAmount={partnerAmount}
+              partnerAmount={partnerAmount}
               difference={difference}
               isMatchPossible={isMatchPossible}
               onCommit={commitMatch}
             />
 
-            <UnmatchedGrabTable
+            <UnmatchedPartnerTable
+              partnerType="GRAB"
               items={reconData.unmatchedPartner}
-              selectedGrab={selectedPartner}
+              selectedPartner={selectedPartner}
               onSelect={setSelectedPartner}
             />
           </div>
 
           <FinalizeFooter
             saving={saving}
-            onSave={() => setShowConfirmSave(true)} // ← was: () => saveToDb(reconData)
+            onSave={() => setShowConfirmSave(true)}
           />
         </>
       )}
@@ -105,7 +106,7 @@ const GrabPage = () => {
       )}
 
       {showConfirmSave && (
-        <ConfirmGrabSaveDBModal
+        <ConfirmSaveDBModal
           saving={saving}
           onConfirm={handleConfirmSave}
           onCancel={() => setShowConfirmSave(false)}
