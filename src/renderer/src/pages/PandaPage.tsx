@@ -3,7 +3,7 @@ import ImportBatchModal from "@renderer/components/shared/ImportBatchModal";
 import ImportManualModal from "@renderer/components/shared/ImportManualModal";
 import PartnerTitle from "@renderer/components/shared/PartnerTitle";
 import { useBranches } from "@renderer/hooks/useBranches";
-import { usePandaRecon } from "@renderer/hooks/usePandaRecon";
+import { useRecon } from "@renderer/hooks/useRecon";
 import { useState } from "react";
 
 const PandaPage = () => {
@@ -14,7 +14,7 @@ const PandaPage = () => {
   const [showAddPandaBatch, setShowAddPandaBatch] = useState(false);
 
   const { branches } = useBranches("PANDA");
-  const { loading, saving, reconData, setReconData, runRecon, saveToDb } = usePandaRecon();
+  const { loading, saving, reconData, setReconData, runRecon, saveToDb } = useRecon("PANDA");
 
   return (
     <div className="space-y-6 max-w-400 mx-auto">

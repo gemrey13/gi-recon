@@ -31,6 +31,20 @@ const api = {
 
   savePandaRecon: (range: { startDate: string; endDate: string; branch: string }, results: any) =>
     ipcRenderer.invoke("save-panda-recon", range, results),
+
+  // Recon Refactor IPC
+  runRecon: (
+    partnerType: "PANDA" | "GRAB",
+    startDate: string,
+    endDate?: string,
+    branchName?: string,
+  ) => ipcRenderer.invoke("run-recon", partnerType, startDate, endDate, branchName),
+
+  saveRecon: (
+    partnerType: "PANDA" | "GRAB",
+    range: { startDate: string; endDate: string; branch: string },
+    results: any,
+  ) => ipcRenderer.invoke("save-recon", partnerType, range, results),
 };
 
 if (process.contextIsolated) {

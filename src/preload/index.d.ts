@@ -30,6 +30,19 @@ declare global {
         range: IPandaReconRange,
         results: any,
       ) => Promise<{ success: boolean; message: string }>;
+
+      // ReconRefactor IPC Types
+      runRecon: (
+        partnerType: "PANDA" | "GRAB",
+        startDate: string,
+        endDate?: string,
+        branchName?: string,
+      ) => Promise<any>;
+      saveRecon: (
+        partnerType: "PANDA" | "GRAB",
+        range: IGrabReconRange,
+        results: any,
+      ) => Promise<{ success: boolean; message: string }>;
     };
   }
 }
