@@ -1,6 +1,6 @@
 import { FiAlertCircle, FiAlertTriangle, FiCheckCircle } from "react-icons/fi";
 
-const GrabMetricsCard = ({ reconData }: { reconData: any }) => {
+const PartnerMetricsCard = ({ reconData }: { reconData: any }) => {
   
   const formatDate = (dateStr: any) => {
     if (!dateStr) return "";
@@ -93,4 +93,4 @@ const GrabMetricsCard = ({ reconData }: { reconData: any }) => {
   );
 };
 
-export default GrabMetricsCard;
+export default PartnerMetricsCard;
