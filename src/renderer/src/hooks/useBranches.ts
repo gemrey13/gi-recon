@@ -1,12 +1,11 @@
-import { Branch } from "@shared/grab-recon.types";
+import { Branch, PartnerType } from "@shared/recon.types";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
-type Provider = "GRAB" | "PANDA";
 
-export const useBranches = (initialProvider: Provider = "GRAB") => {
+export const useBranches = (initialProvider: PartnerType = "GRAB") => {
   const [branches, setBranches] = useState<Branch[]>([]);
-  const [selectedProvider, setSelectedProvider] = useState<Provider>(initialProvider);
+  const [selectedProvider, setSelectedProvider] = useState<PartnerType>(initialProvider);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {

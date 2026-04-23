@@ -2,9 +2,8 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { logger } from "@renderer/lib/logger";
 import { useAppSound } from "@renderer/hooks/useAppSound";
-import { ReconData } from "@shared/recon.types";
+import { PartnerType, ReconData } from "@shared/recon.types";
 
-export type PartnerType = "GRAB" | "PANDA";
 
 export const useRecon = (partnerType: PartnerType) => {
   const [loading, setLoading] = useState(false);

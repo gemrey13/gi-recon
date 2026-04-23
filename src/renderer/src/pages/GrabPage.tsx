@@ -25,14 +25,14 @@ const GrabPage = () => {
   const [showConfirmSave, setShowConfirmSave] = useState(false);
   const [showAddGrabBatch, setShowAddGrabBatch] = useState(false);
 
-  const { branches } = useBranches();
+  const { branches } = useBranches("GRAB");
   const { loading, saving, reconData, setReconData, runRecon, saveToDb } = useRecon("GRAB");
   const {
-    selectedGrab,
-    setSelectedGrab,
+    selectedPartner,
+    setSelectedPartner,
     posBasket,
     basketTotal,
-    grabAmount,
+    partnerAmount,
     difference,
     isMatchPossible,
     togglePos,
@@ -53,6 +53,7 @@ const GrabPage = () => {
       />
 
       <ReconHeader
+        partnerType="GRAB"
         branches={branches}
         selectedBranch={selectedBranch}
         startDate={startDate}
@@ -77,7 +78,7 @@ const GrabPage = () => {
 
             <MatchingWorkspace
               basketTotal={basketTotal}
-              grabAmount={grabAmount}
+              grabAmount={partnerAmount}
               difference={difference}
               isMatchPossible={isMatchPossible}
               onCommit={commitMatch}
@@ -85,8 +86,8 @@ const GrabPage = () => {
 
             <UnmatchedGrabTable
               items={reconData.unmatchedPartner}
-              selectedGrab={selectedGrab}
-              onSelect={setSelectedGrab}
+              selectedGrab={selectedPartner}
+              onSelect={setSelectedPartner}
             />
           </div>
 
@@ -99,7 +100,9 @@ const GrabPage = () => {
 
       {showAddGrab && <ImportManualModal platform="grab" onClose={() => setShowAddGrab(false)} />}
 
-      {showAddGrabBatch && <ImportBatchModal platform="grab" onCancel={() => setShowAddGrabBatch(false)} />}
+      {showAddGrabBatch && (
+        <ImportBatchModal platform="grab" onCancel={() => setShowAddGrabBatch(false)} />
+      )}
 
       {showConfirmSave && (
         <ConfirmGrabSaveDBModal

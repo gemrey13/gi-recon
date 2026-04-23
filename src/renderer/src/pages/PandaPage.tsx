@@ -25,6 +25,7 @@ const PandaPage = () => {
       />
 
       <ReconHeader
+        partnerType="PANDA"
         branches={branches}
         selectedBranch={selectedBranch}
         startDate={startDate}
