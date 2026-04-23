@@ -10,14 +10,7 @@ const api = {
   maximize: () => ipcRenderer.send("window-maximize"),
   close: () => ipcRenderer.send("window-close"),
 
-  // GRAB IPC
-  startImportGrab: () => ipcRenderer.invoke("start-import-grab"),
-  importGrabManual: () => ipcRenderer.invoke("grab:importManual"),
   importPOSZip: () => ipcRenderer.invoke("POS:importZip"),
-
-  // Panda IPC
-  startImportPanda: () => ipcRenderer.invoke("start-import-panda"),
-  importPandaManual: () => ipcRenderer.invoke("panda:importManual"),
 
   // Shared IPC
   getBranch: (partner: PARTNER) => ipcRenderer.invoke("get-branches", partner),
@@ -34,6 +27,7 @@ const api = {
 
   // New Import Manual IPC
   importManual: (type: PARTNER) => ipcRenderer.invoke("import:manual", type),
+  importBatch: (type: PARTNER) => ipcRenderer.invoke("import:batch", type),
 };
 
 if (process.contextIsolated) {

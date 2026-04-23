@@ -1,11 +1,17 @@
 import { parentPort, workerData } from "worker_threads";
 import Database from "better-sqlite3";
-import { pandaInsertStatement } from "./pandaConstants";
+import { grabInsertStatement, pandaInsertStatement } from "../constants";
+import { ImportSource } from "./batchImportConfigs";
 
-const { dbPath } = workerData as { dbPath: string };
+const INSERT_STATEMENTS = { PANDA: pandaInsertStatement, GRAB: grabInsertStatement };
+
+const { dbPath, source } = workerData as {
+  dbPath: string;
+  source: ImportSource;
+};
+
 const db = new Database(dbPath);
 
-// WAL and performance settings
 db.exec(`
   PRAGMA journal_mode = WAL;
   PRAGMA synchronous = OFF;
@@ -13,12 +19,11 @@ db.exec(`
   PRAGMA temp_store = MEMORY;
 `);
 
-const insertStmt = db.prepare(pandaInsertStatement);
-
+const insertStmt = db.prepare(INSERT_STATEMENTS[source]);
 let totalInserted = 0;
 
 parentPort?.on("message", (msg: { batch?: any[]; done?: boolean }) => {
-  if (msg.batch && msg.batch.length) {
+  if (msg.batch?.length) {
     try {
       const transaction = db.transaction((rows: any[]) => {
         for (const row of rows) insertStmt.run(row);
@@ -26,15 +31,17 @@ parentPort?.on("message", (msg: { batch?: any[]; done?: boolean }) => {
       transaction(msg.batch);
 
       totalInserted += msg.batch.length;
-      console.log(`[Panda Writer] Inserted batch of ${msg.batch.length}, total: ${totalInserted}`);
+      console.log(
+        `[${source} Writer] Inserted batch of ${msg.batch.length}, total: ${totalInserted}`,
+      );
     } catch (err: any) {
-      console.error("[Panda Writer] Error inserting batch:", err);
+      console.error(`[${source} Writer] Error inserting batch:`, err);
       parentPort?.postMessage({ error: err.message });
     }
   }
 
   if (msg.done) {
-    console.log(`[Panda Writer] All done. Total inserted: ${totalInserted}`);
+    console.log(`[${source} Writer] All done. Total inserted: ${totalInserted}`);
     parentPort?.postMessage({ totalInserted });
   }
 });

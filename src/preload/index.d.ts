@@ -12,16 +12,7 @@ declare global {
       maximize: () => Promise<any>;
       close: () => Promise<any>;
 
-      // GRAB IPC Types
-      startImportGrab: () => Promise<any>;
-      importGrabManual: () => Promise<any>;
       importPOSZip: () => Promise<any>;
-
-      // PANDA IPC Types
-      startImportPanda: () => Promise<any>;
-      importPandaManual: () => Promise<any>;
-
-      
 
       // Shared IPC Types
       getBranch: (partner: PARTNER) => Promise<BranchMapping[]>;
@@ -42,6 +33,7 @@ declare global {
 
       // New Import Manual IPC
       importManual: (type: PARTNER) => Promise<any>;
+      importBatch: (type: PARTNER) => Promise<any>;
     };
   }
 }
