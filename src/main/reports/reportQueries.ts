@@ -64,9 +64,9 @@ export interface BranchPerformanceRow {
 }
 
 export interface ReportFilters {
-  dateFrom?: string;  // YYYY-MM-DD
-  dateTo?: string;    // YYYY-MM-DD
-  branch?: string;    // pos_code
+  dateFrom?: string; // YYYY-MM-DD
+  dateTo?: string; // YYYY-MM-DD
+  branch?: string; // pos_code
   partnerType?: "GRAB" | "PANDA" | "ALL";
 }
 
@@ -146,10 +146,7 @@ export function getReconSummary(filters: ReportFilters = {}): ReconSummaryRow[] 
 export function getDiscrepancyReport(filters: ReportFilters = {}): DiscrepancyRow[] {
   const db = getDb();
 
-  const conditions: string[] = [
-    "r.recon_status = 'MATCHED'",
-    "ABS(r.amount_difference) > 0",
-  ];
+  const conditions: string[] = ["r.recon_status = 'MATCHED'", "ABS(r.amount_difference) > 0"];
   const params: unknown[] = [];
 
   if (filters.dateFrom) {
@@ -267,8 +264,14 @@ export function getPartnerSalesReport(filters: ReportFilters = {}): PartnerSales
     const grabConditions: string[] = ["g.status NOT IN ('CANCELLED','FAILED')"];
     const grabParams: unknown[] = [];
 
-    if (dateFrom) { grabConditions.push("g.created_on >= ?"); grabParams.push(dateFrom); }
-    if (dateTo)   { grabConditions.push("g.created_on <= ?"); grabParams.push(dateTo); }
+    if (dateFrom) {
+      grabConditions.push("g.created_on >= ?");
+      grabParams.push(dateFrom);
+    }
+    if (dateTo) {
+      grabConditions.push("g.created_on <= ?");
+      grabParams.push(dateTo);
+    }
 
     const grabSql = `
       SELECT
@@ -295,8 +298,14 @@ export function getPartnerSalesReport(filters: ReportFilters = {}): PartnerSales
     const pandaConditions: string[] = ["fp.reversal IS NULL OR fp.reversal = ''"];
     const pandaParams: unknown[] = [];
 
-    if (dateFrom) { pandaConditions.push("fp.order_date >= ?"); pandaParams.push(dateFrom); }
-    if (dateTo)   { pandaConditions.push("fp.order_date <= ?"); pandaParams.push(dateTo); }
+    if (dateFrom) {
+      pandaConditions.push("fp.order_date >= ?");
+      pandaParams.push(dateFrom);
+    }
+    if (dateTo) {
+      pandaConditions.push("fp.order_date <= ?");
+      pandaParams.push(dateTo);
+    }
 
     const pandaSql = `
       SELECT
@@ -331,9 +340,18 @@ export function getBranchPerformanceReport(filters: ReportFilters = {}): BranchP
   const posConditions: string[] = [];
   const posParams: unknown[] = [];
 
-  if (filters.dateFrom) { posConditions.push("orddate >= ?"); posParams.push(filters.dateFrom); }
-  if (filters.dateTo)   { posConditions.push("orddate <= ?"); posParams.push(filters.dateTo); }
-  if (filters.branch)   { posConditions.push("branch = ?");   posParams.push(filters.branch); }
+  if (filters.dateFrom) {
+    posConditions.push("orddate >= ?");
+    posParams.push(filters.dateFrom);
+  }
+  if (filters.dateTo) {
+    posConditions.push("orddate <= ?");
+    posParams.push(filters.dateTo);
+  }
+  if (filters.branch) {
+    posConditions.push("branch = ?");
+    posParams.push(filters.branch);
+  }
 
   const posWhere = posConditions.length ? `WHERE ${posConditions.join(" AND ")}` : "";
 
@@ -357,10 +375,16 @@ export function getBranchPerformanceReport(filters: ReportFilters = {}): BranchP
         SUM(g.amount) AS grab_total
       FROM grab_transactions g
       JOIN branch_mapping bm ON bm.grab_name = g.store_name
-      ${filters.dateFrom || filters.dateTo ? `WHERE ${[
-        filters.dateFrom ? "g.created_on >= '" + filters.dateFrom + "'" : null,
-        filters.dateTo   ? "g.created_on <= '" + filters.dateTo   + "'" : null,
-      ].filter(Boolean).join(" AND ")}` : ""}
+      ${
+        filters.dateFrom || filters.dateTo
+          ? `WHERE ${[
+              filters.dateFrom ? "g.created_on >= '" + filters.dateFrom + "'" : null,
+              filters.dateTo ? "g.created_on <= '" + filters.dateTo + "'" : null,
+            ]
+              .filter(Boolean)
+              .join(" AND ")}`
+          : ""
+      }
       GROUP BY bm.pos_code
     ),
     panda_agg AS (
@@ -369,10 +393,16 @@ export function getBranchPerformanceReport(filters: ReportFilters = {}): BranchP
         SUM(fp.gross_food_value) AS panda_total
       FROM foodpanda_transactions fp
       JOIN branch_mapping bm ON bm.foodpanda_name = fp.partner_name
-      ${filters.dateFrom || filters.dateTo ? `WHERE ${[
-        filters.dateFrom ? "fp.order_date >= '" + filters.dateFrom + "'" : null,
-        filters.dateTo   ? "fp.order_date <= '" + filters.dateTo   + "'" : null,
-      ].filter(Boolean).join(" AND ")}` : ""}
+      ${
+        filters.dateFrom || filters.dateTo
+          ? `WHERE ${[
+              filters.dateFrom ? "fp.order_date >= '" + filters.dateFrom + "'" : null,
+              filters.dateTo ? "fp.order_date <= '" + filters.dateTo + "'" : null,
+            ]
+              .filter(Boolean)
+              .join(" AND ")}`
+          : ""
+      }
       GROUP BY bm.pos_code
     )
     SELECT
@@ -390,7 +420,7 @@ export function getBranchPerformanceReport(filters: ReportFilters = {}): BranchP
     ORDER BY pa.branch_name
   `;
 
-  return db.prepare(sql).all() as BranchPerformanceRow[];
+  return db.prepare(sql).all(...posParams) as BranchPerformanceRow[];
 }
 
 // ─────────────────────────────────────────────
@@ -408,23 +438,47 @@ export interface SystemLogRow {
   user_name: string;
 }
 
-export function getSystemLogs(filters: { dateFrom?: string; dateTo?: string; level?: string; module?: string; limit?: number } = {}): SystemLogRow[] {
+export function getSystemLogs(
+  filters: {
+    dateFrom?: string;
+    dateTo?: string;
+    level?: string;
+    module?: string;
+    limit?: number;
+  } = {},
+): SystemLogRow[] {
   const db = getDb();
 
   const conditions: string[] = [];
   const params: unknown[] = [];
 
-  if (filters.dateFrom) { conditions.push("timestamp >= ?"); params.push(filters.dateFrom); }
-  if (filters.dateTo)   { conditions.push("timestamp <= ?"); params.push(filters.dateTo + " 23:59:59"); }
-  if (filters.level)    { conditions.push("level = ?");      params.push(filters.level); }
-  if (filters.module)   { conditions.push("module = ?");     params.push(filters.module); }
+  if (filters.dateFrom) {
+    conditions.push("timestamp >= ?");
+    params.push(filters.dateFrom);
+  }
+  if (filters.dateTo) {
+    conditions.push("timestamp <= ?");
+    params.push(filters.dateTo + " 23:59:59");
+  }
+  if (filters.level) {
+    conditions.push("level = ?");
+    params.push(filters.level);
+  }
+  if (filters.module) {
+    conditions.push("module = ?");
+    params.push(filters.module);
+  }
 
   const where = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
   const limit = filters.limit ?? 500;
 
-  return db.prepare(`
+  return db
+    .prepare(
+      `
     SELECT * FROM system_logs ${where}
     ORDER BY timestamp DESC
     LIMIT ${limit}
-  `).all(...params) as SystemLogRow[];
+  `,
+    )
+    .all(...params) as SystemLogRow[];
 }
