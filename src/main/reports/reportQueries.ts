@@ -120,7 +120,7 @@ export function getReconSummary(filters: ReportFilters = {}): ReconSummaryRow[] 
         / NULLIF(COUNT(DISTINCT p.id), 0),
         2
       )                                                                          AS match_rate,
-      ROUND(SUM(DISTINCT p.totchrg), 2)                                         AS total_pos_amount,
+      ROUND(SUM(p.totchrg), 2)                                         AS total_pos_amount,
       ROUND(SUM(CASE WHEN r.recon_status = 'MATCHED' THEN ABS(r.amount_difference) END), 2) AS total_variance
     FROM pos_transactions p
     LEFT JOIN recon_results r ON r.pos_id = p.id
