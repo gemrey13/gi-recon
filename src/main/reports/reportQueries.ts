@@ -113,7 +113,7 @@ export function getReconSummary(filters: ReportFilters = {}): ReconSummaryRow[] 
       COUNT(DISTINCT CASE WHEN r.recon_status = 'MATCHED' THEN p.id END)        AS matched,
       COUNT(DISTINCT CASE WHEN r.recon_status = 'UNMATCHED' OR r.id IS NULL THEN p.id END) AS unmatched,
       COUNT(DISTINCT CASE WHEN r.match_level = 'EXACT' THEN p.id END)           AS exact_matches,
-      COUNT(DISTINCT CASE WHEN r.match_level = 'TOLERANCE' THEN p.id END)       AS tolerance_matches,
+      COUNT(DISTINCT CASE WHEN r.match_level = 'MANUAL_TOLERANCE' THEN p.id END)       AS tolerance_matches,
       COUNT(DISTINCT CASE WHEN r.match_level IN ('MANUAL_SINGLE','MANUAL_BATCH') THEN p.id END) AS manual_matches,
       ROUND(
         100.0 * COUNT(DISTINCT CASE WHEN r.recon_status = 'MATCHED' THEN p.id END)
