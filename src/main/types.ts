@@ -1,5 +1,87 @@
-export type PartnerType = "PANDA" | "GRAB";
 import * as XLSX from "xlsx";
+
+// ─────────────────────────────────────────────
+// Recon Types
+// ─────────────────────────────────────────────
+
+export interface SystemLogRow {
+  id: number;
+  timestamp: string;
+  level: string;
+  module: string;
+  action: string;
+  message: string;
+  description: string;
+  user_name: string;
+}
+
+export interface ReconSummaryRow {
+  branch: string;
+  branch_name: string;
+  total_pos: number;
+  matched: number;
+  unmatched: number;
+  exact_matches: number;
+  tolerance_matches: number;
+  manual_matches: number;
+  match_rate: number;
+  total_pos_amount: number;
+  total_partner_amount: number;
+  total_variance: number;
+}
+
+export interface DiscrepancyRow {
+  branch: string;
+  branch_name: string;
+  partner_type: string;
+  pos_cslipno: string;
+  pos_amount: number;
+  partner_amount: number;
+  amount_difference: number;
+  match_level: string;
+  orddate: string;
+}
+
+export interface UnmatchedRow {
+  id: number;
+  branch: string;
+  branch_name: string;
+  partner_type: string;
+  cslipno: string;
+  orddate: string;
+  totchrg: number;
+}
+
+export interface PartnerSalesRow {
+  branch_name: string;
+  partner_type: string;
+  total_orders: number;
+  gross_sales: number;
+  commission_amt: number;
+  withholding_tax: number;
+  net_sales: number;
+  total_fees: number;
+}
+
+export interface BranchPerformanceRow {
+  branch: string;
+  branch_name: string;
+  pos_total: number;
+  grab_total: number;
+  panda_total: number;
+  partner_total: number;
+  total_variance: number;
+  match_rate: number;
+}
+
+export interface ReportFilters {
+  dateFrom?: string; // YYYY-MM-DD
+  dateTo?: string; // YYYY-MM-DD
+  branch?: string; // pos_code
+  partnerType?: "GRAB" | "PANDA" | "ALL";
+}
+
+export type PartnerType = "PANDA" | "GRAB";
 
 export interface BranchMapping {
   pos_code: string;

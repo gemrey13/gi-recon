@@ -1,13 +1,11 @@
 import { ipcMain } from "electron";
-import {
-  getReconSummary,
-  getDiscrepancyReport,
-  getUnmatchedReport,
-  getPartnerSalesReport,
-  getBranchPerformanceReport,
-  getSystemLogs,
-  ReportFilters,
-} from "../reports/reportQueries";
+import { getReconSummary } from "../reports/getReconSummary";
+import { getDiscrepancyReport } from "../reports/getDiscrepancyReport";
+import { getUnmatchedReport } from "../reports/getUnmatchedReport";
+import { getPartnerSalesReport } from "../reports/getPartnerSalesReport";
+import { getBranchPerformanceReport } from "../reports/getBranchPerformanceReport";
+import { getSystemLogs } from "../reports/getSystemLogs";
+import { ReportFilters } from "../types";
 
 export function registerReportIPC() {
   ipcMain.handle("report:reconSummary", (_e, filters: ReportFilters) =>
