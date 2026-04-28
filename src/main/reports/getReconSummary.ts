@@ -19,7 +19,7 @@ export function getReconSummary(filters: ReportFilters = {}): ReconSummaryRow[] 
     conditions.push("p.branch = ?");
     params.push(filters.branch);
   }
-  if (filters.partnerType && filters.partnerType !== "ALL") {
+  if (filters.partnerType) {
     conditions.push("r.partner_type = ?");
     params.push(filters.partnerType);
   }
@@ -60,7 +60,7 @@ export function getReconSummary(filters: ReportFilters = {}): ReconSummaryRow[] 
       END,
       p.branch_name
     )
-    ORDER BY branch_name
+    ORDER BY branch
   `;
 
   return db.prepare(sql).all(...params) as ReconSummaryRow[];
