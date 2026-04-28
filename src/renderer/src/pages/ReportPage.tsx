@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef, JSX } from "react";
 import { useBranches } from "../hooks/useBranches";
+import LoadingState from "@renderer/components/ui/LoadingState";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -90,13 +91,6 @@ function EmptyState({ message }: { message: string }) {
   );
 }
 
-function LoadingState() {
-  return (
-    <div className="flex items-center justify-center py-20">
-      <div className="h-8 w-8 animate-spin rounded-full border-2 border-slate-200 border-t-indigo-500" />
-    </div>
-  );
-}
 
 // ─── Report: Recon Summary ────────────────────────────────────────────────────
 
