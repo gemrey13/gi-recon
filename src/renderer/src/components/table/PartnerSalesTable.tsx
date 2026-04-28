@@ -2,7 +2,6 @@ import Badge from "@renderer/components/ui/Badge";
 import EmptyState from "@renderer/components/ui/EmptyState";
 import { fmt, PHP } from "@renderer/lib/helpers";
 
-
 export default function PartnerSalesTable({ data }: { data: Record<string, unknown>[] }) {
   if (!data.length) return <EmptyState message="No partner sales data found." />;
   return (

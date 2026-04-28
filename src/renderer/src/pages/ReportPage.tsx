@@ -1,105 +1,14 @@
 import { useState, useCallback, useRef, JSX } from "react";
 import { useBranches } from "../hooks/useBranches";
 import LoadingState from "@renderer/components/ui/LoadingState";
-import Badge from "@renderer/components/ui/Badge";
-import EmptyState from "@renderer/components/ui/EmptyState";
 import { downloadCSV } from "@renderer/lib/helpers";
 import ReconSummaryTable from "@renderer/components/table/ReconSummaryTable";
 import DiscrepancyTable from "@renderer/components/table/DiscrepancyTable";
 import UnmatchedTable from "@renderer/components/table/UnmatchedTable";
 import PartnerSalesTable from "@renderer/components/table/PartnerSalesTable";
 import BranchPerformanceTable from "@renderer/components/table/BranchPerformanceTable";
-
-// ─── Types ────────────────────────────────────────────────────────────────────
-
-interface ReportFilters {
-  dateFrom: string;
-  dateTo: string;
-  branch: string;
-  partnerType: "GRAB" | "PANDA";
-}
-
-type ReportType =
-  | "reconSummary"
-  | "discrepancy"
-  | "unmatched"
-  | "partnerSales"
-  | "branchPerformance"
-  | "systemLogs";
-
-
-// ─── Report: Recon Summary ────────────────────────────────────────────────────
-
-
-// ─── Report: Discrepancy ──────────────────────────────────────────────────────
-
-
-// ─── Report: Unmatched ────────────────────────────────────────────────────────
-
-
-
-// ─── Report: Partner Sales ────────────────────────────────────────────────────
-
-
-
-// ─── Report: Branch Performance ───────────────────────────────────────────────
-
-
-// ─── Report: System Logs ──────────────────────────────────────────────────────
-
-function SystemLogsTable({ data }: { data: Record<string, unknown>[] }) {
-  if (!data.length) return <EmptyState message="No system logs found." />;
-  return (
-    <div className="overflow-x-auto">
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="border-b border-slate-200 bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
-            <th className="px-4 py-3">Timestamp</th>
-            <th className="px-4 py-3">Level</th>
-            <th className="px-4 py-3">Module</th>
-            <th className="px-4 py-3">Action</th>
-            <th className="px-4 py-3">Message</th>
-            <th className="px-4 py-3">User</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-slate-100 font-mono text-xs">
-          {data.map((row, i) => {
-            const level = String(row.level);
-            return (
-              <tr key={i} className="hover:bg-slate-50 transition-colors">
-                <td className="px-4 py-2.5 text-slate-400 whitespace-nowrap">
-                  {String(row.timestamp)}
-                </td>
-                <td className="px-4 py-2.5">
-                  <Badge
-                    value={level}
-                    type={
-                      level === "ERROR"
-                        ? "danger"
-                        : level === "WARN"
-                          ? "warn"
-                          : level === "INFO"
-                            ? "success"
-                            : "neutral"
-                    }
-                  />
-                </td>
-                <td className="px-4 py-2.5 text-indigo-600">{String(row.module)}</td>
-                <td className="px-4 py-2.5 text-slate-600">{String(row.action)}</td>
-                <td
-                  className="px-4 py-2.5 text-slate-700 max-w-xs truncate"
-                  title={String(row.message)}>
-                  {String(row.message)}
-                </td>
-                <td className="px-4 py-2.5 text-slate-500">{String(row.user_name)}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </div>
-  );
-}
+import SystemLogsTable from "@renderer/components/table/SystemLogsTable";
+import { ReportFilters, ReportType } from "@shared/reports.types";
 
 // ─── Config ───────────────────────────────────────────────────────────────────
 
