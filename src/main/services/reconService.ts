@@ -15,10 +15,10 @@ const PARTNER_CONFIG = {
     partnerNameCol: "store_name",
     mappingCol: "grab_name",
     extraPartnerCols: ", g.status, g.booking_id, g.category, g.short_order_id",
-    extraPartnerWhere: `AND g.status IN ('Cancelled', 'Completed', 'Transferred')`,
+    extraPartnerWhere: `AND g.status IN ('Completed', 'Transferred') AND g.category != 'Adjustment'`,
     extraPartnerOrder: `g.category DESC, `,
-    matchExtraWhere: `AND g.category IN ('Adjustment', 'Payment')
-          AND g.status IN ('Completed', 'Transferred', 'Cancelled')`,
+    matchExtraWhere: `AND g.category IN ('Payment')
+          AND g.status IN ('Completed', 'Transferred') AND g.category != 'Adjustment'`,
   },
   PANDA: {
     module: "PANDA_SERVICE",

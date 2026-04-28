@@ -4,9 +4,17 @@ interface UnmatchedPosTableProps {
   items: PosTransaction[];
   basket: PosTransaction[];
   onToggle: (item: PosTransaction) => void;
+  sort: "asc" | "desc" | null;
+  onSortChange: (sort: "asc" | "desc" | null) => void;
 }
 
-const UnmatchedPosTable = ({ items, basket, onToggle }: UnmatchedPosTableProps) => (
+const UnmatchedPosTable = ({
+  items,
+  sort,
+  onSortChange,
+  basket,
+  onToggle,
+}: UnmatchedPosTableProps) => (
   <div className="lg:col-span-4 flex flex-col bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
     <div className="p-3 bg-slate-50 border-b border-slate-200">
       <h3 className="text-sm font-bold text-slate-700">Unmatched POS ({items.length})</h3>
@@ -18,7 +26,13 @@ const UnmatchedPosTable = ({ items, basket, onToggle }: UnmatchedPosTableProps) 
           <tr className="text-[10px] text-slate-400 uppercase">
             <th className="p-3">Select</th>
             <th className="p-3">Branch / Date</th>
-            <th className="p-3 text-right">Amount</th>
+            <th
+              className="p-3 text-right cursor-pointer select-none"
+              onClick={() =>
+                onSortChange(sort === "asc" ? "desc" : sort === "desc" ? null : "asc")
+              }>
+              Amount {sort === "asc" ? "↑" : sort === "desc" ? "↓" : "↕"}
+            </th>
           </tr>
         </thead>
         <tbody className="text-xs">

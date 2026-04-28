@@ -370,7 +370,7 @@ export const branchMappings: BranchMapping[] = [
     pos_code: "SSJ",
     pos_name: "GILIGAN'S SM SAN JOSE BRANCH",
     grab_name: "Giligan's Restaurant - SM San Jose Del Monte",
-    foodpanda_name: null,
+    foodpanda_name: "Giligan's - SM City San Jose del Monte",
   },
   {
     pos_code: "SSP",
