@@ -1,6 +1,9 @@
 import { useState, useCallback, useRef, JSX } from "react";
 import { useBranches } from "../hooks/useBranches";
 import LoadingState from "@renderer/components/ui/LoadingState";
+import Badge from "@renderer/components/ui/Badge";
+import EmptyState from "@renderer/components/ui/EmptyState";
+import { downloadCSV, fmt, PCT, PHP } from "@renderer/lib/helpers";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -18,78 +21,6 @@ type ReportType =
   | "partnerSales"
   | "branchPerformance"
   | "systemLogs";
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
-const PHP = (n: number | null | undefined) =>
-  n == null
-    ? "—"
-    : new Intl.NumberFormat("en-PH", { style: "currency", currency: "PHP" }).format(n);
-
-const PCT = (n: number | null | undefined) => (n == null ? "—" : `${Number(n).toFixed(1)}%`);
-
-const fmt = (n: number | null | undefined) => (n == null ? "—" : Number(n).toLocaleString("en-PH"));
-
-function downloadCSV(filename: string, rows: Record<string, unknown>[]) {
-  if (!rows.length) return;
-  const headers = Object.keys(rows[0]);
-  const csv = [
-    headers.join(","),
-    ...rows.map((r) => headers.map((h) => JSON.stringify(r[h] ?? "")).join(",")),
-  ].join("\n");
-  const blob = new Blob([csv], { type: "text/csv" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-// ─── Sub-components ───────────────────────────────────────────────────────────
-
-function Badge({
-  value,
-  type,
-}: {
-  value: string | number;
-  type: "success" | "danger" | "warn" | "neutral" | "grab" | "panda";
-}) {
-  const cls = {
-    success: "bg-emerald-100 text-emerald-700 border border-emerald-200",
-    danger: "bg-red-100 text-red-700 border border-red-200",
-    warn: "bg-amber-100 text-amber-700 border border-amber-200",
-    neutral: "bg-slate-100 text-slate-600 border border-slate-200",
-    grab: "bg-green-100 text-green-700 border border-green-200",
-    panda: "bg-pink-100 text-pink-700 border border-pink-200",
-  }[type];
-  return (
-    <span
-      className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${cls}`}>
-      {value}
-    </span>
-  );
-}
-
-function EmptyState({ message }: { message: string }) {
-  return (
-    <div className="flex flex-col items-center justify-center py-20 text-slate-400">
-      <svg
-        className="mb-3 h-10 w-10 opacity-40"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor">
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={1.5}
-          d="M9 17v-2a4 4 0 014-4h0a4 4 0 014 4v2M3 21h18M12 3a4 4 0 100 8 4 4 0 000-8z"
-        />
-      </svg>
-      <p className="text-sm">{message}</p>
-    </div>
-  );
-}
 
 
 // ─── Report: Recon Summary ────────────────────────────────────────────────────
