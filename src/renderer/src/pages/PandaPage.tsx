@@ -117,11 +117,11 @@ const PandaPage = () => {
       )}
 
       {showAddPanda && (
-        <ImportManualModal platform="panda" onClose={() => setShowAddPanda(false)} />
+        <ImportManualModal platform="PANDA" onClose={() => setShowAddPanda(false)} />
       )}
 
       {showAddPandaBatch && (
-        <ImportBatchModal platform="panda" onCancel={() => setShowAddPandaBatch(false)} />
+        <ImportBatchModal platform="PANDA" onCancel={() => setShowAddPandaBatch(false)} />
       )}
 
       {showConfirmSave && (

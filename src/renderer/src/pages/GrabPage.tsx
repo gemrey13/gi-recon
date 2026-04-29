@@ -116,10 +116,10 @@ const GrabPage = () => {
         </>
       )}
 
-      {showAddGrab && <ImportManualModal platform="grab" onClose={() => setShowAddGrab(false)} />}
+      {showAddGrab && <ImportManualModal platform="GRAB" onClose={() => setShowAddGrab(false)} />}
 
       {showAddGrabBatch && (
-        <ImportBatchModal platform="grab" onCancel={() => setShowAddGrabBatch(false)} />
+        <ImportBatchModal platform="GRAB" onCancel={() => setShowAddGrabBatch(false)} />
       )}
 
       {showConfirmSave && (
