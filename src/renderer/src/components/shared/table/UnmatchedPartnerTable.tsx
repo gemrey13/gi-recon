@@ -77,6 +77,8 @@ interface UnmatchedPartnerTableProps {
   items: UnmatchedPartnerTransaction[];
   selectedPartner: UnmatchedPartnerTransaction | null;
   onSelect: (item: UnmatchedPartnerTransaction) => void;
+  sort: "asc" | "desc" | null;
+  onSortChange: (sort: "asc" | "desc" | null) => void;
 }
 
 const UnmatchedPartnerTable = ({
@@ -84,6 +86,8 @@ const UnmatchedPartnerTable = ({
   items,
   selectedPartner,
   onSelect,
+  sort,
+  onSortChange,
 }: UnmatchedPartnerTableProps) => {
   const [useShortId, setUseShortId] = useState(false);
   const { label, accentClass } = PARTNER_CONFIG[partnerType];
@@ -112,7 +116,13 @@ const UnmatchedPartnerTable = ({
                   </span>
                 )}
               </th>
-              <th className="p-3 text-right">Amount</th>
+              <th
+                className="p-3 text-right cursor-pointer select-none"
+                onClick={() =>
+                  onSortChange(sort === "asc" ? "desc" : sort === "desc" ? null : "asc")
+                }>
+                Amount {sort === "asc" ? "↑" : sort === "desc" ? "↓" : "↕"}
+              </th>
             </tr>
           </thead>
           <tbody className="text-xs">

@@ -24,6 +24,8 @@ const PandaPage = () => {
   const [showAddPanda, setShowAddPanda] = useState(false);
   const [showAddPandaBatch, setShowAddPandaBatch] = useState(false);
   const [showConfirmSave, setShowConfirmSave] = useState(false);
+  const [posSort, setPosSort] = useState<"asc" | "desc" | null>(null);
+  const [partnerSort, setPartnerSort] = useState<"asc" | "desc" | null>(null);
 
   const { branches } = useBranches("PANDA");
   const { loading, saving, reconData, setReconData, runRecon, saveToDb } = useRecon("PANDA");
@@ -43,6 +45,20 @@ const PandaPage = () => {
     await saveToDb(reconData!);
     setShowConfirmSave(false);
   };
+
+  const sortedUnmatchedPos = posSort
+    ? [...(reconData?.unmatchedPos ?? [])].sort((a, b) =>
+        posSort === "asc" ? a.amount - b.amount : b.amount - a.amount,
+      )
+    : (reconData?.unmatchedPos ?? []);
+
+  const sortedUnmatchedPartner = partnerSort
+    ? [...(reconData?.unmatchedPartner ?? [])].sort((a, b) => {
+        const amountA = "amount" in a ? a.amount : a.gross_food_value;
+        const amountB = "amount" in b ? b.amount : b.gross_food_value;
+        return partnerSort === "asc" ? amountA - amountB : amountB - amountA;
+      })
+    : (reconData?.unmatchedPartner ?? []);
 
   return (
     <div className="space-y-6 max-w-400 mx-auto">
@@ -71,7 +87,9 @@ const PandaPage = () => {
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-150">
             <UnmatchedPosTable
-              items={reconData.unmatchedPos}
+              items={sortedUnmatchedPos}
+              sort={posSort}
+              onSortChange={setPosSort}
               basket={posBasket}
               onToggle={togglePos}
             />
@@ -86,7 +104,9 @@ const PandaPage = () => {
 
             <UnmatchedPartnerTable
               partnerType="PANDA"
-              items={reconData.unmatchedPartner}
+              items={sortedUnmatchedPartner}
+              sort={partnerSort}
+              onSortChange={setPartnerSort}
               selectedPartner={selectedPartner}
               onSelect={setSelectedPartner}
             />
@@ -97,11 +117,11 @@ const PandaPage = () => {
       )}
 
       {showAddPanda && (
-        <ImportManualModal platform="panda" onClose={() => setShowAddPanda(false)} />
+        <ImportManualModal platform="PANDA" onClose={() => setShowAddPanda(false)} />
       )}
 
       {showAddPandaBatch && (
-        <ImportBatchModal platform="panda" onCancel={() => setShowAddPandaBatch(false)} />
+        <ImportBatchModal platform="PANDA" onCancel={() => setShowAddPandaBatch(false)} />
       )}
 
       {showConfirmSave && (

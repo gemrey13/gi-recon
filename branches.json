@@ -1,506 +1,506 @@
 [
   {
-    "posCode": "AMK",
-    "posName": "GILIGAN'S AYALA MALL MARIKINA",
-    "grabName": "Giligan's Restaurant - Ayala Marikina",
-    "foodpandaName": "Giligan's - Ayala Malls Marikina"
+    "pos_code": "AMK",
+    "pos_name": "GILIGAN'S AYALA MALL MARIKINA",
+    "grab_name": "Giligan's Restaurant - Ayala Marikina",
+    "foodpanda_name": "Giligan's - Ayala Malls Marikina"
   },
   {
-    "posCode": "ANG",
-    "posName": "Marquee Mall",
-    "grabName": "Giligan's Restaurant - Ayala Marquee",
-    "foodpandaName": "Giligan's - Marquee Mall"
+    "pos_code": "ANG",
+    "pos_name": "Marquee Mall",
+    "grab_name": "Giligan's Restaurant - Ayala Marquee",
+    "foodpanda_name": "Giligan's - Marquee Mall"
   },
   {
-    "posCode": "ANO",
-    "posName": "GILIGAN'S SM ANGONO RIZAL",
-    "grabName": "Giligan's Restaurant - SM Center Angono",
-    "foodpandaName": "Giligan's - SM Center Angono"
+    "pos_code": "ANO",
+    "pos_name": "GILIGAN'S SM ANGONO RIZAL",
+    "grab_name": "Giligan's Restaurant - SM Center Angono",
+    "foodpanda_name": "Giligan's - SM Center Angono"
   },
   {
-    "posCode": "AOL",
-    "posName": "GILIGAN'S ABOITIZ OUTLET LIPA",
-    "grabName": null,
-    "foodpandaName": "Giligan's - The Outlets at Lipa"
+    "pos_code": "AOL",
+    "pos_name": "GILIGAN'S ABOITIZ OUTLET LIPA",
+    "grab_name": null,
+    "foodpanda_name": "Giligan's - The Outlets at Lipa"
   },
   {
-    "posCode": "ASP",
-    "posName": "GILIGAN'S AYALA SOUTHPARK",
-    "grabName": "Giligan's Restaurant - Ayala Mall South Park",
-    "foodpandaName": "Giligan's - Ayala Malls Southpark"
+    "pos_code": "ASP",
+    "pos_name": "GILIGAN'S AYALA SOUTHPARK",
+    "grab_name": "Giligan's Restaurant - Ayala Mall South Park",
+    "foodpanda_name": "Giligan's - Ayala Malls Southpark"
   },
   {
-    "posCode": "AST",
-    "posName": "GILIGAN'S AYALA MALLS SERIN",
-    "grabName": null,
-    "foodpandaName": null
+    "pos_code": "AST",
+    "pos_name": "GILIGAN'S AYALA MALLS SERIN",
+    "grab_name": null,
+    "foodpanda_name": null
   },
   {
-    "posCode": "BAC",
-    "posName": "GILIGAN'S SM CITY BACOLOD",
-    "grabName": "Giligan's Restaurant - SM City Bacolod",
-    "foodpandaName": "Giligan's - SM City Bacolod"
+    "pos_code": "BAC",
+    "pos_name": "GILIGAN'S SM CITY BACOLOD",
+    "grab_name": "Giligan's Restaurant - SM City Bacolod",
+    "foodpanda_name": "Giligan's - SM City Bacolod"
   },
   {
-    "posCode": "BAG",
-    "posName": "Giligan's Baguio",
-    "grabName": "Giligan's Restaurant - Baguio City",
-    "foodpandaName": "Giligan's - Baguio City"
+    "pos_code": "BAG",
+    "pos_name": "Giligan's Baguio",
+    "grab_name": "Giligan's Restaurant - Baguio City",
+    "foodpanda_name": "Giligan's - Baguio City"
   },
   {
-    "posCode": "BAL",
-    "posName": "GILIGAN'S SM BALIWAG",
-    "grabName": "Giligan's Restaurant - SM Baliwag",
-    "foodpandaName": "Giligan's - SM City Baliwag"
+    "pos_code": "BAL",
+    "pos_name": "GILIGAN'S SM BALIWAG",
+    "grab_name": "Giligan's Restaurant - SM Baliwag",
+    "foodpanda_name": "Giligan's - SM City Baliwag"
   },
   {
-    "posCode": "BAT",
-    "posName": "GILIGAN'S SM BATANGAS CITY",
-    "grabName": null,
-    "foodpandaName": "Giligan's - SM City Batangas"
+    "pos_code": "BAT",
+    "pos_name": "GILIGAN'S SM BATANGAS CITY",
+    "grab_name": null,
+    "foodpanda_name": "Giligan's - SM City Batangas"
   },
   {
-    "posCode": "CAB",
-    "posName": "GILIGAN'S SM CABANATUAN",
-    "grabName": null,
-    "foodpandaName": "Giligan's - SM City Cabanatuan"
+    "pos_code": "CAB",
+    "pos_name": "GILIGAN'S SM CITY CABANATUAN",
+    "grab_name": null,
+    "foodpanda_name": "Giligan's - SM City Cabanatuan"
   },
   {
-    "posCode": "CAL",
-    "posName": "GILIGAN'S SM CALAMBA",
-    "grabName": "Giligan's Restaurant - SM Calamba",
-    "foodpandaName": "Giligan's - SM City Calamba"
+    "pos_code": "CAL",
+    "pos_name": "GILIGAN'S SM CALAMBA",
+    "grab_name": "Giligan's Restaurant - SM Calamba",
+    "foodpanda_name": "Giligan's - SM City Calamba"
   },
   {
-    "posCode": "CHR",
-    "posName": "GILIGAN'S SM CHERRY ANTIPOLO",
-    "grabName": "Giligan's Restaurant - SM Cherry Antipolo",
-    "foodpandaName": "Giligan's - SM Cherry Antipolo"
+    "pos_code": "CHR",
+    "pos_name": "GILIGAN'S SM CHERRY ANTIPOLO",
+    "grab_name": "Giligan's Restaurant - SM Cherry Antipolo",
+    "foodpanda_name": "Giligan's - SM Cherry Antipolo"
   },
   {
-    "posCode": "CIR",
-    "posName": "GILIGAN'S CIRCULO VERDE",
-    "grabName": "Giligan's Restaurant - Circulo Verde",
-    "foodpandaName": "Giligan's - Circulo Verde"
+    "pos_code": "CIR",
+    "pos_name": "GILIGAN'S CIRCULO VERDE",
+    "grab_name": "Giligan's Restaurant - Circulo Verde",
+    "foodpanda_name": "Giligan's - Circulo Verde"
   },
   {
-    "posCode": "CLK",
-    "posName": "GILIGAN'S SM CITY CLARK",
-    "grabName": "Giligan's Restaurant - SM City Clark",
-    "foodpandaName": "Giligan's - SM Clark"
+    "pos_code": "CLK",
+    "pos_name": "GILIGAN'S SM CITY CLARK",
+    "grab_name": "Giligan's Restaurant - SM City Clark",
+    "foodpanda_name": "Giligan's - SM Clark"
   },
   {
-    "posCode": "CM1",
-    "posName": "GILIGAN'S CIRCUIT MAKATI",
-    "grabName": "Giligan's Restaurant - Circuit Makati",
-    "foodpandaName": "Giligan's - Circuit"
+    "pos_code": "CM1",
+    "pos_name": "GILIGAN'S CIRCUIT MAKATI",
+    "grab_name": "Giligan's Restaurant - Circuit Makati",
+    "foodpanda_name": "Giligan's - Circuit"
   },
   {
-    "posCode": "FEX",
-    "posName": "GILIGAN'S FESTIVAL EXPANSION",
-    "grabName": "Giligan's Restaurant - Festival Mall Extension",
-    "foodpandaName": "Giligan's - Festival Mall Extension"
+    "pos_code": "FEX",
+    "pos_name": "GILIGAN'S FESTIVAL EXPANSION",
+    "grab_name": "Giligan's Restaurant - Festival Mall Extension",
+    "foodpanda_name": "Giligan's - Festival Mall Extension"
   },
   {
-    "posCode": "GBR",
-    "posName": "GILIGAN'S GAISANO BINANGONAN RIZAL",
-    "grabName": "Giligan's Restaurant - Gaisano Binagonan Rizal",
-    "foodpandaName": null
+    "pos_code": "GBR",
+    "pos_name": "GILIGAN'S GAISANO BINANGONAN RIZAL",
+    "grab_name": "Giligan's Restaurant - Gaisano Binagonan Rizal",
+    "foodpanda_name": null
   },
   {
-    "posCode": "GHL",
-    "posName": "GILIGAN'S GREENHILLS",
-    "grabName": "Giligan's Restaurant - Greenhills",
-    "foodpandaName": "Giligan's - Greenhills"
+    "pos_code": "GHL",
+    "pos_name": "GILIGAN'S GREENHILLS",
+    "grab_name": "Giligan's Restaurant - Greenhills",
+    "foodpanda_name": "Giligan's - Greenhills"
   },
   {
-    "posCode": "GIR",
-    "posName": "GILIGAN'S GAISANO IRIGA",
-    "grabName": null,
-    "foodpandaName": null
+    "pos_code": "GIR",
+    "pos_name": "GILIGAN'S GAISANO IRIGA",
+    "grab_name": null,
+    "foodpanda_name": null
   },
   {
-    "posCode": "HEC",
-    "posName": "GILIGAN'S HYPERMARKET CUBAO",
-    "grabName": null,
-    "foodpandaName": null
+    "pos_code": "HEC",
+    "pos_name": "GILIGAN'S HYPERMARKET CUBAO",
+    "grab_name": null,
+    "foodpanda_name": null
   },
   {
-    "posCode": "HFT",
-    "posName": "GILIGAN'S HYPERMARKET FTI",
-    "grabName": "Giligan's Restaurant - SM Hypermarket FTI",
-    "foodpandaName": "Giligan's - SM Hypermarket FTI"
+    "pos_code": "HFT",
+    "pos_name": "GILIGAN'S HYPERMARKET FTI",
+    "grab_name": "Giligan's Restaurant - SM Hypermarket FTI",
+    "foodpanda_name": "Giligan's - SM Hypermarket FTI"
   },
   {
-    "posCode": "HIC",
-    "posName": "GILIGANS HYPERMARKET IMUS CAVITE",
-    "grabName": "Giligan's Restaurant - SM Hypermarket Imus",
-    "foodpandaName": null
+    "pos_code": "HIC",
+    "pos_name": "GILIGANS HYPERMARKET IMUS CAVITE",
+    "grab_name": "Giligan's Restaurant - SM Hypermarket Imus",
+    "foodpanda_name": null
   },
   {
-    "posCode": "HQN",
-    "posName": "GILIGAN'S SM HYPERMARKET NOVALICHES",
-    "grabName": null,
-    "foodpandaName": null
+    "pos_code": "HQN",
+    "pos_name": "GILIGAN'S SM HYPERMARKET NOVALICHES",
+    "grab_name": null,
+    "foodpanda_name": null
   },
   {
-    "posCode": "HSL",
-    "posName": "GILIGAN'S HYPERMART SUCAT-LOPEZ",
-    "grabName": "Giligan's Restaurant - SM Hypermarket Sucat-Lopez",
-    "foodpandaName": "Giligan's - SM Hypermarket Sucat"
+    "pos_code": "HSL",
+    "pos_name": "GILIGAN'S HYPERMART SUCAT-LOPEZ",
+    "grab_name": "Giligan's Restaurant - SM Hypermarket Sucat-Lopez",
+    "foodpanda_name": "Giligan's - SM Hypermarket Sucat"
   },
   {
-    "posCode": "IL2",
-    "posName": "GILIGAN'S SM CITY ILOILO",
-    "grabName": "Giligan's Restaurant - SM Iloilo Southpoint",
-    "foodpandaName": "Giligan's - SM City Iloilo Southpoint"
+    "pos_code": "IL2",
+    "pos_name": "GILIGAN'S SM CITY ILOILO",
+    "grab_name": "Giligan's Restaurant - SM Iloilo Southpoint",
+    "foodpanda_name": "Giligan's - SM City Iloilo Southpoint"
   },
   {
-    "posCode": "IMU",
-    "posName": "GILIGAN'S SM IMUS",
-    "grabName": "Giligan's Restaurant - SM Center Imus",
-    "foodpandaName": "Giligan's - SM Center Imus"
+    "pos_code": "IMU",
+    "pos_name": "GILIGAN'S SM IMUS",
+    "grab_name": "Giligan's Restaurant - SM Center Imus",
+    "foodpanda_name": "Giligan's - SM Center Imus"
   },
   {
-    "posCode": "JAC",
-    "posName": "GILIGAN'S JACKMAN PLAZA MUNOZ",
-    "grabName": "Giligan's Restaurant - Jackman Plaza Munoz",
-    "foodpandaName": "Giligan's - Jackman Plaza Munoz"
+    "pos_code": "JAC",
+    "pos_name": "GILIGAN'S JACKMAN PLAZA MUNOZ",
+    "grab_name": "Giligan's Restaurant - Jackman Plaza Munoz",
+    "foodpanda_name": "Giligan's - Jackman Plaza Munoz"
   },
   {
-    "posCode": "LCI",
-    "posName": "GILIGAN'S LANCASTER CITY IMUS",
-    "grabName": "Giligan's Restaurant - Lancaster Imus",
-    "foodpandaName": "Giligan's - Lancaster"
+    "pos_code": "LCI",
+    "pos_name": "GILIGAN'S LANCASTER CITY IMUS",
+    "grab_name": "Giligan's Restaurant - Lancaster Imus",
+    "foodpanda_name": "Giligan's - Lancaster"
   },
   {
-    "posCode": "LEM",
-    "posName": "GILIGAN'S 5M LEMERY",
-    "grabName": null,
-    "foodpandaName": null
+    "pos_code": "LEM",
+    "pos_name": "GILIGAN'S 5M LEMERY",
+    "grab_name": null,
+    "foodpanda_name": null
   },
   {
-    "posCode": "LIP",
-    "posName": "ROBINSONS PLACE LIPA",
-    "grabName": "Giligan's Restaurant - Robinsons Lipa",
-    "foodpandaName": "Giligan's - Robinsons Lipa"
+    "pos_code": "LIP",
+    "pos_name": "ROBINSONS PLACE LIPA",
+    "grab_name": "Giligan's Restaurant - Robinsons Lipa",
+    "foodpanda_name": "Giligan's - Robinsons Lipa"
   },
   {
-    "posCode": "LOR",
-    "posName": "GILIGAN'S SAN LORENZO PLACE",
-    "grabName": "Giligan's Restaurant - San Lorenzo Place Makati",
-    "foodpandaName": "Giligan's - San Lorenzo Place"
+    "pos_code": "LOR",
+    "pos_name": "GILIGAN'S SAN LORENZO PLACE",
+    "grab_name": "Giligan's Restaurant - San Lorenzo Place Makati",
+    "foodpanda_name": "Giligan's - San Lorenzo Place"
   },
   {
-    "posCode": "LUC",
-    "posName": "GILIGAN'S SM LUCENA",
-    "grabName": null,
-    "foodpandaName": "Giligan's - SM City Lucena"
+    "pos_code": "LUC",
+    "pos_name": "GILIGAN'S SM LUCENA",
+    "grab_name": null,
+    "foodpanda_name": "Giligan's - SM City Lucena"
   },
   {
-    "posCode": "MAR",
-    "posName": "Market! Market!",
-    "grabName": "Giligan's Restaurant - Ayala Market Market",
-    "foodpandaName": "Giligan's - Fiesta Market BGC"
+    "pos_code": "MAR",
+    "pos_name": "Market! Market!",
+    "grab_name": "Giligan's Restaurant - Ayala Market Market",
+    "foodpanda_name": "Giligan's - Fiesta Market BGC"
   },
   {
-    "posCode": "MIL",
-    "posName": "GILIGAN'S MILLE LUCE",
-    "grabName": "Giligan's Restaurant - Mille Luce Antipolo",
-    "foodpandaName": null
+    "pos_code": "MIL",
+    "pos_name": "GILIGAN'S MILLE LUCE",
+    "grab_name": "Giligan's Restaurant - Mille Luce Antipolo",
+    "foodpanda_name": null
   },
   {
-    "posCode": "MOA",
-    "posName": "SM by the Bay",
-    "grabName": "Giligan's Restaurant - SM Mall of Asia",
-    "foodpandaName": "Giligan's - MOA"
+    "pos_code": "MOA",
+    "pos_name": "SM by the Bay",
+    "grab_name": "Giligan's Restaurant - SM Mall of Asia",
+    "foodpanda_name": "Giligan's - MOA"
   },
   {
-    "posCode": "MOD",
-    "posName": "GILIGAN'S MOADTO STRIP MALL",
-    "grabName": null,
-    "foodpandaName": null
+    "pos_code": "MOD",
+    "pos_name": "GILIGAN'S MOADTO STRIP MALL",
+    "grab_name": null,
+    "foodpanda_name": null
   },
   {
-    "posCode": "MSM",
-    "posName": "GILIGAN'S MAIN SQUARE MOLINO",
-    "grabName": "Giligan's Restaurant - Main Square Molino",
-    "foodpandaName": "Giligan's - Main Square"
+    "pos_code": "MSM",
+    "pos_name": "GILIGAN'S MAIN SQUARE MOLINO",
+    "grab_name": "Giligan's Restaurant - Main Square Molino",
+    "foodpanda_name": "Giligan's - Main Square"
   },
   {
-    "posCode": "MUN",
-    "posName": "GILIGAN'S SM CENTER MUNTINLUPA",
-    "grabName": "Giligan's Restaurant - SM Center Muntinlupa",
-    "foodpandaName": "Giligan's - SM Center Muntinlupa"
+    "pos_code": "MUN",
+    "pos_name": "GILIGAN'S SM CENTER MUNTINLUPA",
+    "grab_name": "Giligan's Restaurant - SM Center Muntinlupa",
+    "foodpanda_name": "Giligan's - SM Center Muntinlupa"
   },
   {
-    "posCode": "NOR",
-    "posName": "GILIGAN'S SMNE SKY GARDEN",
-    "grabName": "Giligan's Restaurant - SM City North Edsa",
-    "foodpandaName": "Giligan's - SM City North Edsa"
+    "pos_code": "NOR",
+    "pos_name": "GILIGAN'S SMNE SKY GARDEN",
+    "grab_name": "Giligan's Restaurant - SM City North Edsa",
+    "foodpanda_name": "Giligan's - SM City North Edsa"
   },
   {
-    "posCode": "NOV",
-    "posName": "GILIGAN'S SM NOVALICHES",
-    "grabName": "Giligan's Restaurant - SM Novaliches",
-    "foodpandaName": "Giligan's - SM City Novaliches"
+    "pos_code": "NOV",
+    "pos_name": "GILIGAN'S SM NOVALICHES",
+    "grab_name": "Giligan's Restaurant - SM Novaliches",
+    "foodpanda_name": "Giligan's - SM City Novaliches"
   },
   {
-    "posCode": "NPC",
-    "posName": "GILIGAN'S NEWPORT CITY",
-    "grabName": "Giligan's Restaurant - Newport City",
-    "foodpandaName": null
+    "pos_code": "NPC",
+    "pos_name": "GILIGAN'S NEWPORT CITY",
+    "grab_name": "Giligan's Restaurant - Newport City",
+    "foodpanda_name": null
   },
   {
-    "posCode": "NPN",
-    "posName": "GILIGAN'S NOVA PLAZA MALL",
-    "grabName": null,
-    "foodpandaName": null
+    "pos_code": "NPN",
+    "pos_name": "GILIGAN'S NOVA PLAZA MALL",
+    "grab_name": null,
+    "foodpanda_name": null
   },
   {
-    "posCode": "OMV",
-    "posName": "GILIGAN'S ONEMALL VALENZUELA",
-    "grabName": "Giligan's Restaurant - One Mall Valenzuela",
-    "foodpandaName": "Giligan's - One Mall Valenzuela"
+    "pos_code": "OMV",
+    "pos_name": "GILIGAN'S ONEMALL VALENZUELA",
+    "grab_name": "Giligan's Restaurant - One Mall Valenzuela",
+    "foodpanda_name": "Giligan's - One Mall Valenzuela"
   },
   {
-    "posCode": "PAC",
-    "posName": "GILIGANS PACO MALL",
-    "grabName": "Giligan's Restaurant - Paco Mall",
-    "foodpandaName": null
+    "pos_code": "PAC",
+    "pos_name": "GILIGANS PACO MALL",
+    "grab_name": "Giligan's Restaurant - Paco Mall",
+    "foodpanda_name": null
   },
   {
-    "posCode": "PCJ",
-    "posName": "GILIGAN'S PUREGOLD CAINTA JUNCTION",
-    "grabName": "Giligan's Restaurant - Puregold Cainta Junction",
-    "foodpandaName": "Giligan's - Puregold Cainta"
+    "pos_code": "PCJ",
+    "pos_name": "GILIGAN'S PUREGOLD CAINTA JUNCTION",
+    "grab_name": "Giligan's Restaurant - Puregold Cainta Junction",
+    "foodpanda_name": "Giligan's - Puregold Cainta"
   },
   {
-    "posCode": "PED",
-    "posName": "GILIGAN'S ROBINSONS SAN PEDRO",
-    "grabName": "Giligan's Restaurant - Robinsons Galleria South",
-    "foodpandaName": "Giligan's - Robinsons Galleria South"
+    "pos_code": "PED",
+    "pos_name": "GILIGAN'S ROBINSONS SAN PEDRO",
+    "grab_name": "Giligan's Restaurant - Robinsons Galleria South",
+    "foodpanda_name": "Giligan's - Robinsons Galleria South"
   },
   {
-    "posCode": "PSG",
-    "posName": "GILIGAN'S SM PASIG",
-    "grabName": "Giligan's Restaurant - SM Center Pasig",
-    "foodpandaName": "Giligan's - SM Center Pasig"
+    "pos_code": "PSG",
+    "pos_name": "GILIGAN'S SM PASIG",
+    "grab_name": "Giligan's Restaurant - SM Center Pasig",
+    "foodpanda_name": "Giligan's - SM Center Pasig"
   },
   {
-    "posCode": "PUL",
-    "posName": "GILIGAN'S SM PULILAN",
-    "grabName": "Giligan's Restaurant - SM Center Pulilan",
-    "foodpandaName": null
+    "pos_code": "PUL",
+    "pos_name": "GILIGAN'S SM PULILAN",
+    "grab_name": "Giligan's Restaurant - SM Center Pulilan",
+    "foodpanda_name": null
   },
   {
-    "posCode": "RBC",
-    "posName": "GILIGAN'S THE PLAZA BAGONG SILANG",
-    "grabName": null,
-    "foodpandaName": null
+    "pos_code": "RBC",
+    "pos_name": "GILIGAN'S THE PLAZA BAGONG SILANG",
+    "grab_name": null,
+    "foodpanda_name": null
   },
   {
-    "posCode": "REA",
-    "posName": "GILIGAN'S ROBINSONS PLACE ANTIPOLO",
-    "grabName": null,
-    "foodpandaName": null
+    "pos_code": "REA",
+    "pos_name": "GILIGAN'S ROBINSONS PLACE ANTIPOLO",
+    "grab_name": null,
+    "foodpanda_name": null
   },
   {
-    "posCode": "RGT",
-    "posName": "GILIGAN'S ROBINSONS GEN TRIAS",
-    "grabName": null,
-    "foodpandaName": null
+    "pos_code": "RGT",
+    "pos_name": "GILIGAN'S ROBINSONS GEN TRIAS",
+    "grab_name": null,
+    "foodpanda_name": null
   },
   {
-    "posCode": "RIV",
-    "posName": "GILIGAN'S RIVERBANKS MARIKINA",
-    "grabName": "Giligan's Restaurant - Riverbanks Center Marikina",
-    "foodpandaName": null
+    "pos_code": "RIV",
+    "pos_name": "GILIGAN'S RIVERBANKS MARIKINA",
+    "grab_name": "Giligan's Restaurant - Riverbanks Center Marikina",
+    "foodpanda_name": null
   },
   {
-    "posCode": "RNG",
-    "posName": "GILIGAN'S ROBINSONS NAGA",
-    "grabName": null,
-    "foodpandaName": "Giligan's - Robinsons Naga"
+    "pos_code": "RNG",
+    "pos_name": "GILIGAN'S ROBINSONS NAGA",
+    "grab_name": null,
+    "foodpanda_name": "Giligan's - Robinsons Naga"
   },
   {
-    "posCode": "SCL",
-    "posName": "GILIGAN'S SM CENTER LAS PIÑAS",
-    "grabName": null,
-    "foodpandaName": null
+    "pos_code": "SCL",
+    "pos_name": "GILIGAN'S SM CENTER LAS PIÑAS",
+    "grab_name": null,
+    "foodpanda_name": null
   },
   {
-    "posCode": "SDH",
-    "posName": "GILIGAN'S DAANG HARI",
-    "grabName": "Giligan's Restaurant - Vista Mall Daang Hari",
-    "foodpandaName": "Giligan's - Vista Mall Daang Hari"
+    "pos_code": "SDH",
+    "pos_name": "GILIGAN'S DAANG HARI",
+    "grab_name": "Giligan's Restaurant - Vista Mall Daang Hari",
+    "foodpanda_name": "Giligan's - Vista Mall Daang Hari"
   },
   {
-    "posCode": "SFV",
-    "posName": "GILIGAN'S SM FAIRVIEW",
-    "grabName": "Giligan's Restaurant - SM City Fairview",
-    "foodpandaName": "Giligan's - SM City Fairview"
+    "pos_code": "SFV",
+    "pos_name": "GILIGAN'S SM FAIRVIEW",
+    "grab_name": "Giligan's Restaurant - SM City Fairview",
+    "foodpanda_name": "Giligan's - SM City Fairview"
   },
   {
-    "posCode": "SGD",
-    "posName": "GILIGAN'S SM SANGANDAAN",
-    "grabName": "Giligan's Restaurant - SM Center Sangandaan",
-    "foodpandaName": "Giligan's - SM Center Sangandaan"
+    "pos_code": "SGD",
+    "pos_name": "GILIGAN'S SM SANGANDAAN",
+    "grab_name": "Giligan's Restaurant - SM Center Sangandaan",
+    "foodpanda_name": "Giligan's - SM Center Sangandaan"
   },
   {
-    "posCode": "SLE",
-    "posName": "GILIGAN'S IL CENTRO",
-    "grabName": "Giligan's Restaurant - Santa Lucia East Grand Mall",
-    "foodpandaName": "Giligan's - Sta Lucia East Mall"
+    "pos_code": "SLE",
+    "pos_name": "GILIGAN'S IL CENTRO",
+    "grab_name": "Giligan's Restaurant - Santa Lucia East Grand Mall",
+    "foodpanda_name": "Giligan's - Sta Lucia East Mall"
   },
   {
-    "posCode": "SML",
-    "posName": "GILIGAN'S SM CITY MOLINO",
-    "grabName": "Giligan's Restaurant - SM Center Molino",
-    "foodpandaName": "Giligan's - SM Center Molino"
+    "pos_code": "SML",
+    "pos_name": "GILIGAN'S SM CITY MOLINO",
+    "grab_name": "Giligan's Restaurant - SM Center Molino",
+    "foodpanda_name": "Giligan's - SM Center Molino"
   },
   {
-    "posCode": "SOU",
-    "posName": "GILIGAN'S SOUTHMALL",
-    "grabName": "Giligan's Restaurant - SM City Southmall",
-    "foodpandaName": "Giligan's - SM Southmall"
+    "pos_code": "SOU",
+    "pos_name": "GILIGAN'S SOUTHMALL",
+    "grab_name": "Giligan's Restaurant - SM City Southmall",
+    "foodpanda_name": "Giligan's - SM Southmall"
   },
   {
-    "posCode": "SPP",
-    "posName": "GILIGAN'S SM CITY PUERTO PRINCESA",
-    "grabName": null,
-    "foodpandaName": "Giligan's - SM City Puerto Princesa"
+    "pos_code": "SPP",
+    "pos_name": "GILIGAN'S SM CITY PUERTO PRINCESA",
+    "grab_name": null,
+    "foodpanda_name": "Giligan's - SM City Puerto Princesa"
   },
   {
-    "posCode": "SRC",
-    "posName": "GILIGAN'S SM ROSARIO",
-    "grabName": "Giligan's Restaurant - SM Rosario",
-    "foodpandaName": "Giligan's - SM City Rosario"
+    "pos_code": "SRC",
+    "pos_name": "GILIGAN'S SM ROSARIO",
+    "grab_name": "Giligan's Restaurant - SM Rosario",
+    "foodpanda_name": "Giligan's - SM City Rosario"
   },
   {
-    "posCode": "SSJ",
-    "posName": "GILIGAN'S SM SAN JOSE BRANCH",
-    "grabName": "Giligan's Restaurant - SM San Jose Del Monte",
-    "foodpandaName": null
+    "pos_code": "SSJ",
+    "pos_name": "GILIGAN'S SM SAN JOSE BRANCH",
+    "grab_name": "Giligan's Restaurant - SM San Jose Del Monte",
+    "foodpanda_name": null
   },
   {
-    "posCode": "SSP",
-    "posName": "GILIGAN'S SM SAN PEDRO",
-    "grabName": "Giligan's Restaurant - SM Center San Pedro",
-    "foodpandaName": null
+    "pos_code": "SSP",
+    "pos_name": "GILIGAN'S SM SAN PEDRO",
+    "grab_name": "Giligan's Restaurant - SM Center San Pedro",
+    "foodpanda_name": null
   },
   {
-    "posCode": "SSS",
-    "posName": "GILIGAN'S SM SEASIDE CEBU",
-    "grabName": "Giligan's Restaurant - SM Seaside Cebu",
-    "foodpandaName": "Giligan's - SM Seaside City Cebu"
+    "pos_code": "SSS",
+    "pos_name": "GILIGAN'S SM SEASIDE CEBU",
+    "grab_name": "Giligan's Restaurant - SM Seaside Cebu",
+    "foodpanda_name": "Giligan's - SM Seaside City Cebu"
   },
   {
-    "posCode": "STG",
-    "posName": "GILIGAN'S STARMALL TAGUIG",
-    "grabName": "Giligan's Restaurant - Starmall Taguig",
-    "foodpandaName": "Giligan's - Starmall Taguig"
+    "pos_code": "STG",
+    "pos_name": "GILIGAN'S STARMALL TAGUIG",
+    "grab_name": "Giligan's Restaurant - Starmall Taguig",
+    "foodpanda_name": "Giligan's - Starmall Taguig"
   },
   {
-    "posCode": "SWM",
-    "posName": "GILIGAN'S SOUTHWOODS MALL",
-    "grabName": "Giligan's Restaurant - Southwoods Mall Binan",
-    "foodpandaName": "Giligan's  - Southwoods Mall"
+    "pos_code": "SWM",
+    "pos_name": "GILIGAN'S SOUTHWOODS MALL",
+    "grab_name": "Giligan's Restaurant - Southwoods Mall Binan",
+    "foodpanda_name": "Giligan's  - Southwoods Mall"
   },
   {
-    "posCode": "TAG",
-    "posName": "GILIGAN'S TAGAYTAY",
-    "grabName": "Giligan's Restaurant - Robinsons Tagaytay",
-    "foodpandaName": "Giligan's - Robinsons Place Tagaytay"
+    "pos_code": "TAG",
+    "pos_name": "GILIGAN'S TAGAYTAY",
+    "grab_name": "Giligan's Restaurant - Robinsons Tagaytay",
+    "foodpanda_name": "Giligan's - Robinsons Place Tagaytay"
   },
   {
-    "posCode": "TAY",
-    "posName": "GILIGAN'S SM TAYTAY",
-    "grabName": "Giligan's Restaurant - SM Taytay",
-    "foodpandaName": "Giligan's - SM City Taytay"
+    "pos_code": "TAY",
+    "pos_name": "GILIGAN'S SM TAYTAY",
+    "grab_name": "Giligan's Restaurant - SM Taytay",
+    "foodpanda_name": "Giligan's - SM City Taytay"
   },
   {
-    "posCode": "TEL",
-    "posName": "GILIGAN'S SM TELABASTAGAN",
-    "grabName": "Giligan's Restaurant - SM Telebastagan",
-    "foodpandaName": "Giligan's - SM City Telebastagan"
+    "pos_code": "TEL",
+    "pos_name": "GILIGAN'S SM TELABASTAGAN",
+    "grab_name": "Giligan's Restaurant - SM Telebastagan",
+    "foodpanda_name": "Giligan's - SM City Telebastagan"
   },
   {
-    "posCode": "VAL",
-    "posName": "GILIGAN'S SM CITY VALENZUELA",
-    "grabName": "Giligan's Restaurant - SM Valenzuela",
-    "foodpandaName": "Giligan's - SM City Valenzuela"
+    "pos_code": "VAL",
+    "pos_name": "GILIGAN'S SM CITY VALENZUELA",
+    "grab_name": "Giligan's Restaurant - SM Valenzuela",
+    "foodpanda_name": "Giligan's - SM City Valenzuela"
   },
   {
-    "posCode": "VER",
-    "posName": "GILIGAN'S VERDANT",
-    "grabName": "Giligan's Restaurant - Verdant Strip",
-    "foodpandaName": "Giligan's - Verdant Strip Mall"
+    "pos_code": "VER",
+    "pos_name": "GILIGAN'S VERDANT",
+    "grab_name": "Giligan's Restaurant - Verdant Strip",
+    "foodpanda_name": "Giligan's - Verdant Strip Mall"
   },
   {
-    "posCode": "VMB",
-    "posName": "GILIGAN'S VISTAMALL MALOLOS",
-    "grabName": "Giligan's Restaurant - Vista Mall Malolos",
-    "foodpandaName": "Giligan's - Vista Mall Malolos"
+    "pos_code": "VMB",
+    "pos_name": "GILIGAN'S VISTAMALL MALOLOS",
+    "grab_name": "Giligan's Restaurant - Vista Mall Malolos",
+    "foodpanda_name": "Giligan's - Vista Mall Malolos"
   },
   {
-    "posCode": "VMD",
-    "posName": "GILIGAN'S VISTAMALL DASMARINAS",
-    "grabName": "Giligan's Restaurant - Vista Mall Dasmarinas",
-    "foodpandaName": "Giligan's - Vista Mall Dasmarinas"
+    "pos_code": "VMD",
+    "pos_name": "GILIGAN'S VISTAMALL DASMARINAS",
+    "grab_name": "Giligan's Restaurant - Vista Mall Dasmarinas",
+    "foodpanda_name": "Giligan's - Vista Mall Dasmarinas"
   },
   {
-    "posCode": "VMS",
-    "posName": "GILIGAN'S VICTORY MALL STA. ROSA",
-    "grabName": null,
-    "foodpandaName": null
+    "pos_code": "VMS",
+    "pos_name": "GILIGAN'S VICTORY MALL STA. ROSA",
+    "grab_name": null,
+    "foodpanda_name": null
   },
   {
-    "posCode": "VST",
-    "posName": "GILIGAN'S VISTAMALL SAN FERNANDO",
-    "grabName": "Giligan's Restaurant - Vista Mall San Fernando",
-    "foodpandaName": null
+    "pos_code": "VST",
+    "pos_name": "GILIGAN'S VISTAMALL SAN FERNANDO",
+    "grab_name": "Giligan's Restaurant - Vista Mall San Fernando",
+    "foodpanda_name": null
   },
   {
-    "posCode": "VSP",
-    "posName": "GILIGAN'S VILLAR SIPAG",
-    "grabName": "Giligan's Restaurant - Villar Sipag Las Pinas",
-    "foodpandaName": "Giligan's - Pulang Lupa"
+    "pos_code": "VSP",
+    "pos_name": "GILIGAN'S VILLAR SIPAG",
+    "grab_name": "Giligan's Restaurant - Villar Sipag Las Pinas",
+    "foodpanda_name": "Giligan's - Pulang Lupa"
   },
   {
-    "posCode": "VSR",
-    "posName": "GILIGAN'S VISTAMALL SANTA ROSA",
-    "grabName": "Giligan's Restaurant - Vista Mall Santa Rosa",
-    "foodpandaName": "Giligan's - Vista Mall Santa Rosa"
+    "pos_code": "VSR",
+    "pos_name": "GILIGAN'S VISTAMALL SANTA ROSA",
+    "grab_name": "Giligan's Restaurant - Vista Mall Santa Rosa",
+    "foodpanda_name": "Giligan's - Vista Mall Santa Rosa"
   },
   {
-    "posCode": "VTZ",
-    "posName": "GILIGAN'S VISTAMALL TANZA",
-    "grabName": "Giligan's Restaurant - Vista Mall Tanza",
-    "foodpandaName": null
+    "pos_code": "VTZ",
+    "pos_name": "GILIGAN'S VISTAMALL TANZA",
+    "grab_name": "Giligan's Restaurant - Vista Mall Tanza",
+    "foodpanda_name": null
   },
   {
-    "posCode": "WNB",
-    "posName": "GILIGAN'S WALTERMART NASUGBU",
-    "grabName": null,
-    "foodpandaName": null
+    "pos_code": "WNB",
+    "pos_name": "GILIGAN'S WALTERMART NASUGBU",
+    "grab_name": null,
+    "foodpanda_name": null
   },
   {
-    "posCode": "WPT",
-    "posName": "GILIGAN'S WM PANIQUI",
-    "grabName": null,
-    "foodpandaName": null
+    "pos_code": "WPT",
+    "pos_name": "GILIGAN'S WM PANIQUI",
+    "grab_name": null,
+    "foodpanda_name": null
   },
   {
-    "posCode": "WSM",
-    "posName": "GILIGAN'S WALTERMART STA.MARIA",
-    "grabName": "Giligan's Restaurant - Walter Mart Sta. Maria",
-    "foodpandaName": "Giligan's - Walter Mart Santa Maria"
+    "pos_code": "WSM",
+    "pos_name": "GILIGAN'S WALTERMART STA.MARIA",
+    "grab_name": "Giligan's Restaurant - Walter Mart Sta. Maria",
+    "foodpanda_name": "Giligan's - Walter Mart Santa Maria"
   },
   {
-    "posCode": "WVA",
-    "posName": "GILIGAN'S WILCON CITY CENTER",
-    "grabName": "Giligan's Restaurant - Wilcon Visayas Avenue",
-    "foodpandaName": "Giligan's - Wilcon City Center"
+    "pos_code": "WVA",
+    "pos_name": "GILIGAN'S WILCON CITY CENTER",
+    "grab_name": "Giligan's Restaurant - Wilcon Visayas Avenue",
+    "foodpanda_name": "Giligan's - Wilcon City Center"
   }
 ]

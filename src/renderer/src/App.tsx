@@ -4,6 +4,7 @@ import MainLayout from "@renderer/layouts/MainLayout";
 import { Toaster } from "react-hot-toast";
 import GrabPage from "@renderer/pages/GrabPage";
 import PandaPage from "@renderer/pages/PandaPage";
+import ReportsPage from "@renderer/pages/ReportPage";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
           <Route index element={<Overview />} />
           <Route path="recon/panda" element={<PandaPage />} />
           <Route path="recon/grab" element={<GrabPage />} />
+          <Route path="recon/reports" element={<ReportsPage />} />
         </Route>
       </Routes>
       <Toaster position="bottom-right" reverseOrder={false} />

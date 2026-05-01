@@ -1,16 +1,16 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useAppSound } from "@renderer/hooks/useAppSound";
-import { Platform } from "@shared/constants.types";
 import { logger } from "@renderer/lib/logger";
+import { PartnerType } from "@shared/recon.types";
 
 interface Props {
-  platform: Platform;
+  platform: PartnerType;
   onCancel: () => void;
 }
 
 const config: Record<
-  Platform,
+  PartnerType,
   {
     label: string;
     apiCall: () => Promise<any>;
@@ -20,7 +20,7 @@ const config: Record<
     pulse: string;
   }
 > = {
-  panda: {
+  PANDA: {
     label: "Foodpanda",
     apiCall: () => window.api.importBatch("PANDA"),
     color: "text-pink-500",
@@ -28,7 +28,7 @@ const config: Record<
     hoverBg: "hover:bg-pink-50/50",
     pulse: "bg-pink-500",
   },
-  grab: {
+  GRAB: {
     label: "GrabFood",
     apiCall: () => window.api.importBatch("GRAB"),
     color: "text-emerald-500",

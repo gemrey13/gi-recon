@@ -34,8 +34,13 @@ export const useManualMatch = (
     if (!selectedPartner || posBasket.length === 0) return;
 
     const posIds: number[] = posBasket.map((p) => p.id);
-    const matchLevel: MatchedTransaction["match_level"] =
-      posBasket.length > 1 ? "MANUAL_BATCH" : "MANUAL_SINGLE";
+    let matchLevel: MatchedTransaction["match_level"];
+
+    if (Math.abs(difference) > 0) {
+      matchLevel = "MANUAL_TOLERANCE";
+    } else {
+      matchLevel = posBasket.length > 1 ? "MANUAL_BATCH" : "MANUAL_SINGLE";
+    }
 
     const newMatches: MatchedTransaction[] = posBasket.map((p) => ({
       pos_id: p.id,

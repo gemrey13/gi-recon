@@ -24,6 +24,8 @@ const GrabPage = () => {
   const [showAddGrab, setShowAddGrab] = useState(false);
   const [showConfirmSave, setShowConfirmSave] = useState(false);
   const [showAddGrabBatch, setShowAddGrabBatch] = useState(false);
+  const [posSort, setPosSort] = useState<"asc" | "desc" | null>(null);
+  const [partnerSort, setPartnerSort] = useState<"asc" | "desc" | null>(null);
 
   const { branches } = useBranches("GRAB");
   const { loading, saving, reconData, setReconData, runRecon, saveToDb } = useRecon("GRAB");
@@ -43,6 +45,20 @@ const GrabPage = () => {
     await saveToDb(reconData!);
     setShowConfirmSave(false);
   };
+
+  const sortedUnmatchedPos = posSort
+    ? [...(reconData?.unmatchedPos ?? [])].sort((a, b) =>
+        posSort === "asc" ? a.amount - b.amount : b.amount - a.amount,
+      )
+    : (reconData?.unmatchedPos ?? []);
+
+  const sortedUnmatchedPartner = partnerSort
+    ? [...(reconData?.unmatchedPartner ?? [])].sort((a, b) => {
+        const amountA = "amount" in a ? a.amount : a.gross_food_value;
+        const amountB = "amount" in b ? b.amount : b.gross_food_value;
+        return partnerSort === "asc" ? amountA - amountB : amountB - amountA;
+      })
+    : (reconData?.unmatchedPartner ?? []);
 
   return (
     <div className="space-y-6 max-w-400 mx-auto">
@@ -71,7 +87,9 @@ const GrabPage = () => {
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-150">
             <UnmatchedPosTable
-              items={reconData.unmatchedPos}
+              items={sortedUnmatchedPos}
+              sort={posSort}
+              onSortChange={setPosSort}
               basket={posBasket}
               onToggle={togglePos}
             />
@@ -86,23 +104,22 @@ const GrabPage = () => {
 
             <UnmatchedPartnerTable
               partnerType="GRAB"
-              items={reconData.unmatchedPartner}
+              items={sortedUnmatchedPartner}
+              sort={partnerSort}
+              onSortChange={setPartnerSort}
               selectedPartner={selectedPartner}
               onSelect={setSelectedPartner}
             />
           </div>
 
-          <FinalizeFooter
-            saving={saving}
-            onSave={() => setShowConfirmSave(true)}
-          />
+          <FinalizeFooter saving={saving} onSave={() => setShowConfirmSave(true)} />
         </>
       )}
 
-      {showAddGrab && <ImportManualModal platform="grab" onClose={() => setShowAddGrab(false)} />}
+      {showAddGrab && <ImportManualModal platform="GRAB" onClose={() => setShowAddGrab(false)} />}
 
       {showAddGrabBatch && (
-        <ImportBatchModal platform="grab" onCancel={() => setShowAddGrabBatch(false)} />
+        <ImportBatchModal platform="GRAB" onCancel={() => setShowAddGrabBatch(false)} />
       )}
 
       {showConfirmSave && (

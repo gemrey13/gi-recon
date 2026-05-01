@@ -2,7 +2,6 @@ import { ElectronAPI } from "@electron-toolkit/preload";
 
 type PARTNER = "PANDA" | "GRAB";
 
-
 declare global {
   interface Window {
     electron: ElectronAPI;
@@ -34,6 +33,14 @@ declare global {
       // New Import Manual IPC
       importManual: (type: PARTNER) => Promise<any>;
       importBatch: (type: PARTNER) => Promise<any>;
+
+      // Report IPC Types
+      reconSummary: (filters: any) => Promise<any>;
+      discrepancy: (filters: any) => Promise<any>;
+      unmatched: (filters: any) => Promise<any>;
+      partnerSales: (filters: any) => Promise<any>;
+      branchPerformance: (filters: any) => Promise<any>;
+      systemLogs: (filters: any) => Promise<any>;
     };
   }
 }

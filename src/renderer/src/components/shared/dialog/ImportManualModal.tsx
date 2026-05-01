@@ -1,16 +1,16 @@
 import { useAppSound } from "@renderer/hooks/useAppSound";
 import { logger } from "@renderer/lib/logger";
-import { Platform } from "@shared/constants.types";
+import { PartnerType } from "@shared/recon.types";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 
 interface Props {
-  platform: Platform;
+  platform: PartnerType;
   onClose: () => void;
 }
 
 const config: Record<
-  Platform,
+  PartnerType,
   {
     label: string;
     description: string;
@@ -21,7 +21,7 @@ const config: Record<
     pulse: string;
   }
 > = {
-  panda: {
+  PANDA: {
     label: "Foodpanda",
     description:
       "Upload the merchant report file exported from the Foodpanda Portal to reconcile with local POS logs.",
@@ -31,7 +31,7 @@ const config: Record<
     hoverBg: "hover:bg-pink-50/50",
     pulse: "bg-pink-500",
   },
-  grab: {
+  GRAB: {
     label: "GrabFood",
     description:
       "Upload the merchant report file exported from the Grab Portal to reconcile with local POS logs.",

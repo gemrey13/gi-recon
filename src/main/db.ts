@@ -192,7 +192,7 @@ export function initDatabase() {
       pos_id INTEGER,
       partner_id INTEGER,         -- grab_id or panda_id
       partner_type TEXT NOT NULL, -- 'GRAB' | 'PANDA'
-      match_level TEXT,           -- 'EXACT', 'TOLERANCE', 'NONE'
+      match_level TEXT,           -- "EXACT" | "TOLERANCE" | "NONE" | "MANUAL_SINGLE" | "MANUAL_BATCH";
       recon_status TEXT,          -- 'MATCHED', 'UNMATCHED'
       amount_difference REAL,
       FOREIGN KEY(pos_id) REFERENCES pos_transactions(id)
