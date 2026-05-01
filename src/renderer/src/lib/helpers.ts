@@ -10,6 +10,10 @@ export const fmt = (n: number | null | undefined) =>
 
 export function downloadCSV(filename: string, rows: Record<string, unknown>[]) {
   if (!rows.length) return;
+
+  const downloadTime = new Date().toLocaleTimeString("en-PH", { hour12: false, hour: "2-digit", minute: "2-digit", second: "2-digit" }).replace(/:/g, "-");
+
+  filename = `${downloadTime}_${filename}`;
   const headers = Object.keys(rows[0]);
   const csv = [
     headers.join(","),

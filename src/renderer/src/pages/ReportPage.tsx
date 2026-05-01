@@ -84,7 +84,7 @@ export default function ReportsPage() {
             {hasRun && data.length > 0 && (
               <button
                 onClick={() =>
-                  downloadCSV(`${activeReport}_${filters.dateFrom}_${filters.dateTo}.csv`, data)
+                  downloadCSV(`${activeReport}_${filters.dateFrom}_${filters.dateTo}_${filters.partnerType}.csv`, data)
                 }
                 className="flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50 transition-colors">
                 <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
