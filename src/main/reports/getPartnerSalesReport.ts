@@ -24,7 +24,7 @@ export function getPartnerSalesReport(filters: ReportFilters = {}): PartnerSales
 
     const grabSql = `
       SELECT
-        bm.pos_name        AS branch_name,
+        bm.grab_name        AS branch_name,
         'GRAB'             AS partner_type,
         COUNT(*)           AS total_orders,
         ROUND(SUM(g.amount), 2)         AS gross_sales,
@@ -35,8 +35,8 @@ export function getPartnerSalesReport(filters: ReportFilters = {}): PartnerSales
       FROM grab_transactions g
       JOIN branch_mapping bm ON bm.grab_name = g.store_name
       WHERE ${grabConditions.join(" AND ")}
-      GROUP BY bm.pos_name
-      ORDER BY bm.pos_name
+      GROUP BY bm.grab_name
+      ORDER BY bm.grab_name
     `;
     const grabRows = db.prepare(grabSql).all(...grabParams) as PartnerSalesRow[];
     results.push(...grabRows);
@@ -58,7 +58,7 @@ export function getPartnerSalesReport(filters: ReportFilters = {}): PartnerSales
 
     const pandaSql = `
       SELECT
-        bm.pos_name         AS branch_name,
+        bm.foodpanda_name   AS branch_name,
         'PANDA'             AS partner_type,
         COUNT(*)            AS total_orders,
         ROUND(SUM(fp.gross_food_value), 2)      AS gross_sales,
@@ -69,8 +69,8 @@ export function getPartnerSalesReport(filters: ReportFilters = {}): PartnerSales
       FROM foodpanda_transactions fp
       JOIN branch_mapping bm ON bm.foodpanda_name = fp.partner_name
       WHERE ${pandaConditions.join(" AND ")}
-      GROUP BY bm.pos_name
-      ORDER BY bm.pos_name
+      GROUP BY bm.foodpanda_name
+      ORDER BY bm.foodpanda_name
     `;
     const pandaRows = db.prepare(pandaSql).all(...pandaParams) as PartnerSalesRow[];
     results.push(...pandaRows);
