@@ -19,7 +19,7 @@ export function getDiscrepancyReport(filters: ReportFilters = {}): DiscrepancyRo
     conditions.push("p.branch = ?");
     params.push(filters.branch);
   }
-  if (filters.partnerType) {
+  if (filters.partnerType && filters.partnerType !== "ALL") {
     conditions.push("r.partner_type = ?");
     params.push(filters.partnerType);
   }

@@ -66,7 +66,7 @@ export const REPORT_CONFIG: Array<{
     label: "Unmatched Transactions",
     description: "POS transactions with no partner match",
     ipcChannel: "unmatched",
-    hasPartnerFilter: false,
+    hasPartnerFilter: true,
     icon: (
       <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path

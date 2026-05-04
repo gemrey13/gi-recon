@@ -445,7 +445,7 @@ export const branchMappings: BranchMapping[] = [
     foodpanda_name: null,
   },
   {
-    pos_code: "VST",
+    pos_code: "VSF",
     pos_name: "GILIGAN'S VISTAMALL SAN FERNANDO",
     grab_name: "Giligan's Restaurant - Vista Mall San Fernando",
     foodpanda_name: null,

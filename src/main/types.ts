@@ -78,7 +78,7 @@ export interface ReportFilters {
   dateFrom?: string; // YYYY-MM-DD
   dateTo?: string; // YYYY-MM-DD
   branch?: string; // pos_code
-  partnerType?: "GRAB" | "PANDA";
+  partnerType?: "GRAB" | "PANDA" | "ALL";
 }
 
 export type PartnerType = "PANDA" | "GRAB";

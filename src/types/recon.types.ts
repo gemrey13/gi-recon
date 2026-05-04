@@ -1,4 +1,4 @@
-export type PartnerType = "GRAB" | "PANDA";
+export type PartnerType = "GRAB" | "PANDA" | "ALL";
 export type MatchLevel = "EXACT" | "TOLERANCE" | "NONE" | "MANUAL_SINGLE" | "MANUAL_BATCH" | "MANUAL_TOLERANCE";
 export type ReconStatus = "MATCHED" | "UNMATCHED";
 

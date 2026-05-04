@@ -1,6 +1,6 @@
 import { ElectronAPI } from "@electron-toolkit/preload";
 
-type PARTNER = "PANDA" | "GRAB";
+type PARTNER = "PANDA" | "GRAB" | "ALL";
 
 declare global {
   interface Window {

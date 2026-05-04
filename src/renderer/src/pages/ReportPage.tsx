@@ -14,7 +14,7 @@ export default function ReportsPage() {
     dateFrom: firstOfMonth,
     dateTo: today,
     branch: "",
-    partnerType: "GRAB",
+    partnerType: "ALL",
   });
   const [data, setData] = useState<Record<string, unknown>[]>([]);
   const [loading, setLoading] = useState(false);
@@ -58,7 +58,7 @@ export default function ReportsPage() {
     setHasRun(false);
   };
 
-  const handlePartnerTypeChange = (partnerType: "GRAB" | "PANDA") => {
+  const handlePartnerTypeChange = (partnerType: "GRAB" | "PANDA" | "ALL") => {
     setFilters((f) => ({ ...f, partnerType, branch: "" }));
     setSelectedProvider(partnerType);
   };
@@ -84,7 +84,10 @@ export default function ReportsPage() {
             {hasRun && data.length > 0 && (
               <button
                 onClick={() =>
-                  downloadCSV(`${activeReport}_${filters.dateFrom}_${filters.dateTo}_${filters.partnerType}.csv`, data)
+                  downloadCSV(
+                    `${activeReport}_${filters.dateFrom}_${filters.dateTo}_${filters.partnerType}.csv`,
+                    data,
+                  )
                 }
                 className="flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50 transition-colors">
                 <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -216,7 +219,7 @@ export default function ReportsPage() {
                     Partner
                   </label>
                   <div className="flex rounded-md border border-slate-200 overflow-hidden text-xs">
-                    {(["GRAB", "PANDA"] as const).map((p) => (
+                    {(["ALL", "GRAB", "PANDA"] as const).map((p) => (
                       <button
                         key={p}
                         onClick={() => handlePartnerTypeChange(p)}
@@ -225,7 +228,7 @@ export default function ReportsPage() {
                             ? "bg-indigo-600 text-white"
                             : "text-slate-600 hover:bg-slate-50"
                         }`}>
-                        {p}
+                        {p === "ALL" ? "All" : p}
                       </button>
                     ))}
                   </div>
