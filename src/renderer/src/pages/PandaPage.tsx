@@ -30,11 +30,11 @@ const PandaPage = () => {
   const { branches } = useBranches("PANDA");
   const { loading, saving, reconData, setReconData, runRecon, saveToDb } = useRecon("PANDA");
   const {
-    selectedPartner,
-    setSelectedPartner,
+    partnerBasket,
+    partnerTotal,
+    togglePartner,
     posBasket,
     basketTotal,
-    partnerAmount,
     difference,
     isMatchPossible,
     togglePos,
@@ -96,9 +96,11 @@ const PandaPage = () => {
 
             <MatchingWorkspace
               basketTotal={basketTotal}
-              partnerAmount={partnerAmount}
+              partnerTotal={partnerTotal}
               difference={difference}
               isMatchPossible={isMatchPossible}
+              posCount={posBasket.length}
+              partnerCount={partnerBasket.length}
               onCommit={commitMatch}
             />
 
@@ -107,8 +109,8 @@ const PandaPage = () => {
               items={sortedUnmatchedPartner}
               sort={partnerSort}
               onSortChange={setPartnerSort}
-              selectedPartner={selectedPartner}
-              onSelect={setSelectedPartner}
+              partnerBasket={partnerBasket}
+              onToggle={togglePartner}
             />
           </div>
 
