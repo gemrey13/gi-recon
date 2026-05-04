@@ -1,11 +1,11 @@
 // UnmatchedPartnerTable.tsx
-import { useState } from "react";
 import {
   PartnerType,
   UnmatchedGrabTransaction,
   UnmatchedPandaTransaction,
   UnmatchedPartnerTransaction,
 } from "@shared/recon.types";
+import { useState } from "react";
 
 // ─── Config ───────────────────────────────────────────────────────────────────
 
@@ -75,8 +75,9 @@ const PandaRow = ({ item: f }: { item: UnmatchedPandaTransaction }) => (
 interface UnmatchedPartnerTableProps {
   partnerType: PartnerType;
   items: UnmatchedPartnerTransaction[];
-  selectedPartner: UnmatchedPartnerTransaction | null;
-  onSelect: (item: UnmatchedPartnerTransaction) => void;
+  /** All currently selected partner rows (basket) */
+  partnerBasket: UnmatchedPartnerTransaction[];
+  onToggle: (item: UnmatchedPartnerTransaction) => void;
   sort: "asc" | "desc" | null;
   onSortChange: (sort: "asc" | "desc" | null) => void;
 }
@@ -84,8 +85,8 @@ interface UnmatchedPartnerTableProps {
 const UnmatchedPartnerTable = ({
   partnerType,
   items,
-  selectedPartner,
-  onSelect,
+  partnerBasket,
+  onToggle,
   sort,
   onSortChange,
 }: UnmatchedPartnerTableProps) => {
@@ -105,6 +106,7 @@ const UnmatchedPartnerTable = ({
         <table className="w-full text-left border-collapse">
           <thead className="sticky top-0 bg-white shadow-sm z-10">
             <tr className="text-[10px] text-slate-400 uppercase">
+              <th className="p-3">Select</th>
               <th
                 className={`p-3 ${isGrab ? "cursor-pointer hover:text-indigo-600 transition-colors" : ""} flex items-center gap-1`}
                 onClick={isGrab ? () => setUseShortId((prev) => !prev) : undefined}
@@ -126,22 +128,28 @@ const UnmatchedPartnerTable = ({
             </tr>
           </thead>
           <tbody className="text-xs">
-            {items.map((item) => (
-              <tr
-                key={item.id}
-                onClick={() => onSelect(item)}
-                className={`border-b border-slate-50 cursor-pointer transition-colors ${
-                  selectedPartner?.id === item.id
-                    ? "bg-amber-50 ring-1 ring-inset ring-amber-200"
-                    : "hover:bg-slate-50"
-                }`}>
-                {isGrab ? (
-                  <GrabRow item={item as UnmatchedGrabTransaction} useShortId={useShortId} />
-                ) : (
-                  <PandaRow item={item as UnmatchedPandaTransaction} />
-                )}
-              </tr>
-            ))}
+            {items.map((item) => {
+              const isSelected = partnerBasket.some((p) => p.id === item.id);
+              return (
+                <tr
+                  key={item.id}
+                  onClick={() => onToggle(item)}
+                  className={`border-b border-slate-50 cursor-pointer transition-colors ${
+                    isSelected
+                      ? "bg-amber-50 ring-1 ring-inset ring-amber-200"
+                      : "hover:bg-slate-50"
+                  }`}>
+                  <td className="p-3">
+                    <input type="checkbox" checked={isSelected} readOnly />
+                  </td>
+                  {isGrab ? (
+                    <GrabRow item={item as UnmatchedGrabTransaction} useShortId={useShortId} />
+                  ) : (
+                    <PandaRow item={item as UnmatchedPandaTransaction} />
+                  )}
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
