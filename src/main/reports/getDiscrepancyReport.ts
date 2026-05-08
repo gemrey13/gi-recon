@@ -53,4 +53,3 @@ export function getDiscrepancyReport(filters: ReportFilters = {}): DiscrepancyRo
 
   return db.prepare(sql).all(...params) as DiscrepancyRow[];
 }
-
