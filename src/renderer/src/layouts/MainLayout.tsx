@@ -1,15 +1,27 @@
 import MenuBar from "@renderer/components/ui/MenuBar";
-import { Activity, useState } from "react";
+import { Activity, useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { TbLayoutSidebarLeftCollapse, TbLayoutSidebarRightCollapse } from "react-icons/tb";
 import SideBar from "@renderer/components/ui/Sidebar";
 
 const MainLayout = () => {
-  const [showSidebar, setShowSidebar] = useState(true);
+  const [showSidebar, setShowSidebar] = useState(null as boolean | null);
 
   const toggleSidebar = () => {
     setShowSidebar((prev) => !prev);
   };
+
+  useEffect(() => {
+    async function loadConfig() {
+      try {
+        const data = await window.api.readConfig();
+        setShowSidebar(data.showSidebar);
+      } catch (err) {
+        console.error("Failed to load configuration:", err);
+      }
+    }
+    loadConfig();
+  }, []);
 
   return (
     <>
