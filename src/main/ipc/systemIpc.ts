@@ -1,5 +1,6 @@
 import { app, BrowserWindow, ipcMain } from "electron";
 import { insertSystemLog } from "../services/logService";
+import { readConfig, saveConfig } from "../config";
 
 export function registerSystemIpc() {
   ipcMain.on("window-minimize", (_) => {
@@ -27,5 +28,14 @@ export function registerSystemIpc() {
 
   ipcMain.handle("write-log", async (_, logData) => {
     insertSystemLog(logData);
+  });
+
+  ipcMain.handle("config:get", (_) => {
+    return readConfig();
+  });
+
+  ipcMain.handle("config:save", (_, config) => {
+    saveConfig(config);
+    return true;
   });
 }
