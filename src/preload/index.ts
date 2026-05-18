@@ -16,6 +16,8 @@ const api = {
   minimize: () => ipcRenderer.send("window-minimize"),
   maximize: () => ipcRenderer.send("window-maximize"),
   close: () => ipcRenderer.send("window-close"),
+  readConfig: () => ipcRenderer.invoke("config:get"),
+  saveConfig: (config: any) => ipcRenderer.invoke("config:save", config),
 
   // Shared IPC
   getBranch: (partner: PARTNER) => ipcRenderer.invoke("get-branches", partner),

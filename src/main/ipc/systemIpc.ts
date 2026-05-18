@@ -30,7 +30,7 @@ export function registerSystemIpc() {
     insertSystemLog(logData);
   });
 
-  ipcMain.handle("config:get", (_) => {
+  ipcMain.handle("config:read", (_) => {
     return readConfig();
   });
 

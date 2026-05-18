@@ -10,6 +10,8 @@ declare global {
       minimize: () => Promise<any>;
       maximize: () => Promise<any>;
       close: () => Promise<any>;
+      getSettings: () => Promise<any>;
+      saveSettings: (settings: any) => Promise<void>;
 
       importPOSZip: () => Promise<any>;
 
