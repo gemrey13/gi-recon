@@ -72,7 +72,8 @@ export default function ReportsPage() {
           <div>
             <h1 className="text-3xl font-black text-slate-900 tracking-tight">Reports</h1>
             <p className="text-slate-500 font-medium mt-1">
-              Generate and export reconciliation reports for reconciliation, sales, branch performance, and audit logs.
+              Generate and export reconciliation reports for reconciliation, sales, branch
+              performance, and audit logs.
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
@@ -84,8 +85,7 @@ export default function ReportsPage() {
                     data,
                   )
                 }
-                className="flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-4 py-2 active:scale-95 font-semibold text-slate-700 hover:bg-slate-100 transition-colors"
-              >
+                className="flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-4 py-2 active:scale-95 font-semibold text-slate-700 hover:bg-slate-100 transition-colors">
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path
                     strokeLinecap="round"
@@ -100,8 +100,7 @@ export default function ReportsPage() {
             <button
               onClick={runReport}
               disabled={loading}
-              className="flex items-center gap-2 rounded-lg bg-indigo-600 active:scale-95 px-4 py-2 font-semibold text-white hover:bg-indigo-500 disabled:opacity-50 transition-colors"
-            >
+              className="flex items-center gap-2 rounded-lg bg-indigo-600 active:scale-95 px-4 py-2 font-semibold text-white hover:bg-indigo-500 disabled:opacity-50 transition-colors">
               {loading ? (
                 <>
                   <div className="h-3 w-3 animate-spin rounded-full border-2 border-white/40 border-t-white" />
@@ -134,7 +133,9 @@ export default function ReportsPage() {
       <div className="flex flex-1 min-h-0 overflow-hidden">
         <div className="w-full max-w-xs shrink-0 overflow-y-auto">
           <div className="sticky top-0 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-            <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">Report Type</p>
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">
+              Report Type
+            </p>
             <div className="mt-3 space-y-2">
               {REPORT_CONFIG.map((r) => (
                 <button
@@ -144,9 +145,9 @@ export default function ReportsPage() {
                     activeReport === r.id
                       ? "bg-indigo-50 border border-indigo-100 text-indigo-700"
                       : "text-slate-600 hover:bg-slate-50"
-                  }`}
-                >
-                  <span className={`mt-0.5 shrink-0 ${activeReport === r.id ? "text-indigo-600" : "text-slate-400"}`}>
+                  }`}>
+                  <span
+                    className={`mt-0.5 shrink-0 ${activeReport === r.id ? "text-indigo-600" : "text-slate-400"}`}>
                     {r.icon}
                   </span>
                   <div>
@@ -164,7 +165,9 @@ export default function ReportsPage() {
             <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
               <div>
                 <h2 className="text-lg font-bold text-slate-900">Filters</h2>
-                <p className="text-sm text-slate-500 mt-1">Choose the time range, branch, and other report criteria.</p>
+                <p className="text-sm text-slate-500 mt-1">
+                  Choose the time range, branch, and other report criteria.
+                </p>
               </div>
               <div className="flex flex-wrap items-center gap-2">
                 <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-slate-500">
@@ -175,7 +178,9 @@ export default function ReportsPage() {
 
             <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
               <div className="flex flex-col gap-1">
-                <label className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">From</label>
+                <label className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+                  From
+                </label>
                 <input
                   type="date"
                   value={filters.dateFrom}
@@ -185,7 +190,9 @@ export default function ReportsPage() {
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">To</label>
+                <label className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+                  To
+                </label>
                 <input
                   type="date"
                   value={filters.dateTo}
@@ -195,12 +202,13 @@ export default function ReportsPage() {
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">Branch</label>
+                <label className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+                  Branch
+                </label>
                 <select
                   value={filters.branch}
                   onChange={(e) => setFilters((f) => ({ ...f, branch: e.target.value }))}
-                  className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100"
-                >
+                  className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100">
                   <option value="">Select a branch...</option>
                   {branches?.map((b: any) => (
                     <option key={b.pos_code} value={b.pos_code}>
@@ -212,7 +220,9 @@ export default function ReportsPage() {
 
               {activeConfig.hasPartnerFilter && (
                 <div className="flex flex-col gap-1">
-                  <label className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">Partner</label>
+                  <label className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+                    Partner
+                  </label>
                   <div className="flex rounded-lg border border-slate-200 overflow-hidden text-sm">
                     {(["ALL", "GRAB", "PANDA"] as const).map((p) => (
                       <button
@@ -222,8 +232,7 @@ export default function ReportsPage() {
                           filters.partnerType === p
                             ? "bg-indigo-600 text-white"
                             : "text-slate-600 hover:bg-slate-50"
-                        }`}
-                      >
+                        }`}>
                         {p === "ALL" ? "All" : p}
                       </button>
                     ))}
@@ -232,10 +241,20 @@ export default function ReportsPage() {
               )}
 
               <div className="flex flex-col gap-1">
-                <label className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">Quick Select</label>
+                <label className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+                  Quick Select
+                </label>
                 <div className="flex flex-wrap gap-2">
                   {[
                     { label: "Today", fn: () => ({ dateFrom: today, dateTo: today }) },
+                    {
+                      label: "Yesterday",
+                      fn: () => {
+                        const d = new Date();
+                        d.setDate(d.getDate() - 1);
+                        return { dateFrom: d.toISOString().slice(0, 10), dateTo: today };
+                      },
+                    },
                     { label: "This Month", fn: () => ({ dateFrom: firstOfMonth, dateTo: today }) },
                     {
                       label: "Last 7d",
@@ -257,8 +276,7 @@ export default function ReportsPage() {
                     <button
                       key={preset.label}
                       onClick={() => setFilters((f) => ({ ...f, ...preset.fn() }))}
-                      className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-slate-600 hover:bg-slate-100 transition-colors"
-                    >
+                      className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-slate-600 hover:bg-slate-100 transition-colors">
                       {preset.label}
                     </button>
                   ))}
@@ -272,7 +290,9 @@ export default function ReportsPage() {
               {hasRun && !loading && (
                 <div className="rounded-2xl border border-slate-200 bg-white px-6 py-4 shadow-sm">
                   <span className="text-xs text-slate-500">
-                    <span className="font-semibold text-slate-800">{summaryStats.total.toLocaleString()}</span>{" "}
+                    <span className="font-semibold text-slate-800">
+                      {summaryStats.total.toLocaleString()}
+                    </span>{" "}
                     row{summaryStats.total !== 1 ? "s" : ""}
                   </span>
                   <span className="ml-4 text-xs text-slate-400">
@@ -290,7 +310,11 @@ export default function ReportsPage() {
                   <LoadingState />
                 ) : !hasRun ? (
                   <div className="flex min-h-64 flex-col items-center justify-center rounded-2xl border border-dashed border-slate-200 bg-white p-10 text-slate-400 shadow-sm">
-                    <svg className="mb-4 h-12 w-12 opacity-30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg
+                      className="mb-4 h-12 w-12 opacity-30"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor">
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
