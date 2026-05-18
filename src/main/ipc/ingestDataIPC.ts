@@ -6,8 +6,8 @@ import { importManual } from "../services/ingestDataService";
 import os from "os";
 import createReaderWorker from "../worker/readerWorker?nodeWorker";
 import createWriterWorker from "../worker/writerWorker?nodeWorker";
-import { BATCH_IMPORT_CONFIGS } from "../worker/batchImportConfigs";
 import { PartnerType } from "../types";
+import { readConfig } from "../config";
 
 export function registerIngestDataIPC() {
   ipcMain.handle("import:manual", async (_event, type: PartnerType) => {
@@ -44,8 +44,16 @@ export function registerIngestDataIPC() {
     return { totalInserted, message: messages.length ? messages.join("; ") : "Completed" };
   });
 
+  function getPartnerConfig(type: PartnerType) {
+    const config = readConfig().partners[type];
+
+    if (!config) throw new Error(`No config for ${type}`);
+
+    return config;
+  }
+
   ipcMain.handle("import:batch", async (_event, type: PartnerType) => {
-    const config = BATCH_IMPORT_CONFIGS[type];
+    const config = getPartnerConfig(type);
     if (!config) throw new Error(`Unknown import type: ${type}`);
 
     const startTime = new Date();
@@ -54,7 +62,7 @@ export function registerIngestDataIPC() {
     const dbPath = path.join(app.getPath("userData"), "pos.db");
 
     const allFiles = fs
-      .readdirSync(config.rootFolder)
+      .readdirSync(config.rootFolder!)
       .filter((f) => f.endsWith(".xlsx") || f.endsWith(".xls"));
 
     const numReaders = os.cpus().length;
