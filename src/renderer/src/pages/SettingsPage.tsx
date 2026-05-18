@@ -1,23 +1,6 @@
+import { PartnerType } from "@shared/recon.types";
+import { AppConfiguration, BatchImportConfig, XlsxOptions } from "@shared/settings.types";
 import { useState, useEffect } from "react";
-
-// Types matching your backend configuration structure
-export type PartnerType = "PANDA" | "GRAB";
-
-interface XlsxOptions {
-  cellDates?: boolean;
-}
-
-interface BatchImportConfig {
-  rootFolder: string;
-  sheetName: string;
-  skipKey: string;
-  xlsxOptions?: XlsxOptions;
-}
-
-interface AppConfiguration {
-  showSidebar: boolean;
-  partners: Record<PartnerType, Partial<BatchImportConfig>>;
-}
 
 export default function SettingsPage() {
   const [config, setConfig] = useState<AppConfiguration | null>(null);
@@ -101,14 +84,16 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-6 space-y-6 bg-slate-50 min-h-screen">
+    <div className="space-y-6 max-w-400 mx-auto">
       {/* Header section */}
       <div className="flex items-center justify-between border-b border-slate-200 pb-4">
         <div>
           <h1 className="text-4xl font-black tracking-tight text-slate-900">Settings</h1>
-          <p className="text-sm text-slate-500 mt-1">Configure your app behavior, directories, and data processing keys.</p>
+          <p className="text-sm text-slate-500 mt-1">
+            Configure your app behavior, directories, and data processing keys.
+          </p>
         </div>
-        
+
         <div className="flex items-center gap-4">
           {saveStatus === "success" && (
             <span className="px-2 py-1 bg-emerald-50 text-emerald-700 rounded-md border border-emerald-100 text-xs font-medium">
@@ -123,8 +108,7 @@ export default function SettingsPage() {
           <button
             onClick={handleSave}
             disabled={isSaving}
-            className="bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-sm"
-          >
+            className="bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-sm">
             {isSaving ? "Saving..." : "Save Configuration"}
           </button>
         </div>
@@ -140,8 +124,7 @@ export default function SettingsPage() {
               activeTab === "general"
                 ? "text-indigo-600 bg-indigo-50 font-semibold"
                 : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
-            }`}
-          >
+            }`}>
             General App Settings
           </button>
           <button
@@ -150,8 +133,7 @@ export default function SettingsPage() {
               activeTab === "PANDA"
                 ? "text-indigo-600 bg-indigo-50 font-semibold"
                 : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
-            }`}
-          >
+            }`}>
             Foodpanda (PANDA)
           </button>
           <button
@@ -160,24 +142,28 @@ export default function SettingsPage() {
               activeTab === "GRAB"
                 ? "text-indigo-600 bg-indigo-50 font-semibold"
                 : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
-            }`}
-          >
+            }`}>
             Grab (GRAB)
           </button>
         </nav>
 
         {/* Dynamic Panels */}
         <main className="lg:col-span-9 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
-          
           {/* General View Panel */}
           {activeTab === "general" && (
             <div className="space-y-6 animate-fadeIn">
-              <h2 className="text-2xl font-bold text-slate-900 border-b border-slate-100 pb-2">General App Settings</h2>
-              
+              <h2 className="text-2xl font-bold text-slate-900 border-b border-slate-100 pb-2">
+                General App Settings
+              </h2>
+
               <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-200">
                 <div className="flex flex-col gap-1">
-                  <label className="text-sm font-semibold text-slate-700">Display Navigation Sidebar</label>
-                  <span className="text-xs text-slate-500">Keep the secondary main page navigation open by default.</span>
+                  <label className="text-sm font-semibold text-slate-700">
+                    Display Navigation Sidebar
+                  </label>
+                  <span className="text-xs text-slate-500">
+                    Keep the secondary main page navigation open by default.
+                  </span>
                 </div>
                 <input
                   type="checkbox"
@@ -203,7 +189,9 @@ export default function SettingsPage() {
 
               {/* Input Form Group: Root Directory */}
               <div className="flex flex-col gap-2">
-                <label className="text-sm font-semibold text-slate-700">Root Folder Directory Path</label>
+                <label className="text-sm font-semibold text-slate-700">
+                  Root Folder Directory Path
+                </label>
                 <input
                   type="text"
                   value={config.partners[activeTab]?.rootFolder || ""}
@@ -211,7 +199,9 @@ export default function SettingsPage() {
                   placeholder="e.g. C:\delivery-data"
                   className="w-full px-3 py-2 border border-slate-200 rounded-lg bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300"
                 />
-                <span className="text-xs text-slate-500">Absolute storage track containing localized files for bulk parsing execution.</span>
+                <span className="text-xs text-slate-500">
+                  Absolute storage track containing localized files for bulk parsing execution.
+                </span>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -225,12 +215,16 @@ export default function SettingsPage() {
                     placeholder="Sheet1"
                     className="w-full px-3 py-2 border border-slate-200 rounded-lg bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300"
                   />
-                  <span className="text-xs text-slate-500">Specific spreadsheet tab targeted for workbook processing logic.</span>
+                  <span className="text-xs text-slate-500">
+                    Specific spreadsheet tab targeted for workbook processing logic.
+                  </span>
                 </div>
 
                 {/* Input Form Group: Skip Row Primary Key Identifier */}
                 <div className="flex flex-col gap-2">
-                  <label className="text-sm font-semibold text-slate-700">Skip Rows Tracking Key</label>
+                  <label className="text-sm font-semibold text-slate-700">
+                    Skip Rows Tracking Key
+                  </label>
                   <input
                     type="text"
                     value={config.partners[activeTab]?.skipKey || ""}
@@ -238,24 +232,35 @@ export default function SettingsPage() {
                     placeholder="Order ID"
                     className="w-full px-3 py-2 border border-slate-200 rounded-lg bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300"
                   />
-                  <span className="text-xs text-slate-500">Primary mapping identifier keyword to skip empty or meta-header rows.</span>
+                  <span className="text-xs text-slate-500">
+                    Primary mapping identifier keyword to skip empty or meta-header rows.
+                  </span>
                 </div>
               </div>
 
               {/* Extended Optional parameters blocks - e.g. SheetJS cellDates option flag */}
               {config.partners[activeTab]?.xlsxOptions !== undefined && (
                 <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-4">
-                  <h3 className="text-sm font-bold text-slate-500 uppercase tracking-widest">Advanced Parser Engine Hooks</h3>
-                  
+                  <h3 className="text-sm font-bold text-slate-500 uppercase tracking-widest">
+                    Advanced Parser Engine Hooks
+                  </h3>
+
                   <div className="flex items-center justify-between">
                     <div className="flex flex-col gap-1">
-                      <label className="text-sm font-semibold text-slate-700">Force Cell Dates Aggregation (`cellDates`)</label>
-                      <span className="text-xs text-slate-500">Converts system raw timestamps directly into JavaScript native Date instances.</span>
+                      <label className="text-sm font-semibold text-slate-700">
+                        Force Cell Dates Aggregation (`cellDates`)
+                      </label>
+                      <span className="text-xs text-slate-500">
+                        Converts system raw timestamps directly into JavaScript native Date
+                        instances.
+                      </span>
                     </div>
                     <input
                       type="checkbox"
                       checked={!!config.partners[activeTab]?.xlsxOptions?.cellDates}
-                      onChange={(e) => handleNestedXlsxChange(activeTab, "cellDates", e.target.checked)}
+                      onChange={(e) =>
+                        handleNestedXlsxChange(activeTab, "cellDates", e.target.checked)
+                      }
                       className="w-5 h-5 rounded border border-slate-300 bg-white checked:bg-indigo-600 checked:border-indigo-600 focus:ring-2 focus:ring-indigo-500 cursor-pointer transition-colors"
                     />
                   </div>
