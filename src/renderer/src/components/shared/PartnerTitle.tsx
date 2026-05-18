@@ -6,7 +6,7 @@ interface PartnerTitleProps {
 
 const PartnerTitle = ({ onAddPartner, onAddPartnerBatch, title }: PartnerTitleProps) => {
   return (
-    <div className="flex justify-between items-end mb-8">
+    <div className="flex justify-between items-end mb-8 border-b border-slate-200 pb-4">
       <div>
         <h1 className="text-3xl font-black text-slate-900 tracking-tight">
           {title} Reconciliation
