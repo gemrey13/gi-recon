@@ -1,0 +1,270 @@
+import { useState, useEffect } from "react";
+
+// Types matching your backend configuration structure
+export type PartnerType = "PANDA" | "GRAB";
+
+interface XlsxOptions {
+  cellDates?: boolean;
+}
+
+interface BatchImportConfig {
+  rootFolder: string;
+  sheetName: string;
+  skipKey: string;
+  xlsxOptions?: XlsxOptions;
+}
+
+interface AppConfiguration {
+  showSidebar: boolean;
+  partners: Record<PartnerType, Partial<BatchImportConfig>>;
+}
+
+export default function SettingsPage() {
+  const [config, setConfig] = useState<AppConfiguration | null>(null);
+  const [activeTab, setActiveTab] = useState<"general" | "PANDA" | "GRAB">("general");
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<"idle" | "success" | "error">("idle");
+
+  // Load configuration on mount
+  useEffect(() => {
+    async function loadConfig() {
+      try {
+        // Accessing Electron IPC layer
+        const data = await window.api.readConfig();
+        setConfig(data);
+      } catch (err) {
+        console.error("Failed to load configuration:", err);
+      }
+    }
+    loadConfig();
+  }, []);
+
+  const handleGeneralChange = (key: keyof AppConfiguration, value: any) => {
+    if (!config) return;
+    setConfig({ ...config, [key]: value });
+  };
+
+  const handlePartnerChange = (partner: PartnerType, key: keyof BatchImportConfig, value: any) => {
+    if (!config) return;
+    setConfig({
+      ...config,
+      partners: {
+        ...config.partners,
+        [partner]: {
+          ...config.partners[partner],
+          [key]: value,
+        },
+      },
+    });
+  };
+
+  const handleNestedXlsxChange = (partner: PartnerType, key: keyof XlsxOptions, value: any) => {
+    if (!config) return;
+    const currentPartner = config.partners[partner] || {};
+    setConfig({
+      ...config,
+      partners: {
+        ...config.partners,
+        [partner]: {
+          ...currentPartner,
+          xlsxOptions: {
+            ...currentPartner.xlsxOptions,
+            [key]: value,
+          },
+        },
+      },
+    });
+  };
+
+  const handleSave = async () => {
+    if (!config) return;
+    setIsSaving(true);
+    setSaveStatus("idle");
+    try {
+      await window.api.saveConfig(config);
+      setSaveStatus("success");
+      setTimeout(() => setSaveStatus("idle"), 3000); // Reset badge state after 3s
+    } catch (err) {
+      console.error("Failed to save configuration:", err);
+      setSaveStatus("error");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  if (!config) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-slate-50">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-6xl mx-auto p-6 space-y-6 bg-slate-50 min-h-screen">
+      {/* Header section */}
+      <div className="flex items-center justify-between border-b border-slate-200 pb-4">
+        <div>
+          <h1 className="text-4xl font-black tracking-tight text-slate-900">Settings</h1>
+          <p className="text-sm text-slate-500 mt-1">Configure your app behavior, directories, and data processing keys.</p>
+        </div>
+        
+        <div className="flex items-center gap-4">
+          {saveStatus === "success" && (
+            <span className="px-2 py-1 bg-emerald-50 text-emerald-700 rounded-md border border-emerald-100 text-xs font-medium">
+              Changes Saved Successfully
+            </span>
+          )}
+          {saveStatus === "error" && (
+            <span className="px-2 py-1 bg-red-50 text-red-700 rounded-md border border-red-100 text-xs font-medium">
+              Error Saving Settings
+            </span>
+          )}
+          <button
+            onClick={handleSave}
+            disabled={isSaving}
+            className="bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-sm"
+          >
+            {isSaving ? "Saving..." : "Save Configuration"}
+          </button>
+        </div>
+      </div>
+
+      {/* Workspace Grid Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        {/* Sidebar Navigation */}
+        <nav className="lg:col-span-3 flex flex-col gap-2 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+          <button
+            onClick={() => setActiveTab("general")}
+            className={`text-left px-4 py-2.5 rounded-lg text-sm transition-colors duration-300 ${
+              activeTab === "general"
+                ? "text-indigo-600 bg-indigo-50 font-semibold"
+                : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
+            }`}
+          >
+            General App Settings
+          </button>
+          <button
+            onClick={() => setActiveTab("PANDA")}
+            className={`text-left px-4 py-2.5 rounded-lg text-sm transition-colors duration-300 ${
+              activeTab === "PANDA"
+                ? "text-indigo-600 bg-indigo-50 font-semibold"
+                : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
+            }`}
+          >
+            Foodpanda (PANDA)
+          </button>
+          <button
+            onClick={() => setActiveTab("GRAB")}
+            className={`text-left px-4 py-2.5 rounded-lg text-sm transition-colors duration-300 ${
+              activeTab === "GRAB"
+                ? "text-indigo-600 bg-indigo-50 font-semibold"
+                : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
+            }`}
+          >
+            Grab (GRAB)
+          </button>
+        </nav>
+
+        {/* Dynamic Panels */}
+        <main className="lg:col-span-9 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+          
+          {/* General View Panel */}
+          {activeTab === "general" && (
+            <div className="space-y-6 animate-fadeIn">
+              <h2 className="text-2xl font-bold text-slate-900 border-b border-slate-100 pb-2">General App Settings</h2>
+              
+              <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-200">
+                <div className="flex flex-col gap-1">
+                  <label className="text-sm font-semibold text-slate-700">Display Navigation Sidebar</label>
+                  <span className="text-xs text-slate-500">Keep the secondary main page navigation open by default.</span>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={config.showSidebar}
+                  onChange={(e) => handleGeneralChange("showSidebar", e.target.checked)}
+                  className="w-5 h-5 rounded border border-slate-300 bg-white checked:bg-indigo-600 checked:border-indigo-600 focus:ring-2 focus:ring-indigo-500 cursor-pointer transition-colors"
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Partner Configurations View Panels */}
+          {activeTab !== "general" && (
+            <div className="space-y-6 animate-fadeIn">
+              <div className="flex items-center gap-3 border-b border-slate-100 pb-2">
+                <h2 className="text-2xl font-bold text-slate-900">
+                  {activeTab === "PANDA" ? "Foodpanda Configuration" : "Grab Configuration"}
+                </h2>
+                <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded-md border border-indigo-100 text-[10px] font-bold uppercase tracking-widest">
+                  {activeTab} Data Source
+                </span>
+              </div>
+
+              {/* Input Form Group: Root Directory */}
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-semibold text-slate-700">Root Folder Directory Path</label>
+                <input
+                  type="text"
+                  value={config.partners[activeTab]?.rootFolder || ""}
+                  onChange={(e) => handlePartnerChange(activeTab, "rootFolder", e.target.value)}
+                  placeholder="e.g. C:\delivery-data"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300"
+                />
+                <span className="text-xs text-slate-500">Absolute storage track containing localized files for bulk parsing execution.</span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Input Form Group: Worksheet Name */}
+                <div className="flex flex-col gap-2">
+                  <label className="text-sm font-semibold text-slate-700">Target Sheet Name</label>
+                  <input
+                    type="text"
+                    value={config.partners[activeTab]?.sheetName || ""}
+                    onChange={(e) => handlePartnerChange(activeTab, "sheetName", e.target.value)}
+                    placeholder="Sheet1"
+                    className="w-full px-3 py-2 border border-slate-200 rounded-lg bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300"
+                  />
+                  <span className="text-xs text-slate-500">Specific spreadsheet tab targeted for workbook processing logic.</span>
+                </div>
+
+                {/* Input Form Group: Skip Row Primary Key Identifier */}
+                <div className="flex flex-col gap-2">
+                  <label className="text-sm font-semibold text-slate-700">Skip Rows Tracking Key</label>
+                  <input
+                    type="text"
+                    value={config.partners[activeTab]?.skipKey || ""}
+                    onChange={(e) => handlePartnerChange(activeTab, "skipKey", e.target.value)}
+                    placeholder="Order ID"
+                    className="w-full px-3 py-2 border border-slate-200 rounded-lg bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300"
+                  />
+                  <span className="text-xs text-slate-500">Primary mapping identifier keyword to skip empty or meta-header rows.</span>
+                </div>
+              </div>
+
+              {/* Extended Optional parameters blocks - e.g. SheetJS cellDates option flag */}
+              {config.partners[activeTab]?.xlsxOptions !== undefined && (
+                <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-4">
+                  <h3 className="text-sm font-bold text-slate-500 uppercase tracking-widest">Advanced Parser Engine Hooks</h3>
+                  
+                  <div className="flex items-center justify-between">
+                    <div className="flex flex-col gap-1">
+                      <label className="text-sm font-semibold text-slate-700">Force Cell Dates Aggregation (`cellDates`)</label>
+                      <span className="text-xs text-slate-500">Converts system raw timestamps directly into JavaScript native Date instances.</span>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={!!config.partners[activeTab]?.xlsxOptions?.cellDates}
+                      onChange={(e) => handleNestedXlsxChange(activeTab, "cellDates", e.target.checked)}
+                      className="w-5 h-5 rounded border border-slate-300 bg-white checked:bg-indigo-600 checked:border-indigo-600 focus:ring-2 focus:ring-indigo-500 cursor-pointer transition-colors"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </main>
+      </div>
+    </div>
+  );
+}

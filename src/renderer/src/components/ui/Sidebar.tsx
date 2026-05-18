@@ -22,6 +22,7 @@ const SideBar = () => {
           <NavItem to="/recon/panda" label="FoodPanda" icon="🐼" />
           <NavItem to="/recon/grab" label="GrabFood" icon="🚗" />
           <NavItem to="/recon/reports" label="Reports" icon="📋" />
+          <NavItem to="/recon/settings" label="Settings" icon="⚙️" />
         </nav>
 
         <div className="mt-auto mb-4">

@@ -16,7 +16,7 @@ const api = {
   minimize: () => ipcRenderer.send("window-minimize"),
   maximize: () => ipcRenderer.send("window-maximize"),
   close: () => ipcRenderer.send("window-close"),
-  readConfig: () => ipcRenderer.invoke("config:get"),
+  readConfig: () => ipcRenderer.invoke("config:read"),
   saveConfig: (config: any) => ipcRenderer.invoke("config:save", config),
 
   // Shared IPC
