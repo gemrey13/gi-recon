@@ -7,26 +7,34 @@ export function getPartnerSalesReport(filters: ReportFilters = {}): PartnerSales
 
   const dateFrom = filters.dateFrom ?? "";
   const dateTo = filters.dateTo ?? "";
+  const branch = filters.branch ?? "";
 
   // ── GRAB ──
   if (!filters.partnerType || filters.partnerType === "ALL" || filters.partnerType === "GRAB") {
-    const grabConditions: string[] = ["g.status NOT IN ('CANCELLED','FAILED')"];
+    const grabConditions: string[] = [
+      "g.status NOT IN ('Cancelled')",
+      "g.category = 'Payment'",
+    ];
     const grabParams: unknown[] = [];
 
     if (dateFrom) {
-      grabConditions.push("g.created_on >= ?");
+      grabConditions.push("date(g.created_on) >= date(?)");
       grabParams.push(dateFrom);
     }
     if (dateTo) {
-      grabConditions.push("g.created_on <= ?");
+      grabConditions.push("date(g.created_on) <= date(?)");
       grabParams.push(dateTo);
+    }
+    if (branch) {
+      grabConditions.push("bm.pos_code = ?");
+      grabParams.push(branch);
     }
 
     const grabSql = `
       SELECT
         bm.grab_name        AS branch_name,
-        'GRAB'             AS partner_type,
-        COUNT(*)           AS total_orders,
+        'GRAB'              AS partner_type,
+        COUNT(*)            AS total_orders,
         ROUND(SUM(g.amount), 2)         AS gross_sales,
         0.0                             AS commission_amt,
         ROUND(SUM(g.withholding_tax), 2) AS withholding_tax,
@@ -44,16 +52,20 @@ export function getPartnerSalesReport(filters: ReportFilters = {}): PartnerSales
 
   // ── PANDA ──
   if (!filters.partnerType || filters.partnerType === "ALL" || filters.partnerType === "PANDA") {
-    const pandaConditions: string[] = ["fp.reversal IS NULL OR fp.reversal = ''"];
+    const pandaConditions: string[] = ["(fp.reversal IS NULL OR fp.reversal = '')"];
     const pandaParams: unknown[] = [];
 
     if (dateFrom) {
-      pandaConditions.push("fp.order_date >= ?");
+      pandaConditions.push("date(fp.order_date) >= date(?)");
       pandaParams.push(dateFrom);
     }
     if (dateTo) {
-      pandaConditions.push("fp.order_date <= ?");
+      pandaConditions.push("date(fp.order_date) <= date(?)");
       pandaParams.push(dateTo);
+    }
+    if (branch) {
+      pandaConditions.push("bm.pos_code = ?");
+      pandaParams.push(branch);
     }
 
     const pandaSql = `
