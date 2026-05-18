@@ -22,8 +22,8 @@ export default function ReportsPage() {
   const abortRef = useRef(false);
 
   const { branches, setSelectedProvider } = useBranches(filters.partnerType);
-
   const activeConfig = REPORT_CONFIG.find((r) => r.id === activeReport)!;
+  const TableComponent = TABLE_COMPONENTS[activeReport];
 
   const runReport = useCallback(async () => {
     setLoading(true);
@@ -63,24 +63,19 @@ export default function ReportsPage() {
     setSelectedProvider(partnerType);
   };
 
-  const TableComponent = TABLE_COMPONENTS[activeReport];
-
-  const summaryStats = {
-    total: data.length,
-  };
+  const summaryStats = { total: data.length };
 
   return (
-    <div className="flex h-full flex-col bg-slate-50">
-      {/* ── Header ── */}
-      <div className="border-b border-slate-200 bg-white px-6 py-4">
-        <div className="flex items-center justify-between">
+    <div className="space-y-6 max-w-400 mx-auto">
+      <div className="border-b border-slate-200 pb-4">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-lg font-semibold text-slate-900">Reports</h1>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Generate and export reconciliation reports
+            <h1 className="text-3xl font-black text-slate-900 tracking-tight">Reports</h1>
+            <p className="text-slate-500 font-medium mt-1">
+              Generate and export reconciliation reports for reconciliation, sales, branch performance, and audit logs.
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             {hasRun && data.length > 0 && (
               <button
                 onClick={() =>
@@ -89,8 +84,9 @@ export default function ReportsPage() {
                     data,
                   )
                 }
-                className="flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50 transition-colors">
-                <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                className="flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-4 py-2 active:scale-95 font-semibold text-slate-700 hover:bg-slate-100 transition-colors"
+              >
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -104,7 +100,8 @@ export default function ReportsPage() {
             <button
               onClick={runReport}
               disabled={loading}
-              className="flex items-center gap-1.5 rounded-md bg-indigo-600 px-4 py-1.5 text-xs font-semibold text-white hover:bg-indigo-700 disabled:opacity-50 transition-colors">
+              className="flex items-center gap-2 rounded-lg bg-indigo-600 active:scale-95 px-4 py-2 font-semibold text-white hover:bg-indigo-500 disabled:opacity-50 transition-colors"
+            >
               {loading ? (
                 <>
                   <div className="h-3 w-3 animate-spin rounded-full border-2 border-white/40 border-t-white" />
@@ -112,11 +109,7 @@ export default function ReportsPage() {
                 </>
               ) : (
                 <>
-                  <svg
-                    className="h-3.5 w-3.5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor">
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -138,72 +131,76 @@ export default function ReportsPage() {
         </div>
       </div>
 
-      <div className="flex flex-1 overflow-hidden">
-        {/* ── Left sidebar: report types ── */}
-        <div className="w-56 shrink-0 border-r border-slate-200 bg-white py-3 overflow-y-auto">
-          <p className="px-4 pb-2 text-[10px] font-semibold uppercase tracking-widest text-slate-400">
-            Report Type
-          </p>
-          {REPORT_CONFIG.map((r) => (
-            <button
-              key={r.id}
-              onClick={() => handleTabChange(r.id)}
-              className={`w-full flex items-start gap-3 px-4 py-2.5 text-left transition-colors ${
-                activeReport === r.id
-                  ? "bg-indigo-50 border-r-2 border-indigo-600 text-indigo-700"
-                  : "text-slate-600 hover:bg-slate-50"
-              }`}>
-              <span
-                className={`mt-0.5 shrink-0 ${activeReport === r.id ? "text-indigo-600" : "text-slate-400"}`}>
-                {r.icon}
-              </span>
-              <div>
-                <div className="text-xs font-medium leading-snug">{r.label}</div>
-                <div className="text-[10px] text-slate-400 leading-snug mt-0.5">
-                  {r.description}
-                </div>
-              </div>
-            </button>
-          ))}
+      <div className="flex flex-1 min-h-0 overflow-hidden">
+        <div className="w-full max-w-xs shrink-0 overflow-y-auto">
+          <div className="sticky top-0 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">Report Type</p>
+            <div className="mt-3 space-y-2">
+              {REPORT_CONFIG.map((r) => (
+                <button
+                  key={r.id}
+                  onClick={() => handleTabChange(r.id)}
+                  className={`w-full flex items-start gap-3 rounded-2xl px-4 py-3 text-left  ${
+                    activeReport === r.id
+                      ? "bg-indigo-50 border border-indigo-100 text-indigo-700"
+                      : "text-slate-600 hover:bg-slate-50"
+                  }`}
+                >
+                  <span className={`mt-0.5 shrink-0 ${activeReport === r.id ? "text-indigo-600" : "text-slate-400"}`}>
+                    {r.icon}
+                  </span>
+                  <div>
+                    <div className="text-sm font-semibold leading-snug">{r.label}</div>
+                    <div className="text-xs text-slate-400 leading-snug mt-1">{r.description}</div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
 
-        {/* ── Main content ── */}
-        <div className="flex flex-1 flex-col overflow-hidden">
-          {/* ── Filters ── */}
-          <div className="border-b border-slate-200 bg-white px-6 py-3">
-            <div className="flex flex-wrap items-end gap-3">
+        <div className="ml-4 flex min-h-0 flex-1 flex-col overflow-hidden">
+          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+              <div>
+                <h2 className="text-lg font-bold text-slate-900">Filters</h2>
+                <p className="text-sm text-slate-500 mt-1">Choose the time range, branch, and other report criteria.</p>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-slate-500">
+                  {activeConfig.label}
+                </span>
+              </div>
+            </div>
+
+            <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
               <div className="flex flex-col gap-1">
-                <label className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">
-                  From
-                </label>
+                <label className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">From</label>
                 <input
                   type="date"
                   value={filters.dateFrom}
                   onChange={(e) => setFilters((f) => ({ ...f, dateFrom: e.target.value }))}
-                  className="rounded-md border border-slate-200 px-2.5 py-1.5 text-xs text-slate-700 focus:border-indigo-400 focus:outline-none focus:ring-1 focus:ring-indigo-300"
+                  className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100"
                 />
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">
-                  To
-                </label>
+                <label className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">To</label>
                 <input
                   type="date"
                   value={filters.dateTo}
                   onChange={(e) => setFilters((f) => ({ ...f, dateTo: e.target.value }))}
-                  className="rounded-md border border-slate-200 px-2.5 py-1.5 text-xs text-slate-700 focus:border-indigo-400 focus:outline-none focus:ring-1 focus:ring-indigo-300"
+                  className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100"
                 />
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">
-                  Branch
-                </label>
+                <label className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">Branch</label>
                 <select
                   value={filters.branch}
                   onChange={(e) => setFilters((f) => ({ ...f, branch: e.target.value }))}
-                  className="rounded-md border border-slate-200 px-2.5 py-1.5 text-xs text-slate-700 focus:border-indigo-400 focus:outline-none focus:ring-1 focus:ring-indigo-300">
+                  className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                >
                   <option value="">Select a branch...</option>
                   {branches?.map((b: any) => (
                     <option key={b.pos_code} value={b.pos_code}>
@@ -215,19 +212,18 @@ export default function ReportsPage() {
 
               {activeConfig.hasPartnerFilter && (
                 <div className="flex flex-col gap-1">
-                  <label className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">
-                    Partner
-                  </label>
-                  <div className="flex rounded-md border border-slate-200 overflow-hidden text-xs">
+                  <label className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">Partner</label>
+                  <div className="flex rounded-lg border border-slate-200 overflow-hidden text-sm">
                     {(["ALL", "GRAB", "PANDA"] as const).map((p) => (
                       <button
                         key={p}
                         onClick={() => handlePartnerTypeChange(p)}
-                        className={`px-3 py-1.5 font-medium transition-colors ${
+                        className={`px-3 py-2 font-medium transition-colors ${
                           filters.partnerType === p
                             ? "bg-indigo-600 text-white"
                             : "text-slate-600 hover:bg-slate-50"
-                        }`}>
+                        }`}
+                      >
                         {p === "ALL" ? "All" : p}
                       </button>
                     ))}
@@ -235,12 +231,9 @@ export default function ReportsPage() {
                 </div>
               )}
 
-              {/* Quick date presets */}
               <div className="flex flex-col gap-1">
-                <label className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">
-                  Quick Select
-                </label>
-                <div className="flex gap-1">
+                <label className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">Quick Select</label>
+                <div className="flex flex-wrap gap-2">
                   {[
                     { label: "Today", fn: () => ({ dateFrom: today, dateTo: today }) },
                     { label: "This Month", fn: () => ({ dateFrom: firstOfMonth, dateTo: today }) },
@@ -264,7 +257,8 @@ export default function ReportsPage() {
                     <button
                       key={preset.label}
                       onClick={() => setFilters((f) => ({ ...f, ...preset.fn() }))}
-                      className="rounded border border-slate-200 px-2 py-1 text-[10px] font-medium text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition-colors">
+                      className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-slate-600 hover:bg-slate-100 transition-colors"
+                    >
                       {preset.label}
                     </button>
                   ))}
@@ -273,51 +267,49 @@ export default function ReportsPage() {
             </div>
           </div>
 
-          {/* ── Result area ── */}
-          <div className="flex-1 overflow-auto">
-            {/* Stats bar */}
-            {hasRun && !loading && (
-              <div className="border-b border-slate-100 bg-white px-6 py-2 flex items-center gap-6">
-                <span className="text-xs text-slate-500">
-                  <span className="font-semibold text-slate-800">
-                    {summaryStats.total.toLocaleString()}
-                  </span>{" "}
-                  row{summaryStats.total !== 1 ? "s" : ""}
-                </span>
-                <span className="text-xs text-slate-400">
-                  {filters.dateFrom} → {filters.dateTo}
-                  {filters.branch && branches
-                    ? ` · ${branches.find((b: any) => b.pos_code === filters.branch)?.pos_name ?? filters.branch}`
-                    : ""}
-                  {activeConfig.hasPartnerFilter ? ` · ${filters.partnerType}` : ""}
-                </span>
-              </div>
-            )}
+          <div className="mt-4 flex min-h-0 overflow-auto">
+            <div className="w-full">
+              {hasRun && !loading && (
+                <div className="rounded-2xl border border-slate-200 bg-white px-6 py-4 shadow-sm">
+                  <span className="text-xs text-slate-500">
+                    <span className="font-semibold text-slate-800">{summaryStats.total.toLocaleString()}</span>{" "}
+                    row{summaryStats.total !== 1 ? "s" : ""}
+                  </span>
+                  <span className="ml-4 text-xs text-slate-400">
+                    {filters.dateFrom} → {filters.dateTo}
+                    {filters.branch && branches
+                      ? ` · ${branches.find((b: any) => b.pos_code === filters.branch)?.pos_name ?? filters.branch}`
+                      : ""}
+                    {activeConfig.hasPartnerFilter ? ` · ${filters.partnerType}` : ""}
+                  </span>
+                </div>
+              )}
 
-            {loading ? (
-              <LoadingState />
-            ) : !hasRun ? (
-              <div className="flex flex-col items-center justify-center py-24 text-slate-400">
-                <svg
-                  className="mb-4 h-12 w-12 opacity-30"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M9 17v-2a4 4 0 014-4h0a4 4 0 014 4v2M3 21h18M12 3a4 4 0 100 8 4 4 0 000-8z"
-                  />
-                </svg>
-                <p className="text-sm font-medium">
-                  Set your filters and click <span className="text-indigo-500">Run Report</span>
-                </p>
-                <p className="text-xs mt-1 text-slate-300">{activeConfig.description}</p>
+              <div className="mt-4 min-h-64">
+                {loading ? (
+                  <LoadingState />
+                ) : !hasRun ? (
+                  <div className="flex min-h-64 flex-col items-center justify-center rounded-2xl border border-dashed border-slate-200 bg-white p-10 text-slate-400 shadow-sm">
+                    <svg className="mb-4 h-12 w-12 opacity-30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.5}
+                        d="M9 17v-2a4 4 0 014-4h0a4 4 0 014 4v2M3 21h18M12 3a4 4 0 100 8 4 4 0 000-8z"
+                      />
+                    </svg>
+                    <p className="text-sm font-medium">
+                      Set your filters and click <span className="text-indigo-600">Run Report</span>
+                    </p>
+                    <p className="text-xs mt-1 text-slate-400">{activeConfig.description}</p>
+                  </div>
+                ) : (
+                  <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                    <TableComponent data={data} />
+                  </div>
+                )}
               </div>
-            ) : (
-              <TableComponent data={data} />
-            )}
+            </div>
           </div>
         </div>
       </div>
