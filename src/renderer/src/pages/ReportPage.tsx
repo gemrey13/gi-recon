@@ -176,7 +176,7 @@ export default function ReportsPage() {
               </div>
             </div>
 
-            <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+            <div className="mt-6 mb-2 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
               <div className="flex flex-col gap-1">
                 <label className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">
                   From
@@ -223,7 +223,7 @@ export default function ReportsPage() {
                   <label className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">
                     Partner
                   </label>
-                  <div className="flex rounded-lg border border-slate-200 overflow-hidden text-sm">
+                  <div className="flex rounded-lg border border-slate-200 overflow-hidden text-sm w-fit">
                     {(["ALL", "GRAB", "PANDA"] as const).map((p) => (
                       <button
                         key={p}
@@ -239,48 +239,48 @@ export default function ReportsPage() {
                   </div>
                 </div>
               )}
+            </div>
 
-              <div className="flex flex-col gap-1">
-                <label className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">
-                  Quick Select
-                </label>
-                <div className="flex flex-wrap gap-2">
-                  {[
-                    { label: "Today", fn: () => ({ dateFrom: today, dateTo: today }) },
-                    {
-                      label: "Yesterday",
-                      fn: () => {
-                        const d = new Date();
-                        d.setDate(d.getDate() - 1);
-                        return { dateFrom: d.toISOString().slice(0, 10), dateTo: today };
-                      },
+            <div className="flex flex-col gap-1">
+              <label className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+                Quick Select
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { label: "Today", fn: () => ({ dateFrom: today, dateTo: today }) },
+                  {
+                    label: "Yesterday",
+                    fn: () => {
+                      const d = new Date();
+                      d.setDate(d.getDate() - 1);
+                      return { dateFrom: d.toISOString().slice(0, 10), dateTo: today };
                     },
-                    { label: "This Month", fn: () => ({ dateFrom: firstOfMonth, dateTo: today }) },
-                    {
-                      label: "Last 7d",
-                      fn: () => {
-                        const d = new Date();
-                        d.setDate(d.getDate() - 6);
-                        return { dateFrom: d.toISOString().slice(0, 10), dateTo: today };
-                      },
+                  },
+                  { label: "This Month", fn: () => ({ dateFrom: firstOfMonth, dateTo: today }) },
+                  {
+                    label: "Last 7d",
+                    fn: () => {
+                      const d = new Date();
+                      d.setDate(d.getDate() - 6);
+                      return { dateFrom: d.toISOString().slice(0, 10), dateTo: today };
                     },
-                    {
-                      label: "Last 30d",
-                      fn: () => {
-                        const d = new Date();
-                        d.setDate(d.getDate() - 29);
-                        return { dateFrom: d.toISOString().slice(0, 10), dateTo: today };
-                      },
+                  },
+                  {
+                    label: "Last 30d",
+                    fn: () => {
+                      const d = new Date();
+                      d.setDate(d.getDate() - 29);
+                      return { dateFrom: d.toISOString().slice(0, 10), dateTo: today };
                     },
-                  ].map((preset) => (
-                    <button
-                      key={preset.label}
-                      onClick={() => setFilters((f) => ({ ...f, ...preset.fn() }))}
-                      className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-slate-600 hover:bg-slate-100 transition-colors">
-                      {preset.label}
-                    </button>
-                  ))}
-                </div>
+                  },
+                ].map((preset) => (
+                  <button
+                    key={preset.label}
+                    onClick={() => setFilters((f) => ({ ...f, ...preset.fn() }))}
+                    className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-slate-600 hover:bg-slate-100 transition-colors">
+                    {preset.label}
+                  </button>
+                ))}
               </div>
             </div>
           </div>
