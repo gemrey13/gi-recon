@@ -166,7 +166,7 @@ export default function SettingsPage() {
                     Display Navigation Sidebar
                   </label>
                   <span className="text-xs text-slate-500">
-                    Keep the secondary main page navigation open by default.
+                    Keep the sidebar navigation open by default.
                   </span>
                 </div>
                 <input
