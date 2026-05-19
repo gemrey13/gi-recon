@@ -100,7 +100,7 @@ export default function ReportsPage() {
             <button
               onClick={runReport}
               disabled={loading}
-              className="flex items-center gap-2 rounded-lg bg-indigo-600 active:scale-95 px-4 py-2 font-semibold text-white hover:bg-indigo-500 disabled:opacity-50 transition-colors">
+              className="btn-primary bg-indigo-600 hover:bg-indigo-500">
               {loading ? (
                 <>
                   <div className="h-3 w-3 animate-spin rounded-full border-2 border-white/40 border-t-white" />
