@@ -85,7 +85,7 @@ export default function ReportsPage() {
                     data,
                   )
                 }
-                className="flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-4 py-2 active:scale-95 font-semibold text-slate-700 hover:bg-slate-100 transition-colors">
+                className="flex items-center gap-2 cursor-pointer rounded-lg border border-slate-200 bg-slate-50 px-4 py-2 active:scale-95 font-semibold text-slate-700 hover:bg-slate-100 transition-colors">
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path
                     strokeLinecap="round"
