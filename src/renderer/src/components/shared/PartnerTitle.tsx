@@ -18,12 +18,12 @@ const PartnerTitle = ({ onAddPartner, onAddPartnerBatch, title }: PartnerTitlePr
       <div className="flex gap-3">
         <button
           onClick={onAddPartner}
-          className="flex items-center gap-2 rounded-lg bg-indigo-600 active:scale-95 px-4 py-2 font-semibold text-white hover:bg-indigo-500 disabled:opacity-50 transition-colors cursor-pointer">
+          className="btn-primary bg-indigo-600 hover:bg-indigo-500">
           <span>+</span> Manual Entry
         </button>
         <button
           onClick={onAddPartnerBatch}
-          className="flex items-center gap-2 rounded-lg bg-green-600 active:scale-95 px-4 py-2 font-semibold text-white hover:bg-green-500 disabled:opacity-50 transition-colors cursor-pointer">
+          className="btn-primary bg-green-600 hover:bg-green-500">
           <span>↑</span> Batch Import Records
         </button>
       </div>
