@@ -112,7 +112,7 @@ export default function SettingsPage() {
           <button
             onClick={handleSave}
             disabled={isSaving}
-            className="bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-sm">
+            className="btn-primary bg-indigo-600 hover:bg-indigo-500">
             {isSaving ? "Saving..." : "Save Configuration"}
           </button>
         </div>
