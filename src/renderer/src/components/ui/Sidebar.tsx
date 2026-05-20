@@ -11,7 +11,7 @@ const SideBar = () => {
 
       <aside className="w-64 h-full bg-slate-900 text-white flex flex-col p-4 shadow-xl">
         <h1 className="text-xl font-black mb-10 px-2 tracking-tight">
-          Gi-Recon <span className="text-indigo-400">PRO</span>
+          Gi-Recon <span className="text-indigo-400">v1.0</span>
         </h1>
 
         <nav className="space-y-2 flex-1">
