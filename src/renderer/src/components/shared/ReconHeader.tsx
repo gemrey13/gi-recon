@@ -13,7 +13,7 @@ interface ReconHeaderProps {
   onRunRecon: () => void;
 }
 
-const PARTNER_LABEL: Record<PartnerType, { label: string; className: string }> = {
+const PARTNER_LABEL: Record<"PANDA" | "GRAB", { label: string; className: string }> = {
   GRAB: {
     label: "GrabFood",
     className: "bg-green-100 text-green-700 border border-green-200",
