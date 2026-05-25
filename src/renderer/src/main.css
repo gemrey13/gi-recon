@@ -1,40 +1,39 @@
 @import "tailwindcss";
 
-
 @layer components {
   .btn-primary {
     @apply flex items-center gap-2 rounded-lg active:scale-95 px-4 py-2 font-semibold text-white disabled:opacity-50 transition-colors cursor-pointer;
   }
 
   .input-report {
-    @apply rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100
+    @apply rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100;
   }
 
   .label-report {
-    @apply text-[10px] font-semibold uppercase tracking-wide text-slate-400
+    @apply text-[10px] font-semibold uppercase tracking-wide text-slate-400;
   }
 
   .main-container {
-    @apply space-y-6 max-w-400 mx-auto
+    @apply space-y-6 max-w-400 mx-auto;
   }
 
   .tab-button-setting {
-    @apply text-left px-4 py-2.5 rounded-lg text-sm transition-colors duration-300
+    @apply text-left px-4 py-2.5 rounded-lg text-sm transition-colors duration-300;
   }
 
   .tab-active-setting {
-    @apply text-indigo-600 bg-indigo-50 font-semibold
+    @apply text-indigo-600 bg-indigo-50 font-semibold;
   }
 
   .tab-idle-setting {
-    @apply text-slate-500 hover:text-slate-900 hover:bg-slate-50
+    @apply text-slate-500 hover:text-slate-900 hover:bg-slate-50;
   }
 
   .title-header {
-    @apply text-3xl font-black text-slate-900 tracking-tight
+    @apply text-3xl font-black text-slate-900 tracking-tight;
   }
 
   .description-header {
-    @apply text-slate-500 font-medium mt-1
+    @apply text-slate-500 font-medium mt-1;
   }
 }
