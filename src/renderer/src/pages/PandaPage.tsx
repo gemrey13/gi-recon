@@ -61,7 +61,7 @@ const PandaPage = () => {
     : (reconData?.unmatchedPartner ?? []);
 
   return (
-    <div className="space-y-6 max-w-400 mx-auto">
+    <div className="main-container">
       <PartnerTitle
         onAddPartner={() => setShowAddPanda(true)}
         onAddPartnerBatch={() => setShowAddPandaBatch(true)}

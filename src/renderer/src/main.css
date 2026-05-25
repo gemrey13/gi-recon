@@ -13,4 +13,8 @@
   .label-report {
     @apply text-[10px] font-semibold uppercase tracking-wide text-slate-400
   }
+
+  .main-container {
+    @apply space-y-6 max-w-400 mx-auto
+  }
 }

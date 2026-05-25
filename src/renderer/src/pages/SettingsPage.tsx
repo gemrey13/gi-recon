@@ -88,7 +88,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="space-y-6 max-w-400 mx-auto">
+    <div className="main-container">
       {/* Header section */}
       <div className="flex items-center justify-between border-b border-slate-200 pb-4">
         <div>

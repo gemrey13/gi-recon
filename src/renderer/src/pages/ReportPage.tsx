@@ -66,7 +66,7 @@ export default function ReportsPage() {
   const summaryStats = { total: data.length };
 
   return (
-    <div className="space-y-6 max-w-400 mx-auto">
+    <div className="main-container">
       <div className="border-b border-slate-200 pb-4">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
