@@ -156,9 +156,7 @@ export default function SettingsPage() {
 
               <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-200">
                 <div className="flex flex-col gap-1">
-                  <label className="label-setting">
-                    Display Navigation Sidebar
-                  </label>
+                  <label className="label-setting">Display Navigation Sidebar</label>
                   <span className="text-xs text-slate-500">
                     Keep the sidebar navigation open by default.
                   </span>
@@ -187,9 +185,7 @@ export default function SettingsPage() {
 
               {/* Input Form Group: Root Directory */}
               <div className="flex flex-col gap-2">
-                <label className="label-setting">
-                  Root Folder Directory Path
-                </label>
+                <label className="label-setting">Root Folder Directory Path</label>
                 <input
                   type="text"
                   value={config.partners[activeTab]?.rootFolder || ""}
@@ -220,9 +216,7 @@ export default function SettingsPage() {
 
                 {/* Input Form Group: Skip Row Primary Key Identifier */}
                 <div className="flex flex-col gap-2">
-                  <label className="label-setting">
-                    Skip Rows Tracking Key
-                  </label>
+                  <label className="label-setting">Skip Rows Tracking Key</label>
                   <input
                     type="text"
                     value={config.partners[activeTab]?.skipKey || ""}
