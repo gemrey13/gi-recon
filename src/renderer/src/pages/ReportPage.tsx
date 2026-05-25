@@ -70,8 +70,8 @@ export default function ReportsPage() {
       <div className="border-b border-slate-200 pb-4">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-3xl font-black text-slate-900 tracking-tight">Reports</h1>
-            <p className="text-slate-500 font-medium mt-1">
+            <h1 className="title-header">Reports</h1>
+            <p className="description-header">
               Generate and export reconciliation reports for reconciliation, sales, branch
               performance, and audit logs.
             </p>

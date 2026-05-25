@@ -8,10 +8,10 @@ const PartnerTitle = ({ onAddPartner, onAddPartnerBatch, title }: PartnerTitlePr
   return (
     <div className="flex justify-between items-end mb-8 border-b border-slate-200 pb-4">
       <div>
-        <h1 className="text-3xl font-black text-slate-900 tracking-tight">
+        <h1 className="title-header">
           {title} Reconciliation
         </h1>
-        <p className="text-slate-500 font-medium mt-1">
+        <p className="description-header">
           Sync your POS logs with {title} merchant reports to identify discrepancies.
         </p>
       </div>

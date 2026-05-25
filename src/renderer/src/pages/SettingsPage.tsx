@@ -92,8 +92,8 @@ export default function SettingsPage() {
       {/* Header section */}
       <div className="flex items-center justify-between border-b border-slate-200 pb-4">
         <div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Settings</h1>
-          <p className="text-slate-500 font-medium mt-1">
+          <h1 className="title-header">Settings</h1>
+          <p className="description-header">
             Configure your app behavior, directories, and data processing keys.
           </p>
         </div>

@@ -25,4 +25,12 @@
   .tab-idle-setting {
     @apply text-slate-500 hover:text-slate-900 hover:bg-slate-50
   }
+
+  .title-header {
+    @apply text-3xl font-black text-slate-900 tracking-tight
+  }
+
+  .description-header {
+    @apply text-slate-500 font-medium mt-1
+  }
 }
