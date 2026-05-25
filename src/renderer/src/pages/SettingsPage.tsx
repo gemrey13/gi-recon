@@ -125,27 +125,21 @@ export default function SettingsPage() {
           <button
             onClick={() => setActiveTab("general")}
             className={`text-left px-4 py-2.5 rounded-lg text-sm transition-colors duration-300 ${
-              activeTab === "general"
-                ? "text-indigo-600 bg-indigo-50 font-semibold"
-                : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
+              activeTab === "general" ? "tab-active-setting" : "tab-idle-setting"
             }`}>
             General App Settings
           </button>
           <button
             onClick={() => setActiveTab("PANDA")}
             className={`text-left px-4 py-2.5 rounded-lg text-sm transition-colors duration-300 ${
-              activeTab === "PANDA"
-                ? "text-indigo-600 bg-indigo-50 font-semibold"
-                : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
+              activeTab === "PANDA" ? "tab-active-setting" : "tab-idle-setting"
             }`}>
             Foodpanda (PANDA)
           </button>
           <button
             onClick={() => setActiveTab("GRAB")}
             className={`text-left px-4 py-2.5 rounded-lg text-sm transition-colors duration-300 ${
-              activeTab === "GRAB"
-                ? "text-indigo-600 bg-indigo-50 font-semibold"
-                : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
+              activeTab === "GRAB" ? "tab-active-setting" : "tab-idle-setting"
             }`}>
             Grab (GRAB)
           </button>

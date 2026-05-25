@@ -17,4 +17,12 @@
   .main-container {
     @apply space-y-6 max-w-400 mx-auto
   }
+
+  .tab-active-setting {
+    @apply text-indigo-600 bg-indigo-50 font-semibold
+  }
+
+  .tab-idle-setting {
+    @apply text-slate-500 hover:text-slate-900 hover:bg-slate-50
+  }
 }
