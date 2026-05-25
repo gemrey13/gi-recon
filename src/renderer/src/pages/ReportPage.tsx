@@ -178,37 +178,37 @@ export default function ReportsPage() {
 
             <div className="mt-6 mb-2 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
               <div className="flex flex-col gap-1">
-                <label className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+                <label className="label-report">
                   From
                 </label>
                 <input
                   type="date"
                   value={filters.dateFrom}
                   onChange={(e) => setFilters((f) => ({ ...f, dateFrom: e.target.value }))}
-                  className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                  className="input-report"
                 />
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+                <label className="label-report">
                   To
                 </label>
                 <input
                   type="date"
                   value={filters.dateTo}
                   onChange={(e) => setFilters((f) => ({ ...f, dateTo: e.target.value }))}
-                  className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                  className="input-report"
                 />
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+                <label className="label-report">
                   Branch
                 </label>
                 <select
                   value={filters.branch}
                   onChange={(e) => setFilters((f) => ({ ...f, branch: e.target.value }))}
-                  className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100">
+                  className="input-report">
                   <option value="">Select a branch...</option>
                   {branches?.map((b: any) => (
                     <option key={b.pos_code} value={b.pos_code}>
@@ -220,7 +220,7 @@ export default function ReportsPage() {
 
               {activeConfig.hasPartnerFilter && (
                 <div className="flex flex-col gap-1">
-                  <label className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+                  <label className="label-report">
                     Partner
                   </label>
                   <div className="flex rounded-lg border border-slate-200 overflow-hidden text-sm w-fit">
@@ -242,7 +242,7 @@ export default function ReportsPage() {
             </div>
 
             <div className="flex flex-col gap-1">
-              <label className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+              <label className="label-report">
                 Quick Select
               </label>
               <div className="flex flex-wrap gap-2">
