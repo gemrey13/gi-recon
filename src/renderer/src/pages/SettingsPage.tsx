@@ -124,21 +124,21 @@ export default function SettingsPage() {
         <nav className="lg:col-span-3 flex flex-col gap-2 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
           <button
             onClick={() => setActiveTab("general")}
-            className={`text-left px-4 py-2.5 rounded-lg text-sm transition-colors duration-300 ${
+            className={`tab-button-setting ${
               activeTab === "general" ? "tab-active-setting" : "tab-idle-setting"
             }`}>
             General App Settings
           </button>
           <button
             onClick={() => setActiveTab("PANDA")}
-            className={`text-left px-4 py-2.5 rounded-lg text-sm transition-colors duration-300 ${
+            className={`tab-button-setting ${
               activeTab === "PANDA" ? "tab-active-setting" : "tab-idle-setting"
             }`}>
             Foodpanda (PANDA)
           </button>
           <button
             onClick={() => setActiveTab("GRAB")}
-            className={`text-left px-4 py-2.5 rounded-lg text-sm transition-colors duration-300 ${
+            className={`tab-button-setting ${
               activeTab === "GRAB" ? "tab-active-setting" : "tab-idle-setting"
             }`}>
             Grab (GRAB)

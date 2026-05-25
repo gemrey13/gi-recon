@@ -18,6 +18,10 @@
     @apply space-y-6 max-w-400 mx-auto
   }
 
+  .tab-button-setting {
+    @apply text-left px-4 py-2.5 rounded-lg text-sm transition-colors duration-300
+  }
+
   .tab-active-setting {
     @apply text-indigo-600 bg-indigo-50 font-semibold
   }
