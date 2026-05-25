@@ -156,7 +156,7 @@ export default function SettingsPage() {
 
               <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-200">
                 <div className="flex flex-col gap-1">
-                  <label className="text-sm font-semibold text-slate-700">
+                  <label className="label-setting">
                     Display Navigation Sidebar
                   </label>
                   <span className="text-xs text-slate-500">
@@ -187,7 +187,7 @@ export default function SettingsPage() {
 
               {/* Input Form Group: Root Directory */}
               <div className="flex flex-col gap-2">
-                <label className="text-sm font-semibold text-slate-700">
+                <label className="label-setting">
                   Root Folder Directory Path
                 </label>
                 <input
@@ -205,7 +205,7 @@ export default function SettingsPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Input Form Group: Worksheet Name */}
                 <div className="flex flex-col gap-2">
-                  <label className="text-sm font-semibold text-slate-700">Target Sheet Name</label>
+                  <label className="label-setting">Target Sheet Name</label>
                   <input
                     type="text"
                     value={config.partners[activeTab]?.sheetName || ""}
@@ -220,7 +220,7 @@ export default function SettingsPage() {
 
                 {/* Input Form Group: Skip Row Primary Key Identifier */}
                 <div className="flex flex-col gap-2">
-                  <label className="text-sm font-semibold text-slate-700">
+                  <label className="label-setting">
                     Skip Rows Tracking Key
                   </label>
                   <input
@@ -245,7 +245,7 @@ export default function SettingsPage() {
 
                   <div className="flex items-center justify-between">
                     <div className="flex flex-col gap-1">
-                      <label className="text-sm font-semibold text-slate-700">
+                      <label className="label-setting">
                         Force Cell Dates Aggregation (`cellDates`)
                       </label>
                       <span className="text-xs text-slate-500">

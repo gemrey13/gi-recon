@@ -29,6 +29,10 @@
     @apply text-slate-500 hover:text-slate-900 hover:bg-slate-50;
   }
 
+  .label-setting {
+    @apply text-sm font-semibold text-slate-700
+  }
+
   .title-header {
     @apply text-3xl font-black text-slate-900 tracking-tight;
   }
