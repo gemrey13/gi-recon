@@ -9,8 +9,7 @@ interface Props {
   onClose: () => void;
 }
 
-const config: Record<
-  PartnerType,
+const config: Record<Exclude<PartnerType, 'ALL'>,
   {
     label: string;
     description: string;

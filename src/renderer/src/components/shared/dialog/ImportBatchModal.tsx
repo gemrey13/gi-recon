@@ -9,8 +9,7 @@ interface Props {
   onCancel: () => void;
 }
 
-const config: Record<
-  PartnerType,
+const config: Record<Exclude<PartnerType, 'ALL'>,
   {
     label: string;
     apiCall: () => Promise<any>;

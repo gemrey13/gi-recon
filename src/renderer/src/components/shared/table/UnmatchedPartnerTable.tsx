@@ -9,7 +9,7 @@ import { useState } from "react";
 
 // ─── Config ───────────────────────────────────────────────────────────────────
 
-const PARTNER_CONFIG: Record<PartnerType, { label: string; accentClass: string }> = {
+const PARTNER_CONFIG: Record<Exclude<PartnerType, 'ALL'>, { label: string; accentClass: string }> = {
   GRAB: { label: "Grab", accentClass: "text-green-600" },
   PANDA: { label: "foodpanda", accentClass: "text-pink-600" },
 };
