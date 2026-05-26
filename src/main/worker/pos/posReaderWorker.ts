@@ -103,10 +103,50 @@ function isValidRow(row: any) {
   return name === "PANDA" || name === "GRAB";
 }
 
+// Find the latest numbered folder (e.g. 01, 02, 03, 04 → returns "04")
+function getLatestMonthFolder(branchYearPath: string): string | null {
+  if (!fs.existsSync(branchYearPath)) return null;
+
+  const folders = fs
+    .readdirSync(branchYearPath)
+    .filter((f) => {
+      const full = path.join(branchYearPath, f);
+      return fs.statSync(full).isDirectory() && /^\d+$/.test(f);
+    })
+    .sort((a, b) => Number(b) - Number(a)); // descending, highest first
+
+  return folders.length > 0 ? folders[0] : null;
+}
+
+// Find the GC zip file inside a folder (e.g. GC013126.ZIP — name may vary)
+function findGCZip(monthFolderPath: string): string | null {
+  if (!fs.existsSync(monthFolderPath)) return null;
+
+  const file = fs
+    .readdirSync(monthFolderPath)
+    .find((f) => f.toUpperCase().startsWith("GC") && f.toUpperCase().endsWith(".ZIP"));
+
+  return file ? path.join(monthFolderPath, file) : null;
+}
+
 // Process a single branch
 async function processBranch(branch: string) {
-  const zipPath = path.join(rootFolder, branch, "2026", "01", "GC013126.ZIP");
-  if (!fs.existsSync(zipPath)) return;
+  const branchYearPath = path.join(rootFolder, branch, "2026");
+
+  const latestMonth = getLatestMonthFolder(branchYearPath);
+  if (!latestMonth) {
+    console.log(`[Reader][${branch}] No month folders found, skipping.`);
+    return;
+  }
+
+  const monthFolderPath = path.join(branchYearPath, latestMonth);
+  const zipPath = findGCZip(monthFolderPath);
+  if (!zipPath) {
+    console.log(`[Reader][${branch}] No GC zip found in ${monthFolderPath}, skipping.`);
+    return;
+  }
+
+  console.log(`[Reader][${branch}] Using latest month: ${latestMonth} → ${zipPath}`);
 
   const tmpDir = path.join(os.tmpdir(), "pos-import");
   if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir, { recursive: true });
@@ -143,7 +183,7 @@ async function processBranch(branch: string) {
       if (!isValidRow(row)) continue;
       batch.push({
         ...mapRow(branch, row),
-        branch_name, // add the branch_name from SYSINFO
+        branch_name,
       });
     }
 
@@ -155,7 +195,6 @@ async function processBranch(branch: string) {
 
   if (batch.length) parentPort?.postMessage({ batch, branch });
 
-  // Clean up temp file
   fs.unlinkSync(tmpPath);
 }
 
