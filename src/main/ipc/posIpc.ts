@@ -62,6 +62,7 @@ export function registerPosIpc() {
           rootFolder,
           batchSize,
           year: config.pos.year,
+          month: config.pos.month,
           zipPassword: config.pos.zipPassword,
         },
       });

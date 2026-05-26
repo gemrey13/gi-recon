@@ -6,11 +6,12 @@ import { DBFFile } from "dbffile";
 import os from "os";
 import { formatString, toNumber, toSqliteDateTime } from "../../utils";
 
-const { branches, rootFolder, batchSize, year, zipPassword } = workerData as {
+const { branches, rootFolder, batchSize, year, month, zipPassword } = workerData as {
   branches: string[];
   rootFolder: string;
   batchSize: number;
   year: number;
+  month: number;
   zipPassword: string;
 };
 
@@ -136,20 +137,30 @@ function findGCZip(monthFolderPath: string): string | null {
 async function processBranch(branch: string) {
   const branchYearPath = path.join(rootFolder, branch, String(year));
 
-  const latestMonth = getLatestMonthFolder(branchYearPath);
-  if (!latestMonth) {
-    console.log(`[Reader][${branch}] No month folders found, skipping.`);
-    return;
+  let targetMonth: string | null;
+  if (month !== null && month !== undefined) {
+    targetMonth = String(month).padStart(2, "0"); // e.g. 4 → "04"
+    const fullPath = path.join(branchYearPath, targetMonth);
+    if (!fs.existsSync(fullPath)) {
+      console.log(`[Reader][${branch}] Month folder ${targetMonth} not found, skipping.`);
+      return;
+    }
+  } else {
+    targetMonth = getLatestMonthFolder(branchYearPath);
+    if (!targetMonth) {
+      console.log(`[Reader][${branch}] No month folders found, skipping.`);
+      return;
+    }
   }
 
-  const monthFolderPath = path.join(branchYearPath, latestMonth);
+  const monthFolderPath = path.join(branchYearPath, targetMonth);
   const zipPath = findGCZip(monthFolderPath);
   if (!zipPath) {
     console.log(`[Reader][${branch}] No GC zip found in ${monthFolderPath}, skipping.`);
     return;
   }
 
-  console.log(`[Reader][${branch}] Using latest month: ${latestMonth} → ${zipPath}`);
+  console.log(`[Reader][${branch}] Using latest month: ${targetMonth} → ${zipPath}`);
 
   const tmpDir = path.join(os.tmpdir(), "pos-import");
   if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir, { recursive: true });

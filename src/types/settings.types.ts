@@ -13,6 +13,7 @@ export interface BatchImportConfig {
 
 export interface PosConfiguration {
   year: number;
+  month: number;
   zipPassword: string;
 }
 

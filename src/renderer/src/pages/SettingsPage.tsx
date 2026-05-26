@@ -294,6 +294,29 @@ export default function SettingsPage() {
               </div>
 
               <div className="flex flex-col gap-2">
+                <label className="label-setting">Target Month</label>
+                <select
+                  value={config.pos.month ?? ""}
+                  onChange={(e) =>
+                    setConfig({
+                      ...config,
+                      pos: { ...config.pos, month: Number(e.target.value) },
+                    })
+                  }
+                  className="button-setting">
+                  <option value="01">-- Select Month --</option>
+                  {Array.from({ length: 12 }, (_, i) => i + 1).map((m) => (
+                    <option key={m} value={m}>
+                      {new Date(0, m - 1).toLocaleString("default", { month: "long" })}
+                    </option>
+                  ))}
+                </select>
+                <span className="text-xs text-slate-500">
+                  Only transactions from this month will be imported from POS backup files.
+                </span>
+              </div>
+
+              <div className="flex flex-col gap-2">
                 <label className="label-setting">ZIP Password</label>
                 <div className="relative">
                   <input
