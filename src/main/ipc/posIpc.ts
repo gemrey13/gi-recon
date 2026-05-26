@@ -1,77 +1,79 @@
-import { ipcMain, dialog, app } from 'electron'
-import path from 'path'
-import fs from 'fs'
-import os from 'os'
-import unzipper from 'unzipper'
-import createPosWorkerReader from '../worker/pos/posReaderWorker?nodeWorker'
-import createPosWorkerWriter from '../worker/pos/posWriterWorker?nodeWorker'
+import { ipcMain, dialog, app } from "electron";
+import path from "path";
+import fs from "fs";
+import os from "os";
+import unzipper from "unzipper";
+import createPosWorkerReader from "../worker/pos/posReaderWorker?nodeWorker";
+import createPosWorkerWriter from "../worker/pos/posWriterWorker?nodeWorker";
+import { readConfig } from "../config";
 
 export function registerPosIpc() {
-  ipcMain.handle('POS:importZip', async () => {
+  ipcMain.handle("POS:importZip", async () => {
     const { canceled, filePaths } = await dialog.showOpenDialog({
-      properties: ['openFile'],
-      filters: [{ name: 'Zip Files', extensions: ['zip'] }]
-    })
+      properties: ["openFile"],
+      filters: [{ name: "Zip Files", extensions: ["zip"] }],
+    });
 
     if (canceled || filePaths.length === 0) {
-      return { totalInserted: 0, message: 'No POS file selected' }
+      return { totalInserted: 0, message: "No POS file selected" };
     }
 
-    const zipPath = filePaths[0]
-    const startTime = new Date()
-    console.log(`[Main] Import (ZIP) started at ${startTime.toLocaleString()}`)
+    const zipPath = filePaths[0];
+    const startTime = new Date();
+    console.log(`[Main] Import (ZIP) started at ${startTime.toLocaleString()}`);
 
-    const extractDir = path.join(app.getPath('temp'), `pos_extract_${Date.now()}`)
-    fs.mkdirSync(extractDir, { recursive: true })
+    const extractDir = path.join(app.getPath("temp"), `pos_extract_${Date.now()}`);
+    fs.mkdirSync(extractDir, { recursive: true });
 
     await new Promise((resolve, reject) => {
       fs.createReadStream(zipPath)
         .pipe(unzipper.Extract({ path: extractDir }))
-        .on('close', resolve)
-        .on('error', reject)
-    })
+        .on("close", resolve)
+        .on("error", reject);
+    });
 
-    const rootFolder = extractDir
-    const dbPath = path.join(app.getPath('userData'), 'pos.db')
+    const rootFolder = extractDir;
+    const dbPath = path.join(app.getPath("userData"), "pos.db");
 
     const allBranches = fs
       .readdirSync(rootFolder)
-      .filter((f) => fs.statSync(path.join(rootFolder, f)).isDirectory())
+      .filter((f) => fs.statSync(path.join(rootFolder, f)).isDirectory());
 
-    const numReaders = os.cpus().length
-    const batchSize = 1000
+    const numReaders = os.cpus().length;
+    const batchSize = 1000;
 
-    const readerGroups: string[][] = Array.from({ length: numReaders }, () => [])
-    allBranches.forEach((b, i) => readerGroups[i % numReaders].push(b))
+    const readerGroups: string[][] = Array.from({ length: numReaders }, () => []);
+    allBranches.forEach((b, i) => readerGroups[i % numReaders].push(b));
 
-    const writerWorker = createPosWorkerWriter({ workerData: { dbPath } })
+    const writerWorker = createPosWorkerWriter({ workerData: { dbPath } });
     const writerPromise = new Promise<number>((resolve) => {
-      writerWorker.on('message', (msg) => {
-        if ('totalInserted' in msg) resolve(msg.totalInserted)
-      })
-    })
+      writerWorker.on("message", (msg) => {
+        if ("totalInserted" in msg) resolve(msg.totalInserted);
+      });
+    });
 
+    const config = readConfig();
     const readerPromises = readerGroups.map((group) => {
       const reader = createPosWorkerReader({
-        workerData: { branches: group, rootFolder, batchSize }
-      })
-      reader.on('message', (msg) => writerWorker.postMessage(msg))
-      return new Promise<void>((resolve) => reader.on('exit', () => resolve()))
-    })
+        workerData: { branches: group, rootFolder, batchSize, year: config.pos.year },
+      });
+      reader.on("message", (msg) => writerWorker.postMessage(msg));
+      return new Promise<void>((resolve) => reader.on("exit", () => resolve()));
+    });
 
-    await Promise.all(readerPromises)
-    writerWorker.postMessage({ done: true })
+    await Promise.all(readerPromises);
+    writerWorker.postMessage({ done: true });
 
-    await writerPromise
+    await writerPromise;
 
-    fs.rmSync(extractDir, { recursive: true, force: true })
+    fs.rmSync(extractDir, { recursive: true, force: true });
 
-    const endTime = new Date()
-    console.log(`[Main] Import finished at ${endTime.toLocaleString()}`)
-    console.log(`[Main] Total time: ${(endTime.getTime() - startTime.getTime()) / 1000}s`)
+    const endTime = new Date();
+    console.log(`[Main] Import finished at ${endTime.toLocaleString()}`);
+    console.log(`[Main] Total time: ${(endTime.getTime() - startTime.getTime()) / 1000}s`);
 
-    const totalTime = ((endTime.getTime() - startTime.getTime()) / 1000).toFixed(2)
+    const totalTime = ((endTime.getTime() - startTime.getTime()) / 1000).toFixed(2);
 
-    return { message: `Added POS file in ${totalTime}s` }
-  })
+    return { message: `Added POS file in ${totalTime}s` };
+  });
 }

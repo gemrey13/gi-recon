@@ -6,6 +6,7 @@ import { BatchImportConfig, PartnerType } from "./types";
 interface AppConfiguration {
   showSidebar: boolean;
   partners: Record<PartnerType, Partial<BatchImportConfig>>;
+  pos: { year: number };
 }
 
 const DEFAULT_CONFIGS: AppConfiguration = {
@@ -22,6 +23,9 @@ const DEFAULT_CONFIGS: AppConfiguration = {
       sheetName: "Transactions",
       skipKey: "Booking ID",
     },
+  },
+  pos: {
+    year: 2026,
   },
 };
 

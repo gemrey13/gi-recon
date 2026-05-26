@@ -6,10 +6,11 @@ import { DBFFile } from "dbffile";
 import os from "os";
 import { formatString, toNumber, toSqliteDateTime } from "../../utils";
 
-const { branches, rootFolder, batchSize } = workerData as {
+const { branches, rootFolder, batchSize, year } = workerData as {
   branches: string[];
   rootFolder: string;
   batchSize: number;
+  year: number;
 };
 
 const ZIP_PASSWORD = "admate";
@@ -93,11 +94,12 @@ function isValidRow(row: any) {
   const rawName = row.CUSNAME;
   if (!rawDate || !rawName) return false;
 
-  let year: number | null = null;
-  if (rawDate instanceof Date) year = rawDate.getFullYear();
+  let rowYear: number | null = null;
+  if (rawDate instanceof Date) rowYear = rawDate.getFullYear();
   else if (typeof rawDate === "string" && rawDate.length >= 4)
-    year = Number(rawDate.substring(0, 4));
-  if (year !== 2026) return false;
+    rowYear = Number(rawDate.substring(0, 4));
+
+  if (rowYear !== year) return false;
 
   const name = String(rawName).toUpperCase().trim();
   return name === "PANDA" || name === "GRAB";
