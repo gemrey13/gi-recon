@@ -6,7 +6,7 @@ import { BatchImportConfig, PartnerType } from "./types";
 interface AppConfiguration {
   showSidebar: boolean;
   partners: Record<PartnerType, Partial<BatchImportConfig>>;
-  pos: { year: number };
+  pos: { year: number; zipPassword: string };
 }
 
 const DEFAULT_CONFIGS: AppConfiguration = {
@@ -25,6 +25,7 @@ const DEFAULT_CONFIGS: AppConfiguration = {
     },
   },
   pos: {
+    zipPassword: "admate",
     year: 2026,
   },
 };

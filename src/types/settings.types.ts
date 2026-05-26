@@ -11,7 +11,13 @@ export interface BatchImportConfig {
   xlsxOptions?: XlsxOptions;
 }
 
+export interface PosConfiguration {
+  year: number;
+  zipPassword: string;
+}
+
 export interface AppConfiguration {
   showSidebar: boolean;
   partners: Record<PartnerType, Partial<BatchImportConfig>>;
+  pos: PosConfiguration;
 }

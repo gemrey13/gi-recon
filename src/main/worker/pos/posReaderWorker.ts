@@ -6,14 +6,15 @@ import { DBFFile } from "dbffile";
 import os from "os";
 import { formatString, toNumber, toSqliteDateTime } from "../../utils";
 
-const { branches, rootFolder, batchSize, year } = workerData as {
+const { branches, rootFolder, batchSize, year, zipPassword } = workerData as {
   branches: string[];
   rootFolder: string;
   batchSize: number;
   year: number;
+  zipPassword: string;
 };
 
-const ZIP_PASSWORD = "admate";
+const ZIP_PASSWORD = zipPassword;
 
 // Sanitize generic values
 function sanitizeValue(value: any) {
@@ -133,7 +134,7 @@ function findGCZip(monthFolderPath: string): string | null {
 
 // Process a single branch
 async function processBranch(branch: string) {
-  const branchYearPath = path.join(rootFolder, branch, "2026");
+  const branchYearPath = path.join(rootFolder, branch, String(year));
 
   const latestMonth = getLatestMonthFolder(branchYearPath);
   if (!latestMonth) {

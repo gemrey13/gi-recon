@@ -5,9 +5,10 @@ import { useState, useEffect } from "react";
 
 export default function SettingsPage() {
   const [config, setConfig] = useState<AppConfiguration | null>(null);
-  const [activeTab, setActiveTab] = useState<"general" | "PANDA" | "GRAB">("general");
+  const [activeTab, setActiveTab] = useState<"general" | "PANDA" | "GRAB" | "pos">("general");
   const [isSaving, setIsSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState<"idle" | "success" | "error">("idle");
+  const [showZipPassword, setShowZipPassword] = useState(false);
 
   // Load configuration on mount
   useEffect(() => {
@@ -143,6 +144,13 @@ export default function SettingsPage() {
             }`}>
             Grab (GRAB)
           </button>
+          <button
+            onClick={() => setActiveTab("pos")}
+            className={`tab-button-setting ${
+              activeTab === "pos" ? "tab-active-setting" : "tab-idle-setting"
+            }`}>
+            POS Settings
+          </button>
         </nav>
 
         {/* Dynamic Panels */}
@@ -172,7 +180,7 @@ export default function SettingsPage() {
           )}
 
           {/* Partner Configurations View Panels */}
-          {activeTab !== "general" && (
+          {(activeTab === "PANDA" || activeTab === "GRAB") && (
             <div className="space-y-6 animate-fadeIn">
               <div className="flex items-center gap-3 border-b border-slate-100 pb-2">
                 <h2 className="text-2xl font-bold text-slate-900">
@@ -258,6 +266,86 @@ export default function SettingsPage() {
                   </div>
                 </div>
               )}
+            </div>
+          )}
+          {activeTab === "pos" && (
+            <div className="space-y-6 animate-fadeIn">
+              <h2 className="text-2xl font-bold text-slate-900 border-b border-slate-100 pb-2">
+                POS Settings
+              </h2>
+
+              <div className="flex flex-col gap-2">
+                <label className="label-setting">Target Year</label>
+                <input
+                  type="number"
+                  value={config.pos.year}
+                  onChange={(e) =>
+                    setConfig({
+                      ...config,
+                      pos: { ...config.pos, year: Number(e.target.value) },
+                    })
+                  }
+                  placeholder="2026"
+                  className="button-setting"
+                />
+                <span className="text-xs text-slate-500">
+                  Only transactions from this year will be imported from POS backup files.
+                </span>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label className="label-setting">ZIP Password</label>
+                <div className="relative">
+                  <input
+                    type={showZipPassword ? "text" : "password"}
+                    value={config.pos.zipPassword}
+                    onChange={(e) =>
+                      setConfig({
+                        ...config,
+                        pos: { ...config.pos, zipPassword: e.target.value },
+                      })
+                    }
+                    placeholder="Enter ZIP password"
+                    className="button-setting pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowZipPassword((prev) => !prev)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors">
+                    {showZipPassword ? (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="w-4 h-4"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round">
+                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
+                        <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
+                        <line x1="1" y1="1" x2="23" y2="23" />
+                      </svg>
+                    ) : (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="w-4 h-4"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                        <circle cx="12" cy="12" r="3" />
+                      </svg>
+                    )}
+                  </button>
+                </div>
+                <span className="text-xs text-slate-500">
+                  Password used to decrypt the branch backup ZIP files.
+                </span>
+              </div>
             </div>
           )}
         </main>

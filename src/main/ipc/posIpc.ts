@@ -55,7 +55,7 @@ export function registerPosIpc() {
     const config = readConfig();
     const readerPromises = readerGroups.map((group) => {
       const reader = createPosWorkerReader({
-        workerData: { branches: group, rootFolder, batchSize, year: config.pos.year },
+        workerData: { branches: group, rootFolder, batchSize, year: config.pos.year, zipPassword: config.pos.zipPassword },
       });
       reader.on("message", (msg) => writerWorker.postMessage(msg));
       return new Promise<void>((resolve) => reader.on("exit", () => resolve()));
