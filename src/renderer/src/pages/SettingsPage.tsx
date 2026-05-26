@@ -274,46 +274,48 @@ export default function SettingsPage() {
                 POS Settings
               </h2>
 
-              <div className="flex flex-col gap-2">
-                <label className="label-setting">Target Year</label>
-                <input
-                  type="number"
-                  value={config.pos.year}
-                  onChange={(e) =>
-                    setConfig({
-                      ...config,
-                      pos: { ...config.pos, year: Number(e.target.value) },
-                    })
-                  }
-                  placeholder="2026"
-                  className="button-setting"
-                />
-                <span className="text-xs text-slate-500">
-                  Only transactions from this year will be imported from POS backup files.
-                </span>
-              </div>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div className="flex flex-col gap-2">
+                  <label className="label-setting">Target Year</label>
+                  <input
+                    type="number"
+                    value={config.pos.year}
+                    onChange={(e) =>
+                      setConfig({
+                        ...config,
+                        pos: { ...config.pos, year: Number(e.target.value) },
+                      })
+                    }
+                    placeholder="2026"
+                    className="button-setting"
+                  />
+                  <span className="text-xs text-slate-500">
+                    Only transactions from this year will be imported from POS backup files.
+                  </span>
+                </div>
 
-              <div className="flex flex-col gap-2">
-                <label className="label-setting">Target Month</label>
-                <select
-                  value={config.pos.month ?? ""}
-                  onChange={(e) =>
-                    setConfig({
-                      ...config,
-                      pos: { ...config.pos, month: Number(e.target.value) },
-                    })
-                  }
-                  className="button-setting">
-                  <option value="01">-- Select Month --</option>
-                  {Array.from({ length: 12 }, (_, i) => i + 1).map((m) => (
-                    <option key={m} value={m}>
-                      {new Date(0, m - 1).toLocaleString("default", { month: "long" })}
-                    </option>
-                  ))}
-                </select>
-                <span className="text-xs text-slate-500">
-                  Only transactions from this month will be imported from POS backup files.
-                </span>
+                <div className="flex flex-col gap-2">
+                  <label className="label-setting">Target Month</label>
+                  <select
+                    value={config.pos.month ?? ""}
+                    onChange={(e) =>
+                      setConfig({
+                        ...config,
+                        pos: { ...config.pos, month: Number(e.target.value) },
+                      })
+                    }
+                    className="button-setting">
+                    <option value="01">-- Select Month --</option>
+                    {Array.from({ length: 12 }, (_, i) => i + 1).map((m) => (
+                      <option key={m} value={m}>
+                        {new Date(0, m - 1).toLocaleString("default", { month: "long" })}
+                      </option>
+                    ))}
+                  </select>
+                  <span className="text-xs text-slate-500">
+                    Only transactions from this month will be imported from POS backup files.
+                  </span>
+                </div>
               </div>
 
               <div className="flex flex-col gap-2">
