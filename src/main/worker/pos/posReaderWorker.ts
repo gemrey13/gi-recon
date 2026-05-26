@@ -154,7 +154,14 @@ async function processBranch(branch: string) {
   const tmpDir = path.join(os.tmpdir(), "pos-import");
   if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir, { recursive: true });
 
-  const zip = new AdmZip(zipPath);
+  let zip: AdmZip;
+  try {
+    zip = new AdmZip(zipPath);
+  } catch (err) {
+    console.error(`[Reader][${branch}] Failed to open ZIP: ${err}`);
+    parentPort?.postMessage({ error: "invalid_zip", branch });
+    return;
+  }
 
   let branch_name: string | null = null;
   const sysEntry = zip.getEntries().find((e) => e.entryName.toUpperCase() === "SYSINFO.DBF");

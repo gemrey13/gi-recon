@@ -299,6 +299,7 @@ export default function SettingsPage() {
                   <input
                     type={showZipPassword ? "text" : "password"}
                     value={config.pos.zipPassword}
+                    disabled
                     onChange={(e) =>
                       setConfig({
                         ...config,
@@ -306,7 +307,7 @@ export default function SettingsPage() {
                       })
                     }
                     placeholder="Enter ZIP password"
-                    className="button-setting pr-10"
+                    className="button-setting pr-10 bg-gray-50"
                   />
                   <button
                     type="button"

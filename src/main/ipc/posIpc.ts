@@ -46,6 +46,8 @@ export function registerPosIpc() {
     allBranches.forEach((b, i) => readerGroups[i % numReaders].push(b));
 
     const writerWorker = createPosWorkerWriter({ workerData: { dbPath } });
+    let wrongPassword = false;
+
     const writerPromise = new Promise<number>((resolve) => {
       writerWorker.on("message", (msg) => {
         if ("totalInserted" in msg) resolve(msg.totalInserted);
@@ -55,13 +57,33 @@ export function registerPosIpc() {
     const config = readConfig();
     const readerPromises = readerGroups.map((group) => {
       const reader = createPosWorkerReader({
-        workerData: { branches: group, rootFolder, batchSize, year: config.pos.year, zipPassword: config.pos.zipPassword },
+        workerData: {
+          branches: group,
+          rootFolder,
+          batchSize,
+          year: config.pos.year,
+          zipPassword: config.pos.zipPassword,
+        },
       });
-      reader.on("message", (msg) => writerWorker.postMessage(msg));
+      reader.on("message", (msg) => {
+        if (msg.error === "wrong_password") {
+          wrongPassword = true;
+          console.error(`[Main] Wrong ZIP password reported by branch: ${msg.branch}`);
+        } else {
+          writerWorker.postMessage(msg);
+        }
+      });
       return new Promise<void>((resolve) => reader.on("exit", () => resolve()));
     });
 
     await Promise.all(readerPromises);
+
+    if (wrongPassword) {
+      writerWorker.terminate();
+      fs.rmSync(extractDir, { recursive: true, force: true });
+      return { message: "Import failed: incorrect ZIP password. Please check your POS settings." };
+    }
+
     writerWorker.postMessage({ done: true });
 
     await writerPromise;
