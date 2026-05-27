@@ -274,7 +274,7 @@ export default function SettingsPage() {
                 POS Settings
               </h2>
 
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div className="flex flex-col gap-2">
                   <label className="label-setting">Target Year</label>
                   <input
