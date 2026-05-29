@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import { app } from "electron";
 import { BatchImportConfig, PartnerType } from "./types";
+import { insertSystemLog } from "./services/logService";
 
 interface AppConfiguration {
   showSidebar: boolean;
@@ -36,6 +37,14 @@ const configPath = path.join(app.getPath("userData"), "config.json");
 export function readConfig(): AppConfiguration {
   if (!fs.existsSync(configPath)) {
     fs.writeFileSync(configPath, JSON.stringify(DEFAULT_CONFIGS, null, 2));
+
+    insertSystemLog({
+      level: "INFO",
+      module: "OTHER",
+      action: "INITIALIZE_CONFIG",
+      message: "Configuration file not found. Created default config.json.",
+    });
+
     return DEFAULT_CONFIGS;
   }
 
@@ -44,4 +53,12 @@ export function readConfig(): AppConfiguration {
 
 export function saveConfig(config: AppConfiguration) {
   fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+
+  insertSystemLog({
+    level: "INFO",
+    module: "OTHER",
+    action: "SAVE_CONFIG",
+    message: "Application configuration updated successfully.",
+    description: `Config saved to ${configPath}`,
+  });
 }
