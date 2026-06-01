@@ -313,6 +313,12 @@ export const branchMappings: BranchMapping[] = [
     foodpanda_name: "Giligan's - Robinsons Naga",
   },
   {
+    pos_code: "ROS",
+    pos_name: "GILIGAN'S SM STA. ROSA",
+    grab_name: null, // new
+    foodpanda_name: null,
+  },
+  {
     pos_code: "SCL",
     pos_name: "GILIGAN'S SM CENTER LAS PIÑAS",
     grab_name: null,
