@@ -1,4 +1,5 @@
 import { useAppSound } from "@renderer/hooks/useAppSound";
+import { logger } from "@renderer/lib/logger";
 import { PartnerType } from "@shared/recon.types";
 import { AppConfiguration, BatchImportConfig, XlsxOptions } from "@shared/settings.types";
 import { useState, useEffect } from "react";
@@ -70,11 +71,23 @@ export default function SettingsPage() {
       await window.api.saveConfig(config);
       setSaveStatus("success");
       playSound("success");
+      logger.info(
+        "SETTINGS_PAGE",
+        "SAVE_CONFIG",
+        "Configuration saved successfully",
+        "User updated application settings",
+      );
       setTimeout(() => setSaveStatus("idle"), 3000); // Reset badge state after 3s
     } catch (err) {
       console.error("Failed to save configuration:", err);
       setSaveStatus("error");
       playSound("error");
+      logger.error(
+        "SETTINGS_PAGE",
+        "SAVE_CONFIG",
+        "Failed to save configuration",
+        err instanceof Error ? err.message : "Unknown error",
+      );
     } finally {
       setIsSaving(false);
     }
