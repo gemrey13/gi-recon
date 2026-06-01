@@ -90,18 +90,24 @@ function mapRow(branch: string, row: any) {
   };
 }
 
-// Only include PANDA or GRAB from 2026
+// Only include PANDA or GRAB from selected year and month (if specified)
 function isValidRow(row: any) {
   const rawDate = row.ORDDATE;
   const rawName = row.CUSNAME;
   if (!rawDate || !rawName) return false;
 
   let rowYear: number | null = null;
-  if (rawDate instanceof Date) rowYear = rawDate.getFullYear();
-  else if (typeof rawDate === "string" && rawDate.length >= 4)
-    rowYear = Number(rawDate.substring(0, 4));
+  let rowMonth: number | null = null;
 
-  if (rowYear !== year) return false;
+  if (rawDate instanceof Date) {
+    rowYear = rawDate.getFullYear();
+    rowMonth = rawDate.getMonth() + 1;
+  } else if (typeof rawDate === "string" && rawDate.length >= 7) {
+    rowYear = Number(rawDate.substring(0, 4));
+    rowMonth = Number(rawDate.substring(5, 7));
+  }
+
+  if (rowYear !== year || rowMonth !== month) return false;
 
   const name = String(rawName).toUpperCase().trim();
   return name === "PANDA" || name === "GRAB";
