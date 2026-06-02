@@ -44,6 +44,7 @@ const api = {
   partnerSales: (filters: ReportFilters) => ipcRenderer.invoke("report:partnerSales", filters),
   branchPerformance: (filters: ReportFilters) =>
     ipcRenderer.invoke("report:branchPerformance", filters),
+  overviewStats: (filters: ReportFilters) => ipcRenderer.invoke("report:overview", filters),
   systemLogs: (
     filters: {
       dateFrom?: string;

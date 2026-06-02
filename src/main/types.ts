@@ -63,6 +63,40 @@ export interface PartnerSalesRow {
   total_fees: number;
 }
 
+export interface OverviewPartnerBreakdown {
+  partner_type: string;
+  total: number;
+  matched: number;
+  match_rate: number;
+}
+
+export interface OverviewTrendPoint {
+  day: string;
+  total: number;
+  matched: number;
+  unmatched: number;
+  match_rate: number;
+}
+
+export interface OverviewBranchRow {
+  branch_name: string;
+  total: number;
+  match_rate: number;
+}
+
+export interface OverviewReport {
+  total_transactions: number;
+  matched: number;
+  unreconciled: number;
+  flagged: number;
+  total_amount: number;
+  overall_match_rate: number;
+  total_variance: number;
+  partner_breakdown: OverviewPartnerBreakdown[];
+  daily_trend: OverviewTrendPoint[];
+  top_branches: OverviewBranchRow[];
+}
+
 export interface BranchPerformanceRow {
   branch: string;
   branch_name: string;

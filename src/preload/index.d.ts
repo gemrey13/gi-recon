@@ -42,6 +42,7 @@ declare global {
       unmatched: (filters: any) => Promise<any>;
       partnerSales: (filters: any) => Promise<any>;
       branchPerformance: (filters: any) => Promise<any>;
+      overviewStats: (filters: any) => Promise<any>;
       systemLogs: (filters: any) => Promise<any>;
     };
   }
