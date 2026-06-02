@@ -43,8 +43,8 @@ const MainLayout = () => {
         <main className="flex-1 overflow-auto relative">
           <button
             onClick={toggleSidebar}
-            className={`
-              top-10 z-50 
+            className={` sticky
+              top-5 z-50 
               flex items-center justify-center
               w-8 h-8 p-1 m-2
               bg-white border border-slate-200 rounded-full shadow-sm
