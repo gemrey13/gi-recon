@@ -92,8 +92,8 @@ const Overview = () => {
   return (
     <div className="main-container">
       <header className="mb-10">
-        <h1 className="text-4xl font-black text-slate-900 tracking-tight">System Overview</h1>
-        <p className="text-slate-500 text-lg max-w-2xl">
+        <h1 className="title-header">Overview</h1>
+        <p className="description-header">
           Centralized monitoring for your delivery partner reconciliations, with quick access to
           partner dashboards, branch performance, and daily trend insights.
         </p>
