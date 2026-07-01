@@ -22,6 +22,7 @@
     "@electron-toolkit/preload": "^3.0.2",
     "@electron-toolkit/utils": "^4.0.0",
     "@tailwindcss/vite": "^4.1.18",
+    "adm-zip": "^0.5.18",
     "autoprefixer": "^10.4.23",
     "better-sqlite3": "^12.6.2",
     "dbffile": "^1.12.0",
@@ -33,6 +34,7 @@
     "react-router-dom": "^7.13.0",
     "sonner": "^2.0.7",
     "tailwindcss": "^4.1.18",
+    "unzipper": "^0.12.5",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
