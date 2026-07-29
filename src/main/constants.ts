@@ -1,5 +1,3 @@
-
-
 function toNumber(v: any): number {
   if (!v) return 0;
   const num = Number(String(v).replace(/,/g, "").trim());
